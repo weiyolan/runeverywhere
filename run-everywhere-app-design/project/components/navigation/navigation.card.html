@@ -1,0 +1,46 @@
+<!-- @dsCard group="Components" viewport="700x300" name="Tabs & bottom bar" subtitle="Section underline · pill toggle · run-type accent · 5-tab nav" -->
+<!DOCTYPE html><html><head><meta charset="utf-8"><link rel="stylesheet" href="../../styles.css">
+<style>
+  body{margin:0;font-family:var(--font-body);background:var(--paper-2);padding:24px}
+  .stack{display:flex;flex-direction:column;gap:20px;max-width:560px}
+  .cap{font-family:var(--font-display);font-weight:800;text-transform:uppercase;letter-spacing:.06em;font-size:11px;color:var(--ink-400);margin-bottom:8px}
+  .surf{background:var(--paper);border:1px solid var(--ink-200);border-radius:var(--r-md);padding:14px 16px}
+  .barwrap{border-radius:var(--r-md);overflow:hidden;border:1px solid var(--ink-200)}
+</style></head>
+<body>
+  <div id="root"></div>
+  <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+  <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+  <script crossorigin src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+  <script src="../../_ds_bundle.js"></script>
+  <script type="text/babel">
+    const DS = Object.values(window).find(v => v && typeof v === 'object' && v.Tabs && v.TabBar) || window;
+    const { Tabs, TabBar } = DS;
+    const ic = (d)=>(<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">{d}</svg>);
+    const Compass = ic(<><circle cx="12" cy="12" r="9"/><polygon points="16 8 13 13 8 16 11 11"/></>);
+    const Route = ic(<><circle cx="6" cy="19" r="2.4"/><circle cx="18" cy="6" r="2.4"/><path d="M8.2 18h6.3a3 3 0 0 0 0-6h-5a3 3 0 0 1 0-6H16"/></>);
+    const Chat = ic(<path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>);
+    const User = ic(<><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></>);
+    function App(){
+      const [a,setA]=React.useState('all');
+      const [v,setV]=React.useState('map');
+      const [c,setC]=React.useState('challenge');
+      const [t,setT]=React.useState('explore');
+      return (
+        <div className="stack">
+          <div><div className="cap">Section tabs (underline)</div><div className="surf">
+            <Tabs value={a} onChange={setA} items={[{id:'all',label:'All'},{id:'mine',label:'Managed by you'},{id:'joined',label:'Joined',count:3}]} />
+          </div></div>
+          <div style={{display:'flex',gap:16}}>
+            <div style={{flex:1}}><div className="cap">Pill toggle</div><div className="surf"><Tabs variant="pill" full={false} value={v} onChange={setV} items={[{id:'map',label:'Map'},{id:'list',label:'List'}]} /></div></div>
+            <div style={{flex:1.4}}><div className="cap">Run-type accent</div><div className="surf"><Tabs variant="pill" value={c} onChange={setC} accent="var(--challenge)" items={[{id:'discover',label:'Discover'},{id:'challenge',label:'Challenge'},{id:'social',label:'Social'}]} /></div></div>
+          </div>
+          <div><div className="cap">Bottom navigation</div><div className="barwrap">
+            <TabBar value={t} onChange={setT} items={[{id:'explore',label:'Explore',icon:Compass},{id:'runs',label:'Runs',icon:Route},{id:'messages',label:'Chat',icon:Chat},{id:'profile',label:'You',icon:User}]} />
+          </div></div>
+        </div>
+      );
+    }
+    ReactDOM.createRoot(document.getElementById('root')).render(<App/>);
+  </script>
+</body></html>

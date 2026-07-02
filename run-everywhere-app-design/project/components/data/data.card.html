@@ -1,0 +1,54 @@
+<!-- @dsCard group="Components" viewport="700x300" name="Type chips, badges, avatars, ratings, stats" subtitle="Run-type chips · status badges · avatars · ratings · stat readouts" -->
+<!DOCTYPE html><html><head><meta charset="utf-8"><link rel="stylesheet" href="../../styles.css">
+<style>
+  body{margin:0;font-family:var(--font-body);background:var(--paper-2);padding:24px}
+  .stack{display:flex;flex-direction:column;gap:20px}
+  .row{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+  .cap{font-family:var(--font-display);font-weight:800;text-transform:uppercase;letter-spacing:.06em;font-size:11px;color:var(--ink-400);width:100%;margin-bottom:-4px}
+  .stats{display:flex;gap:8px;background:var(--ink-900);border-radius:var(--r-md);padding:18px 24px}
+  .stats > *{flex:1}
+  .div{width:1px;background:var(--ink-700);flex:none !important}
+</style></head>
+<body>
+  <div id="root"></div>
+  <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+  <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+  <script crossorigin src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+  <script src="../../_ds_bundle.js"></script>
+  <script type="text/babel">
+    const DS = Object.values(window).find(v => v && typeof v === 'object' && v.TypeChip && v.StatBlock) || window;
+    const { TypeChip, Badge, Avatar, RatingStars, StatBlock } = DS;
+    function App(){
+      return (
+        <div className="stack">
+          <div className="row"><span className="cap">Run-type chips</span>
+            <TypeChip type="discover" /><TypeChip type="challenge" /><TypeChip type="social" />
+            <TypeChip type="discover" style="soft" /><TypeChip type="challenge" style="soft" /><TypeChip type="social" style="soft" />
+          </div>
+          <div className="row"><span className="cap">Badges</span>
+            <Badge tone="go">4 spots left</Badge><Badge tone="warn">2 spots left</Badge><Badge tone="danger">Full</Badge>
+            <Badge tone="ink">Live</Badge><Badge tone="volt">+120 pts</Badge><Badge tone="go">Verified</Badge>
+          </div>
+          <div className="row"><span className="cap">Avatars & ratings</span>
+            <Avatar name="Maya Okafor" size="lg" verified />
+            <Avatar name="Tom R" size="md" ring="go" />
+            <Avatar name="Ana B" size="md" />
+            <Avatar name="Jo K" size="sm" />
+            <div style={{marginLeft:8}}><RatingStars value={4.9} count={42} showValue /></div>
+          </div>
+          <div>
+            <div className="cap" style={{marginBottom:8}}>Stat readouts</div>
+            <div className="stats">
+              <StatBlock value="842" label="Km" accent="#fff" />
+              <span className="div"></span>
+              <StatBlock value="37" label="Runs" accent="#fff" />
+              <span className="div"></span>
+              <StatBlock value="2.4k" label="D+" unit="m" accent="var(--volt)" />
+            </div>
+          </div>
+        </div>
+      );
+    }
+    ReactDOM.createRoot(document.getElementById('root')).render(<App/>);
+  </script>
+</body></html>

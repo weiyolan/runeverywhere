@@ -1,0 +1,700 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Saira+Condensed:wght@500;600;700;800;900&family=Saira:wght@500;600;700;800&family=Hanken+Grotesk:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  *{box-sizing:border-box}
+  body{margin:0}
+  .re-num{font-feature-settings:"tnum" 1;font-variant-numeric:tabular-nums}
+  @keyframes rePulse{0%{transform:scale(1);opacity:.5}70%{transform:scale(2.4);opacity:0}100%{opacity:0}}
+  @keyframes reDash{to{stroke-dashoffset:-32}}
+</style>
+</helmet>
+<div style="background:#EDEDE8;min-height:100vh;font-family:'Hanken Grotesk',sans-serif;color:#0B0B0C;-webkit-font-smoothing:antialiased">
+  <div style="max-width:1200px;margin:0 auto;padding:0 0 120px">
+
+    <!-- ======================= MASTHEAD ======================= -->
+    <section style="background:#0B0B0C;color:#fff;padding:56px 56px 0;position:relative;overflow:hidden">
+      <div style="position:absolute;top:-60px;right:-30px;font-family:'Saira Condensed';font-weight:900;font-size:340px;line-height:.8;color:#15151a;letter-spacing:-8px;user-select:none">RE</div>
+      <div style="position:relative">
+        <div style="display:flex;align-items:center;gap:12px;margin-bottom:40px">
+          <div style="width:34px;height:34px;background:#C8FA00;border-radius:8px;display:flex;align-items:center;justify-content:center">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M12 2C8 2 5 5 5 9c0 5 7 13 7 13s7-8 7-13c0-4-3-7-7-7Z" stroke="#0B0B0C" stroke-width="2.2" stroke-linejoin="round"/><circle cx="12" cy="9" r="2.4" fill="#0B0B0C"/></svg>
+          </div>
+          <span style="font-family:'Saira Condensed';font-weight:700;font-size:15px;letter-spacing:3px;text-transform:uppercase;color:#9b9ba0">Design System · v1.0</span>
+        </div>
+        <h1 style="font-family:'Saira Condensed';font-weight:900;font-size:108px;line-height:.86;letter-spacing:-2px;text-transform:uppercase;margin:0 0 8px">Run<br>Everywhere</h1>
+        <p style="font-family:'Hanken Grotesk';font-weight:500;font-size:19px;line-height:1.45;color:#b9b9be;max-width:560px;margin:18px 0 44px">The athletic toolkit for the social running app — drop a pin, expose your goal, find runners, and explore any city on foot. Built for the <strong style="color:#C8FA00">create → discover → run together → get rewarded</strong> loop.</p>
+        <div style="display:flex;gap:0;border-top:1px solid #26262c">
+          <div style="flex:1;padding:22px 24px 28px;border-right:1px solid #26262c">
+            <div style="font-family:'Saira Condensed';font-weight:800;font-size:40px;line-height:1" class="re-num">3</div>
+            <div style="font-size:12px;letter-spacing:1.5px;text-transform:uppercase;color:#74747c;font-weight:600;margin-top:4px">Run types</div>
+          </div>
+          <div style="flex:1;padding:22px 24px 28px;border-right:1px solid #26262c">
+            <div style="font-family:'Saira Condensed';font-weight:800;font-size:40px;line-height:1" class="re-num">24</div>
+            <div style="font-size:12px;letter-spacing:1.5px;text-transform:uppercase;color:#74747c;font-weight:600;margin-top:4px">Components</div>
+          </div>
+          <div style="flex:1;padding:22px 24px 28px;border-right:1px solid #26262c">
+            <div style="font-family:'Saira Condensed';font-weight:800;font-size:40px;line-height:1" class="re-num">2</div>
+            <div style="font-size:12px;letter-spacing:1.5px;text-transform:uppercase;color:#74747c;font-weight:600;margin-top:4px">Typefaces</div>
+          </div>
+          <div style="flex:1;padding:22px 24px 28px">
+            <div style="font-family:'Saira Condensed';font-weight:800;font-size:40px;line-height:1;color:#C8FA00" class="re-num">8</div>
+            <div style="font-size:12px;letter-spacing:1.5px;text-transform:uppercase;color:#74747c;font-weight:600;margin-top:4px">Screens</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- run-type legend strip -->
+    <section style="display:flex;background:#0B0B0C">
+      <div style="flex:1;background:#1466FF;padding:18px 24px;color:#fff">
+        <div style="font-family:'Saira Condensed';font-weight:800;font-size:22px;letter-spacing:1px;text-transform:uppercase">Discover</div>
+        <div style="font-size:12.5px;color:rgba(255,255,255,.82);font-weight:500;margin-top:2px">Explore a city on foot</div>
+      </div>
+      <div style="flex:1;background:#FF3B30;padding:18px 24px;color:#fff">
+        <div style="font-family:'Saira Condensed';font-weight:800;font-size:22px;letter-spacing:1px;text-transform:uppercase">Challenge</div>
+        <div style="font-size:12.5px;color:rgba(255,255,255,.85);font-weight:500;margin-top:2px">Push pace &amp; distance</div>
+      </div>
+      <div style="flex:1;background:#16C172;padding:18px 24px;color:#06210f">
+        <div style="font-family:'Saira Condensed';font-weight:800;font-size:22px;letter-spacing:1px;text-transform:uppercase">Social</div>
+        <div style="font-size:12.5px;color:rgba(6,33,15,.7);font-weight:600;margin-top:2px">Easy, meet new people</div>
+      </div>
+    </section>
+
+    <div style="padding:0 56px">
+
+    <!-- ======================= COLOUR ======================= -->
+    <section style="padding:72px 0 0">
+      <div style="display:flex;align-items:baseline;gap:16px;margin:0 0 32px">
+        <span style="font-family:'Saira Condensed';font-weight:800;font-size:13px;letter-spacing:2px;color:#0B0B0C;background:#C8FA00;padding:5px 11px 3px;border-radius:3px">01</span>
+        <h2 style="font-family:'Saira Condensed';font-weight:900;text-transform:uppercase;letter-spacing:-1px;font-size:40px;margin:0">Colour</h2>
+        <span style="font-size:14px;color:#74746e;font-weight:500;margin-left:auto;max-width:360px;text-align:right">Ink &amp; paper carry the UI. Volt is the one energy accent. The three run-type hues are functional — they map pins, tags &amp; cards.</span>
+      </div>
+
+      <!-- core -->
+      <div style="font-family:'Saira Condensed';font-weight:700;font-size:14px;letter-spacing:2px;text-transform:uppercase;color:#74746e;margin:0 0 14px">Core &amp; brand</div>
+      <div style="display:grid;grid-template-columns:repeat(6,1fr);gap:12px;margin-bottom:14px">
+        <div style="border-radius:10px;overflow:hidden;border:1px solid #E4E4DE;background:#fff">
+          <div style="height:96px;background:#0B0B0C"></div>
+          <div style="padding:10px 12px"><div style="font-weight:700;font-size:14px">Ink</div><div style="font-size:12px;color:#74746e" class="re-num">#0B0B0C</div></div>
+        </div>
+        <div style="border-radius:10px;overflow:hidden;border:1px solid #E4E4DE;background:#fff">
+          <div style="height:96px;background:#1A1A1C"></div>
+          <div style="padding:10px 12px"><div style="font-weight:700;font-size:14px">Ink 2</div><div style="font-size:12px;color:#74746e" class="re-num">#1A1A1C</div></div>
+        </div>
+        <div style="border-radius:10px;overflow:hidden;border:1px solid #E4E4DE;background:#fff">
+          <div style="height:96px;background:#C8FA00;display:flex;align-items:flex-start;justify-content:flex-end;padding:8px"><span style="background:#0B0B0C;color:#C8FA00;font-size:10px;font-weight:700;padding:2px 6px;border-radius:4px">BRAND</span></div>
+          <div style="padding:10px 12px"><div style="font-weight:700;font-size:14px">Volt</div><div style="font-size:12px;color:#74746e" class="re-num">#C8FA00</div></div>
+        </div>
+        <div style="border-radius:10px;overflow:hidden;border:1px solid #E4E4DE;background:#fff">
+          <div style="height:96px;background:#F6F6F3"></div>
+          <div style="padding:10px 12px"><div style="font-weight:700;font-size:14px">Surface</div><div style="font-size:12px;color:#74746e" class="re-num">#F6F6F3</div></div>
+        </div>
+        <div style="border-radius:10px;overflow:hidden;border:1px solid #E4E4DE;background:#fff">
+          <div style="height:96px;background:#EDEDE8"></div>
+          <div style="padding:10px 12px"><div style="font-weight:700;font-size:14px">Surface 2</div><div style="font-size:12px;color:#74746e" class="re-num">#EDEDE8</div></div>
+        </div>
+        <div style="border-radius:10px;overflow:hidden;border:1px solid #E4E4DE;background:#fff">
+          <div style="height:96px;background:#fff;border-bottom:1px solid #E4E4DE"></div>
+          <div style="padding:10px 12px"><div style="font-weight:700;font-size:14px">Paper</div><div style="font-size:12px;color:#74746e" class="re-num">#FFFFFF</div></div>
+        </div>
+      </div>
+
+      <!-- run types big -->
+      <div style="font-family:'Saira Condensed';font-weight:700;font-size:14px;letter-spacing:2px;text-transform:uppercase;color:#74746e;margin:26px 0 14px">Run types — functional colour</div>
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:14px">
+        <div style="border-radius:12px;overflow:hidden;background:#1466FF;color:#fff;padding:20px;min-height:130px;display:flex;flex-direction:column;justify-content:space-between">
+          <svg width="26" height="26" viewBox="0 0 24 24" fill="none"><path d="M12 21s7-6.5 7-12a7 7 0 1 0-14 0c0 5.5 7 12 7 12Z" stroke="#fff" stroke-width="2" stroke-linejoin="round"/><circle cx="12" cy="9" r="2.5" fill="#fff"/></svg>
+          <div><div style="font-family:'Saira Condensed';font-weight:800;font-size:26px;text-transform:uppercase;letter-spacing:.5px">Discover</div><div class="re-num" style="font-size:13px;opacity:.85;font-weight:600">#1466FF · 600</div></div>
+        </div>
+        <div style="border-radius:12px;overflow:hidden;background:#FF3B30;color:#fff;padding:20px;min-height:130px;display:flex;flex-direction:column;justify-content:space-between">
+          <svg width="26" height="26" viewBox="0 0 24 24" fill="none"><path d="M13 2 4 14h7l-1 8 9-12h-7l1-8Z" stroke="#fff" stroke-width="2" stroke-linejoin="round"/></svg>
+          <div><div style="font-family:'Saira Condensed';font-weight:800;font-size:26px;text-transform:uppercase;letter-spacing:.5px">Challenge</div><div class="re-num" style="font-size:13px;opacity:.9;font-weight:600">#FF3B30 · 600</div></div>
+        </div>
+        <div style="border-radius:12px;overflow:hidden;background:#16C172;color:#06210f;padding:20px;min-height:130px;display:flex;flex-direction:column;justify-content:space-between">
+          <svg width="26" height="26" viewBox="0 0 24 24" fill="none"><circle cx="9" cy="7" r="3" stroke="#06210f" stroke-width="2"/><circle cx="16" cy="9" r="2.4" stroke="#06210f" stroke-width="2"/><path d="M3 20c0-3 2.7-5 6-5s6 2 6 5M14 20c0-2 .7-3.4 2-4.2 2.2.3 4 2.1 4 4.2" stroke="#06210f" stroke-width="2" stroke-linecap="round"/></svg>
+          <div><div style="font-family:'Saira Condensed';font-weight:800;font-size:26px;text-transform:uppercase;letter-spacing:.5px">Social</div><div class="re-num" style="font-size:13px;opacity:.7;font-weight:700">#16C172 · 600</div></div>
+        </div>
+      </div>
+
+      <!-- tints + semantic -->
+      <div style="display:grid;grid-template-columns:2fr 1fr;gap:24px;margin-top:26px">
+        <div>
+          <div style="font-family:'Saira Condensed';font-weight:700;font-size:14px;letter-spacing:2px;text-transform:uppercase;color:#74746e;margin:0 0 14px">Type tints (surfaces &amp; tags)</div>
+          <div style="display:flex;flex-direction:column;gap:8px">
+            <div style="display:flex;height:34px;border-radius:7px;overflow:hidden;border:1px solid #E4E4DE">
+              <div style="flex:1;background:#EAF1FF"></div><div style="flex:1;background:#B9D0FF"></div><div style="flex:1;background:#1466FF"></div><div style="flex:1;background:#0B3FB0"></div>
+            </div>
+            <div style="display:flex;height:34px;border-radius:7px;overflow:hidden;border:1px solid #E4E4DE">
+              <div style="flex:1;background:#FFECEA"></div><div style="flex:1;background:#FFC2BD"></div><div style="flex:1;background:#FF3B30"></div><div style="flex:1;background:#B61C13"></div>
+            </div>
+            <div style="display:flex;height:34px;border-radius:7px;overflow:hidden;border:1px solid #E4E4DE">
+              <div style="flex:1;background:#E3F8EE"></div><div style="flex:1;background:#A6E9C8"></div><div style="flex:1;background:#16C172"></div><div style="flex:1;background:#0A7A47"></div>
+            </div>
+          </div>
+        </div>
+        <div>
+          <div style="font-family:'Saira Condensed';font-weight:700;font-size:14px;letter-spacing:2px;text-transform:uppercase;color:#74746e;margin:0 0 14px">Semantic</div>
+          <div style="display:flex;gap:8px">
+            <div style="flex:1"><div style="height:46px;background:#FFB020;border-radius:7px"></div><div style="font-size:11.5px;color:#74746e;margin-top:5px;font-weight:600">Star/Award</div></div>
+            <div style="flex:1"><div style="height:46px;background:#0B0B0C;border-radius:7px"></div><div style="font-size:11.5px;color:#74746e;margin-top:5px;font-weight:600">Verified</div></div>
+            <div style="flex:1"><div style="height:46px;background:#E4E4DE;border-radius:7px"></div><div style="font-size:11.5px;color:#74746e;margin-top:5px;font-weight:600">Line</div></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ======================= TYPOGRAPHY ======================= -->
+    <section style="padding:72px 0 0">
+      <div style="display:flex;align-items:baseline;gap:16px;margin:0 0 32px">
+        <span style="font-family:'Saira Condensed';font-weight:800;font-size:13px;letter-spacing:2px;color:#0B0B0C;background:#C8FA00;padding:5px 11px 3px;border-radius:3px">02</span>
+        <h2 style="font-family:'Saira Condensed';font-weight:900;text-transform:uppercase;letter-spacing:-1px;font-size:40px;margin:0">Type</h2>
+        <span style="font-size:14px;color:#74746e;font-weight:500;margin-left:auto;max-width:360px;text-align:right"><strong>Saira Condensed</strong> shouts (headlines, stats, type tags). <strong>Hanken Grotesk</strong> speaks (body, labels, UI).</span>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px">
+        <div style="background:#0B0B0C;color:#fff;border-radius:14px;padding:28px 30px">
+          <div style="font-size:12px;letter-spacing:2px;text-transform:uppercase;color:#74747c;font-weight:600;margin-bottom:18px">Display — Saira Condensed</div>
+          <div style="font-family:'Saira Condensed';font-weight:900;font-size:62px;line-height:.92;text-transform:uppercase;letter-spacing:-1px">Run with<br>strangers</div>
+          <div style="display:flex;gap:24px;margin-top:22px;border-top:1px solid #26262c;padding-top:16px;font-size:12.5px;color:#9b9ba0">
+            <span>Weights 500–900</span><span>Tracking −1 to −2</span><span>UPPERCASE headers</span>
+          </div>
+        </div>
+        <div style="background:#fff;border:1px solid #E4E4DE;border-radius:14px;padding:28px 30px">
+          <div style="font-size:12px;letter-spacing:2px;text-transform:uppercase;color:#74746e;font-weight:600;margin-bottom:18px">Body — Hanken Grotesk</div>
+          <p style="font-family:'Hanken Grotesk';font-weight:600;font-size:19px;line-height:1.4;margin:0 0 12px">Easy social 5K to see the old town. Meet at Praça do Comércio, 8am.</p>
+          <p style="font-family:'Hanken Grotesk';font-weight:400;font-size:15px;line-height:1.55;color:#4a4a46;margin:0">Open route · approval required · 3 of 6 spots left. Bring water — we'll grab coffee after by the river. All paces welcome, we regroup at every corner.</p>
+          <div style="display:flex;gap:24px;margin-top:20px;border-top:1px solid #E4E4DE;padding-top:16px;font-size:12.5px;color:#74746e">
+            <span>Weights 400–800</span><span>Tabular nums for data</span>
+          </div>
+        </div>
+      </div>
+      <!-- scale row -->
+      <div style="display:flex;align-items:flex-end;gap:0;margin-top:14px;background:#fff;border:1px solid #E4E4DE;border-radius:14px;padding:24px 30px;flex-wrap:wrap">
+        <div style="flex:1;min-width:110px"><div style="font-family:'Saira Condensed';font-weight:900;font-size:13px;color:#74746e;letter-spacing:1px">DISPLAY</div><div style="font-family:'Saira Condensed';font-weight:900;font-size:52px;line-height:1">42/900</div></div>
+        <div style="flex:1;min-width:110px"><div style="font-family:'Saira Condensed';font-weight:900;font-size:13px;color:#74746e;letter-spacing:1px">TITLE</div><div style="font-family:'Saira Condensed';font-weight:800;font-size:30px;line-height:1">28/800</div></div>
+        <div style="flex:1;min-width:110px"><div style="font-family:'Saira Condensed';font-weight:900;font-size:13px;color:#74746e;letter-spacing:1px">BODY</div><div style="font-family:'Hanken Grotesk';font-weight:500;font-size:16px;line-height:1.3">16/500</div></div>
+        <div style="flex:1;min-width:110px"><div style="font-family:'Saira Condensed';font-weight:900;font-size:13px;color:#74746e;letter-spacing:1px">LABEL</div><div style="font-family:'Hanken Grotesk';font-weight:700;font-size:12px;letter-spacing:1.5px;text-transform:uppercase">13 / CAPS</div></div>
+        <div style="flex:1;min-width:110px"><div style="font-family:'Saira Condensed';font-weight:900;font-size:13px;color:#74746e;letter-spacing:1px">STAT</div><div style="font-family:'Saira Condensed';font-weight:800;font-size:34px;line-height:1" class="re-num">7.5</div></div>
+      </div>
+    </section>
+
+    <!-- ======================= SPACING / RADIUS / ELEVATION ======================= -->
+    <section style="padding:72px 0 0">
+      <div style="display:flex;align-items:baseline;gap:16px;margin:0 0 32px">
+        <span style="font-family:'Saira Condensed';font-weight:800;font-size:13px;letter-spacing:2px;color:#0B0B0C;background:#C8FA00;padding:5px 11px 3px;border-radius:3px">03</span>
+        <h2 style="font-family:'Saira Condensed';font-weight:900;text-transform:uppercase;letter-spacing:-1px;font-size:40px;margin:0">Space · Radius · Elevation</h2>
+      </div>
+      <div style="display:grid;grid-template-columns:1.2fr 1fr 1fr;gap:14px">
+        <div style="background:#fff;border:1px solid #E4E4DE;border-radius:14px;padding:24px">
+          <div style="font-family:'Saira Condensed';font-weight:700;font-size:13px;letter-spacing:2px;text-transform:uppercase;color:#74746e;margin-bottom:18px">4px base scale</div>
+          <div style="display:flex;flex-direction:column;gap:10px">
+            <div style="display:flex;align-items:center;gap:12px"><div style="width:4px;height:18px;background:#1466FF"></div><span class="re-num" style="font-size:13px;color:#4a4a46;font-weight:600">4 · xs</span></div>
+            <div style="display:flex;align-items:center;gap:12px"><div style="width:8px;height:18px;background:#1466FF"></div><span class="re-num" style="font-size:13px;color:#4a4a46;font-weight:600">8 · sm</span></div>
+            <div style="display:flex;align-items:center;gap:12px"><div style="width:16px;height:18px;background:#1466FF"></div><span class="re-num" style="font-size:13px;color:#4a4a46;font-weight:600">16 · md</span></div>
+            <div style="display:flex;align-items:center;gap:12px"><div style="width:24px;height:18px;background:#1466FF"></div><span class="re-num" style="font-size:13px;color:#4a4a46;font-weight:600">24 · lg</span></div>
+            <div style="display:flex;align-items:center;gap:12px"><div style="width:40px;height:18px;background:#1466FF"></div><span class="re-num" style="font-size:13px;color:#4a4a46;font-weight:600">40 · xl</span></div>
+          </div>
+        </div>
+        <div style="background:#fff;border:1px solid #E4E4DE;border-radius:14px;padding:24px">
+          <div style="font-family:'Saira Condensed';font-weight:700;font-size:13px;letter-spacing:2px;text-transform:uppercase;color:#74746e;margin-bottom:18px">Radius</div>
+          <div style="display:flex;flex-direction:column;gap:12px">
+            <div style="display:flex;align-items:center;gap:12px"><div style="width:40px;height:30px;background:#EDEDE8;border:1.5px solid #1466FF;border-radius:6px"></div><span class="re-num" style="font-size:13px;color:#4a4a46;font-weight:600">6 · controls</span></div>
+            <div style="display:flex;align-items:center;gap:12px"><div style="width:40px;height:30px;background:#EDEDE8;border:1.5px solid #1466FF;border-radius:12px"></div><span class="re-num" style="font-size:13px;color:#4a4a46;font-weight:600">12 · cards</span></div>
+            <div style="display:flex;align-items:center;gap:12px"><div style="width:40px;height:30px;background:#EDEDE8;border:1.5px solid #1466FF;border-radius:18px"></div><span class="re-num" style="font-size:13px;color:#4a4a46;font-weight:600">18 · sheets</span></div>
+            <div style="display:flex;align-items:center;gap:12px"><div style="width:40px;height:30px;background:#EDEDE8;border:1.5px solid #1466FF;border-radius:999px"></div><span class="re-num" style="font-size:13px;color:#4a4a46;font-weight:600">full · pills</span></div>
+          </div>
+        </div>
+        <div style="background:#fff;border:1px solid #E4E4DE;border-radius:14px;padding:24px">
+          <div style="font-family:'Saira Condensed';font-weight:700;font-size:13px;letter-spacing:2px;text-transform:uppercase;color:#74746e;margin-bottom:18px">Elevation</div>
+          <div style="display:flex;flex-direction:column;gap:14px">
+            <div style="display:flex;align-items:center;gap:12px"><div style="width:44px;height:30px;background:#fff;border-radius:8px;box-shadow:0 1px 2px rgba(11,11,12,.08)"></div><span style="font-size:13px;color:#4a4a46;font-weight:600">e1 · rest</span></div>
+            <div style="display:flex;align-items:center;gap:12px"><div style="width:44px;height:30px;background:#fff;border-radius:8px;box-shadow:0 6px 16px rgba(11,11,12,.12)"></div><span style="font-size:13px;color:#4a4a46;font-weight:600">e2 · card</span></div>
+            <div style="display:flex;align-items:center;gap:12px"><div style="width:44px;height:30px;background:#fff;border-radius:8px;box-shadow:0 16px 40px rgba(11,11,12,.20)"></div><span style="font-size:13px;color:#4a4a46;font-weight:600">e3 · sheet</span></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ======================= COMPONENTS ======================= -->
+    <section style="padding:72px 0 0">
+      <div style="display:flex;align-items:baseline;gap:16px;margin:0 0 32px">
+        <span style="font-family:'Saira Condensed';font-weight:800;font-size:13px;letter-spacing:2px;color:#0B0B0C;background:#C8FA00;padding:5px 11px 3px;border-radius:3px">04</span>
+        <h2 style="font-family:'Saira Condensed';font-weight:900;text-transform:uppercase;letter-spacing:-1px;font-size:40px;margin:0">Components</h2>
+      </div>
+
+      <!-- BUTTONS -->
+      <div style="background:#fff;border:1px solid #E4E4DE;border-radius:14px;padding:26px 28px;margin-bottom:14px">
+        <div style="font-family:'Saira Condensed';font-weight:700;font-size:13px;letter-spacing:2px;text-transform:uppercase;color:#74746e;margin-bottom:18px">Buttons &amp; controls</div>
+        <div style="display:flex;flex-wrap:wrap;gap:12px;align-items:center">
+          <button style="font-family:'Saira Condensed';font-weight:800;font-size:16px;letter-spacing:.5px;text-transform:uppercase;background:#0B0B0C;color:#fff;border:none;border-radius:10px;padding:14px 26px;cursor:pointer">Request to join</button>
+          <button style="font-family:'Saira Condensed';font-weight:800;font-size:16px;letter-spacing:.5px;text-transform:uppercase;background:#C8FA00;color:#0B0B0C;border:none;border-radius:10px;padding:14px 26px;cursor:pointer">Create run</button>
+          <button style="font-family:'Saira Condensed';font-weight:800;font-size:16px;letter-spacing:.5px;text-transform:uppercase;background:#1466FF;color:#fff;border:none;border-radius:10px;padding:14px 26px;cursor:pointer">Discover</button>
+          <button style="font-family:'Saira Condensed';font-weight:800;font-size:16px;letter-spacing:.5px;text-transform:uppercase;background:#fff;color:#0B0B0C;border:1.5px solid #0B0B0C;border-radius:10px;padding:13px 26px;cursor:pointer">Message host</button>
+          <button style="font-family:'Hanken Grotesk';font-weight:700;font-size:15px;background:none;color:#1466FF;border:none;cursor:pointer;padding:13px 8px">View profile →</button>
+          <button style="font-family:'Saira Condensed';font-weight:800;font-size:16px;letter-spacing:.5px;text-transform:uppercase;background:#EDEDE8;color:#a3a39d;border:none;border-radius:10px;padding:14px 26px;cursor:not-allowed">Run full</button>
+          <div style="width:46px;height:46px;border-radius:10px;background:#0B0B0C;display:flex;align-items:center;justify-content:center;cursor:pointer"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M12 5v14M5 12h14" stroke="#fff" stroke-width="2.4" stroke-linecap="round"/></svg></div>
+          <div style="width:46px;height:46px;border-radius:10px;border:1.5px solid #E4E4DE;background:#fff;display:flex;align-items:center;justify-content:center;cursor:pointer"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M12 21s-7-4.6-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 11c0 5.4-7 10-7 10Z" stroke="#FF3B30" stroke-width="2" stroke-linejoin="round"/></svg></div>
+        </div>
+      </div>
+
+      <!-- TYPE TAGS + chips + badges -->
+      <div style="background:#fff;border:1px solid #E4E4DE;border-radius:14px;padding:26px 28px;margin-bottom:14px">
+        <div style="font-family:'Saira Condensed';font-weight:700;font-size:13px;letter-spacing:2px;text-transform:uppercase;color:#74746e;margin-bottom:18px">Type tags · meta chips · badges</div>
+        <div style="display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-bottom:16px">
+          <span style="font-family:'Saira Condensed';font-weight:800;font-size:13px;letter-spacing:1.5px;text-transform:uppercase;background:#1466FF;color:#fff;padding:6px 12px 4px;border-radius:6px">Discover</span>
+          <span style="font-family:'Saira Condensed';font-weight:800;font-size:13px;letter-spacing:1.5px;text-transform:uppercase;background:#FF3B30;color:#fff;padding:6px 12px 4px;border-radius:6px">Challenge</span>
+          <span style="font-family:'Saira Condensed';font-weight:800;font-size:13px;letter-spacing:1.5px;text-transform:uppercase;background:#16C172;color:#06210f;padding:6px 12px 4px;border-radius:6px">Social</span>
+          <span style="font-family:'Saira Condensed';font-weight:800;font-size:13px;letter-spacing:1.5px;text-transform:uppercase;background:#EAF1FF;color:#1466FF;padding:6px 12px 4px;border-radius:6px">Discover · tint</span>
+        </div>
+        <div style="display:flex;flex-wrap:wrap;gap:8px;align-items:center">
+          <span style="display:inline-flex;align-items:center;gap:5px;font-size:13px;font-weight:600;background:#F6F6F3;border:1px solid #E4E4DE;color:#3a3a36;padding:6px 11px;border-radius:999px"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke="#74746e" stroke-width="2"/><path d="M12 7v5l3 2" stroke="#74746e" stroke-width="2" stroke-linecap="round"/></svg>Sat 08:00</span>
+          <span class="re-num" style="display:inline-flex;align-items:center;gap:5px;font-size:13px;font-weight:600;background:#F6F6F3;border:1px solid #E4E4DE;color:#3a3a36;padding:6px 11px;border-radius:999px">7.5 km</span>
+          <span class="re-num" style="display:inline-flex;align-items:center;gap:5px;font-size:13px;font-weight:600;background:#F6F6F3;border:1px solid #E4E4DE;color:#3a3a36;padding:6px 11px;border-radius:999px">5:30 /km</span>
+          <span style="display:inline-flex;align-items:center;gap:5px;font-size:13px;font-weight:700;background:#06210f;color:#16C172;padding:6px 11px;border-radius:999px"><svg width="12" height="12" viewBox="0 0 24 24" fill="none"><path d="M5 12l5 5L20 6" stroke="#16C172" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>2 spots left</span>
+          <span style="display:inline-flex;align-items:center;gap:5px;font-size:13px;font-weight:700;background:#0B0B0C;color:#fff;padding:6px 11px;border-radius:999px"><svg width="12" height="12" viewBox="0 0 24 24" fill="none"><path d="M5 12l4 4L19 6" stroke="#C8FA00" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>Verified</span>
+          <span style="display:inline-flex;align-items:center;gap:5px;font-size:13px;font-weight:700;background:#C8FA00;color:#0B0B0C;padding:6px 11px;border-radius:999px">+120 pts</span>
+        </div>
+      </div>
+
+      <!-- RUN CARDS -->
+      <div style="background:#fff;border:1px solid #E4E4DE;border-radius:14px;padding:26px 28px;margin-bottom:14px">
+        <div style="font-family:'Saira Condensed';font-weight:700;font-size:13px;letter-spacing:2px;text-transform:uppercase;color:#74746e;margin-bottom:18px">Run cards — three types</div>
+        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:14px">
+
+          <!-- DISCOVER card -->
+          <div style="border-radius:14px;overflow:hidden;background:#fff;box-shadow:0 6px 16px rgba(11,11,12,.10);border:1px solid #EDEDE8">
+            <div style="height:96px;position:relative;background:linear-gradient(135deg,#dde7f5,#eaf1ff)">
+              <div style="position:absolute;inset:0;background-image:linear-gradient(#cdd9ec 1px,transparent 1px),linear-gradient(90deg,#cdd9ec 1px,transparent 1px);background-size:22px 22px;opacity:.6"></div>
+              <svg style="position:absolute;inset:0" width="100%" height="96" viewBox="0 0 240 96" preserveAspectRatio="none"><path d="M20 78 C60 70 50 40 90 38 S150 56 180 30 220 20 230 14" stroke="#1466FF" stroke-width="3.5" fill="none" stroke-linecap="round"/><circle cx="20" cy="78" r="5" fill="#fff" stroke="#1466FF" stroke-width="3"/><circle cx="230" cy="14" r="5" fill="#1466FF"/></svg>
+              <span style="position:absolute;top:10px;left:10px;font-family:'Saira Condensed';font-weight:800;font-size:12px;letter-spacing:1.5px;text-transform:uppercase;background:#1466FF;color:#fff;padding:5px 10px 3px;border-radius:6px">Discover</span>
+            </div>
+            <div style="padding:14px 15px 15px">
+              <div style="font-family:'Saira Condensed';font-weight:800;font-size:21px;line-height:1;text-transform:uppercase">Old Town Loop</div>
+              <div style="font-size:12.5px;color:#74746e;margin-top:3px;font-weight:500">Alfama · Lisbon</div>
+              <div style="display:flex;gap:6px;margin:12px 0;flex-wrap:wrap">
+                <span class="re-num" style="font-size:12px;font-weight:700;background:#F6F6F3;padding:4px 9px;border-radius:999px">7.5 km</span>
+                <span class="re-num" style="font-size:12px;font-weight:700;background:#F6F6F3;padding:4px 9px;border-radius:999px">5:30/km</span>
+                <span class="re-num" style="font-size:12px;font-weight:700;background:#F6F6F3;padding:4px 9px;border-radius:999px">Sat 08:00</span>
+              </div>
+              <div style="display:flex;align-items:center;justify-content:space-between;border-top:1px solid #EDEDE8;padding-top:12px">
+                <div style="display:flex;align-items:center;gap:7px"><div style="width:26px;height:26px;border-radius:50%;background:linear-gradient(135deg,#1466FF,#0B3FB0);color:#fff;font-size:11px;font-weight:800;display:flex;align-items:center;justify-content:center">MR</div><div><div style="font-size:12px;font-weight:700;line-height:1">Marco R.</div><div class="re-num" style="font-size:11px;color:#74746e">3/6 joined</div></div></div>
+                <span style="font-family:'Saira Condensed';font-weight:800;font-size:13px;letter-spacing:.5px;text-transform:uppercase;color:#1466FF">Open ○</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- CHALLENGE card -->
+          <div style="border-radius:14px;overflow:hidden;background:#fff;box-shadow:0 6px 16px rgba(11,11,12,.10);border:1px solid #EDEDE8">
+            <div style="height:96px;position:relative;background:linear-gradient(135deg,#f7e0de,#ffeceb)">
+              <div style="position:absolute;inset:0;background:linear-gradient(135deg,#f7e0de,#ffeceb)"></div>
+              <div style="position:absolute;inset:0;background-image:linear-gradient(#f0cfcc 1px,transparent 1px),linear-gradient(90deg,#f0cfcc 1px,transparent 1px);background-size:22px 22px;opacity:.6"></div>
+              <svg style="position:absolute;inset:0" width="100%" height="96" viewBox="0 0 240 96" preserveAspectRatio="none"><path d="M16 80 L70 24 L120 80 L170 20 L224 76" stroke="#FF3B30" stroke-width="3.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/><circle cx="16" cy="80" r="5" fill="#fff" stroke="#FF3B30" stroke-width="3"/><circle cx="224" cy="76" r="5" fill="#FF3B30"/></svg>
+              <span style="position:absolute;top:10px;left:10px;font-family:'Saira Condensed';font-weight:800;font-size:12px;letter-spacing:1.5px;text-transform:uppercase;background:#FF3B30;color:#fff;padding:5px 10px 3px;border-radius:6px">Challenge</span>
+            </div>
+            <div style="padding:14px 15px 15px">
+              <div style="font-family:'Saira Condensed';font-weight:800;font-size:21px;line-height:1;text-transform:uppercase">Monsanto Hills</div>
+              <div style="font-size:12.5px;color:#74746e;margin-top:3px;font-weight:500">Hill repeats · Lisbon</div>
+              <div style="display:flex;gap:6px;margin:12px 0;flex-wrap:wrap">
+                <span class="re-num" style="font-size:12px;font-weight:700;background:#F6F6F3;padding:4px 9px;border-radius:999px">12 km</span>
+                <span class="re-num" style="font-size:12px;font-weight:700;background:#F6F6F3;padding:4px 9px;border-radius:999px">4:45/km</span>
+                <span class="re-num" style="font-size:12px;font-weight:700;background:#F6F6F3;padding:4px 9px;border-radius:999px">Sun 07:00</span>
+              </div>
+              <div style="display:flex;align-items:center;justify-content:space-between;border-top:1px solid #EDEDE8;padding-top:12px">
+                <div style="display:flex;align-items:center;gap:7px"><div style="width:26px;height:26px;border-radius:50%;background:linear-gradient(135deg,#FF3B30,#B61C13);color:#fff;font-size:11px;font-weight:800;display:flex;align-items:center;justify-content:center">SK</div><div><div style="font-size:12px;font-weight:700;line-height:1">Sofia K.</div><div class="re-num" style="font-size:11px;color:#74746e">2/4 joined</div></div></div>
+                <span style="font-family:'Saira Condensed';font-weight:800;font-size:13px;letter-spacing:.5px;text-transform:uppercase;color:#FF3B30">Closed ●</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- SOCIAL card -->
+          <div style="border-radius:14px;overflow:hidden;background:#fff;box-shadow:0 6px 16px rgba(11,11,12,.10);border:1px solid #EDEDE8">
+            <div style="height:96px;position:relative;background:linear-gradient(135deg,#d6f1e3,#e3f8ee)">
+              <div style="position:absolute;inset:0;background-image:linear-gradient(#c4e8d6 1px,transparent 1px),linear-gradient(90deg,#c4e8d6 1px,transparent 1px);background-size:22px 22px;opacity:.6"></div>
+              <svg style="position:absolute;inset:0" width="100%" height="96" viewBox="0 0 240 96" preserveAspectRatio="none"><path d="M120 20 C70 20 40 40 40 58 S70 84 120 84 200 70 200 50 170 20 120 20Z" stroke="#16C172" stroke-width="3.5" fill="none"/><circle cx="120" cy="20" r="5" fill="#16C172"/></svg>
+              <span style="position:absolute;top:10px;left:10px;font-family:'Saira Condensed';font-weight:800;font-size:12px;letter-spacing:1.5px;text-transform:uppercase;background:#16C172;color:#06210f;padding:5px 10px 3px;border-radius:6px">Social</span>
+            </div>
+            <div style="padding:14px 15px 15px">
+              <div style="font-family:'Saira Condensed';font-weight:800;font-size:21px;line-height:1;text-transform:uppercase">Sunset 5K</div>
+              <div style="font-size:12.5px;color:#74746e;margin-top:3px;font-weight:500">Easy &amp; chatty · Belém</div>
+              <div style="display:flex;gap:6px;margin:12px 0;flex-wrap:wrap">
+                <span class="re-num" style="font-size:12px;font-weight:700;background:#F6F6F3;padding:4px 9px;border-radius:999px">5.0 km</span>
+                <span class="re-num" style="font-size:12px;font-weight:700;background:#F6F6F3;padding:4px 9px;border-radius:999px">6:15/km</span>
+                <span class="re-num" style="font-size:12px;font-weight:700;background:#F6F6F3;padding:4px 9px;border-radius:999px">Fri 19:30</span>
+              </div>
+              <div style="display:flex;align-items:center;justify-content:space-between;border-top:1px solid #EDEDE8;padding-top:12px">
+                <div style="display:flex;align-items:center;gap:7px"><div style="width:26px;height:26px;border-radius:50%;background:linear-gradient(135deg,#16C172,#0A7A47);color:#fff;font-size:11px;font-weight:800;display:flex;align-items:center;justify-content:center">JL</div><div><div style="font-size:12px;font-weight:700;line-height:1">João L.</div><div class="re-num" style="font-size:11px;color:#74746e">8/10 joined</div></div></div>
+                <span style="font-family:'Saira Condensed';font-weight:800;font-size:13px;letter-spacing:.5px;text-transform:uppercase;color:#0A7A47">Open ○</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- compact list row + map callout -->
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:14px">
+          <div style="display:flex;align-items:center;gap:13px;background:#fff;border:1px solid #EDEDE8;border-radius:12px;padding:12px 14px">
+            <div style="width:44px;height:44px;border-radius:10px;background:#FF3B30;display:flex;flex-direction:column;align-items:center;justify-content:center;color:#fff;flex:none"><span class="re-num" style="font-family:'Saira Condensed';font-weight:800;font-size:18px;line-height:.9">12</span><span style="font-size:9px;font-weight:700;letter-spacing:.5px">KM</span></div>
+            <div style="flex:1;min-width:0"><div style="font-family:'Saira Condensed';font-weight:800;font-size:17px;text-transform:uppercase;line-height:1">Monsanto Hills</div><div class="re-num" style="font-size:12px;color:#74746e;font-weight:500">Sun 07:00 · 4:45/km · 2 spots</div></div>
+            <span style="font-family:'Saira Condensed';font-weight:800;font-size:12px;text-transform:uppercase;letter-spacing:1px;color:#fff;background:#0B0B0C;padding:7px 12px;border-radius:8px">Join</span>
+          </div>
+          <div style="display:flex;align-items:flex-start;gap:11px;background:#0B0B0C;color:#fff;border-radius:12px;padding:13px 15px;position:relative">
+            <div style="position:absolute;bottom:-7px;left:34px;width:14px;height:14px;background:#0B0B0C;transform:rotate(45deg)"></div>
+            <div style="width:40px;height:40px;border-radius:10px;background:#1466FF;display:flex;flex-direction:column;align-items:center;justify-content:center;flex:none"><span class="re-num" style="font-family:'Saira Condensed';font-weight:800;font-size:16px;line-height:.9">7.5</span><span style="font-size:8px;font-weight:700">KM</span></div>
+            <div style="flex:1"><div style="font-family:'Saira Condensed';font-weight:800;font-size:16px;text-transform:uppercase;line-height:1">Old Town Loop</div><div class="re-num" style="font-size:11.5px;color:#b9b9be;margin-top:2px">Map callout · 3/6 · tap to open</div></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- MAP PINS + ROUTE MARKERS + AVATARS -->
+      <div style="display:grid;grid-template-columns:1.3fr 1fr;gap:14px;margin-bottom:14px">
+        <!-- map pins -->
+        <div style="background:#fff;border:1px solid #E4E4DE;border-radius:14px;padding:26px 28px">
+          <div style="font-family:'Saira Condensed';font-weight:700;font-size:13px;letter-spacing:2px;text-transform:uppercase;color:#74746e;margin-bottom:18px">Map pins &amp; markers</div>
+          <div style="display:flex;flex-wrap:wrap;gap:24px;align-items:flex-end">
+            <!-- pill pins -->
+            <div style="display:flex;flex-direction:column;align-items:center;gap:8px">
+              <div style="display:inline-flex;align-items:center;gap:5px;background:#1466FF;color:#fff;padding:6px 11px 6px 8px;border-radius:999px;box-shadow:0 4px 10px rgba(20,102,255,.4);position:relative"><svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M12 21s7-6.5 7-12a7 7 0 1 0-14 0c0 5.5 7 12 7 12Z" stroke="#fff" stroke-width="2.2"/><circle cx="12" cy="9" r="2.2" fill="#fff"/></svg><span class="re-num" style="font-family:'Saira Condensed';font-weight:800;font-size:14px">7.5</span></div>
+              <span style="font-size:11px;color:#74746e;font-weight:600">Discover</span>
+            </div>
+            <div style="display:flex;flex-direction:column;align-items:center;gap:8px">
+              <div style="display:inline-flex;align-items:center;gap:5px;background:#FF3B30;color:#fff;padding:6px 11px 6px 8px;border-radius:999px;box-shadow:0 4px 10px rgba(255,59,48,.4)"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M13 2 4 14h7l-1 8 9-12h-7l1-8Z" stroke="#fff" stroke-width="2.2" stroke-linejoin="round"/></svg><span class="re-num" style="font-family:'Saira Condensed';font-weight:800;font-size:14px">12</span></div>
+              <span style="font-size:11px;color:#74746e;font-weight:600">Challenge</span>
+            </div>
+            <div style="display:flex;flex-direction:column;align-items:center;gap:8px">
+              <div style="display:inline-flex;align-items:center;gap:5px;background:#16C172;color:#06210f;padding:6px 11px 6px 8px;border-radius:999px;box-shadow:0 4px 10px rgba(22,193,114,.4)"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="8" r="3.2" stroke="#06210f" stroke-width="2.2"/><path d="M5 19c0-3.3 3-5.5 7-5.5s7 2.2 7 5.5" stroke="#06210f" stroke-width="2.2" stroke-linecap="round"/></svg><span class="re-num" style="font-family:'Saira Condensed';font-weight:800;font-size:14px">5</span></div>
+              <span style="font-size:11px;color:#74746e;font-weight:600">Social</span>
+            </div>
+            <!-- cluster -->
+            <div style="display:flex;flex-direction:column;align-items:center;gap:8px">
+              <div style="width:40px;height:40px;border-radius:50%;background:#0B0B0C;color:#fff;display:flex;align-items:center;justify-content:center;font-family:'Saira Condensed';font-weight:800;font-size:16px;box-shadow:0 4px 10px rgba(0,0,0,.35);border:2.5px solid #fff" class="re-num">14</div>
+              <span style="font-size:11px;color:#74746e;font-weight:600">Cluster</span>
+            </div>
+            <!-- live pin -->
+            <div style="display:flex;flex-direction:column;align-items:center;gap:8px">
+              <div style="position:relative;width:40px;height:40px;display:flex;align-items:center;justify-content:center"><span style="position:absolute;width:24px;height:24px;border-radius:50%;background:#C8FA00;animation:rePulse 1.8s ease-out infinite"></span><span style="position:relative;width:18px;height:18px;border-radius:50%;background:#0B0B0C;border:3px solid #C8FA00"></span></div>
+              <span style="font-size:11px;color:#74746e;font-weight:600">You / live</span>
+            </div>
+          </div>
+          <!-- route markers -->
+          <div style="display:flex;gap:30px;margin-top:24px;border-top:1px solid #EDEDE8;padding-top:20px">
+            <div style="display:flex;align-items:center;gap:10px"><svg width="34" height="34" viewBox="0 0 34 34"><circle cx="17" cy="17" r="11" fill="none" stroke="#1466FF" stroke-width="3" stroke-dasharray="4 4"/><circle cx="17" cy="6" r="4" fill="#1466FF"/></svg><div><div style="font-family:'Saira Condensed';font-weight:800;font-size:15px;text-transform:uppercase;line-height:1">Open route</div><div style="font-size:11.5px;color:#74746e">A → B, point to point</div></div></div>
+            <div style="display:flex;align-items:center;gap:10px"><svg width="34" height="34" viewBox="0 0 34 34"><circle cx="17" cy="17" r="11" fill="none" stroke="#16C172" stroke-width="3"/><circle cx="17" cy="6" r="4" fill="#16C172"/></svg><div><div style="font-family:'Saira Condensed';font-weight:800;font-size:15px;text-transform:uppercase;line-height:1">Closed loop</div><div style="font-size:11.5px;color:#74746e">Start = finish</div></div></div>
+          </div>
+        </div>
+        <!-- avatars -->
+        <div style="background:#fff;border:1px solid #E4E4DE;border-radius:14px;padding:26px 28px">
+          <div style="font-family:'Saira Condensed';font-weight:700;font-size:13px;letter-spacing:2px;text-transform:uppercase;color:#74746e;margin-bottom:18px">Avatars</div>
+          <div style="display:flex;align-items:flex-end;gap:14px;flex-wrap:wrap">
+            <div style="text-align:center"><div style="width:32px;height:32px;border-radius:50%;background:linear-gradient(135deg,#1466FF,#0B3FB0);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:12px">MR</div><div style="font-size:10px;color:#74746e;margin-top:6px">sm</div></div>
+            <div style="text-align:center"><div style="width:44px;height:44px;border-radius:50%;background:linear-gradient(135deg,#FF3B30,#B61C13);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:15px">SK</div><div style="font-size:10px;color:#74746e;margin-top:6px">md</div></div>
+            <div style="text-align:center"><div style="position:relative;width:58px;height:58px"><div style="width:58px;height:58px;border-radius:50%;background:linear-gradient(135deg,#16C172,#0A7A47);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:19px">JL</div><div style="position:absolute;bottom:-1px;right:-1px;width:20px;height:20px;border-radius:50%;background:#0B0B0C;border:2.5px solid #fff;display:flex;align-items:center;justify-content:center"><svg width="11" height="11" viewBox="0 0 24 24" fill="none"><path d="M5 12l4 4L19 6" stroke="#C8FA00" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"/></svg></div></div><div style="font-size:10px;color:#74746e;margin-top:6px">verified</div></div>
+          </div>
+          <div style="margin-top:22px">
+            <div style="font-size:11px;color:#74746e;font-weight:600;margin-bottom:10px">Joined stack</div>
+            <div style="display:flex;align-items:center">
+              <div style="width:34px;height:34px;border-radius:50%;background:linear-gradient(135deg,#1466FF,#0B3FB0);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:12px;border:2.5px solid #fff">MR</div>
+              <div style="width:34px;height:34px;border-radius:50%;background:linear-gradient(135deg,#FF3B30,#B61C13);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:12px;border:2.5px solid #fff;margin-left:-12px">SK</div>
+              <div style="width:34px;height:34px;border-radius:50%;background:linear-gradient(135deg,#16C172,#0A7A47);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:12px;border:2.5px solid #fff;margin-left:-12px">JL</div>
+              <div style="width:34px;height:34px;border-radius:50%;background:#EDEDE8;color:#3a3a36;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:12px;border:2.5px solid #fff;margin-left:-12px" class="re-num">+5</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- STATS + RATING + REWARD -->
+      <div style="display:grid;grid-template-columns:1.4fr 1fr;gap:14px;margin-bottom:14px">
+        <div style="background:#0B0B0C;color:#fff;border-radius:14px;padding:26px 28px">
+          <div style="font-family:'Saira Condensed';font-weight:700;font-size:13px;letter-spacing:2px;text-transform:uppercase;color:#74747c;margin-bottom:18px">Stat block · points engine</div>
+          <div style="display:flex">
+            <div style="flex:1;border-right:1px solid #26262c;padding-right:18px"><div class="re-num" style="font-family:'Saira Condensed';font-weight:800;font-size:46px;line-height:.9">842</div><div style="font-size:11px;letter-spacing:1.5px;text-transform:uppercase;color:#74747c;font-weight:600;margin-top:4px">KM</div></div>
+            <div style="flex:1;border-right:1px solid #26262c;padding:0 18px"><div class="re-num" style="font-family:'Saira Condensed';font-weight:800;font-size:46px;line-height:.9">63</div><div style="font-size:11px;letter-spacing:1.5px;text-transform:uppercase;color:#74747c;font-weight:600;margin-top:4px">Runs</div></div>
+            <div style="flex:1;padding-left:18px"><div class="re-num" style="font-family:'Saira Condensed';font-weight:800;font-size:46px;line-height:.9">9.4k</div><div style="font-size:11px;letter-spacing:1.5px;text-transform:uppercase;color:#74747c;font-weight:600;margin-top:4px">D+ climb</div></div>
+          </div>
+          <div style="display:flex;align-items:center;gap:12px;margin-top:22px;border-top:1px solid #26262c;padding-top:18px">
+            <div style="flex:1"><div style="display:flex;justify-content:space-between;font-size:12px;font-weight:600;margin-bottom:6px"><span style="color:#C8FA00">Level 7 · Pathfinder</span><span class="re-num" style="color:#74747c">3,120 / 4,000</span></div><div style="height:8px;background:#26262c;border-radius:999px;overflow:hidden"><div style="width:78%;height:100%;background:#C8FA00;border-radius:999px"></div></div></div>
+            <div style="display:flex;flex-direction:column;align-items:center;background:#C8FA00;color:#0B0B0C;border-radius:10px;padding:8px 14px"><span class="re-num" style="font-family:'Saira Condensed';font-weight:800;font-size:22px;line-height:.9">+120</span><span style="font-size:9px;font-weight:800;letter-spacing:1px">PTS</span></div>
+          </div>
+        </div>
+        <div style="background:#fff;border:1px solid #E4E4DE;border-radius:14px;padding:26px 28px">
+          <div style="font-family:'Saira Condensed';font-weight:700;font-size:13px;letter-spacing:2px;text-transform:uppercase;color:#74746e;margin-bottom:18px">Rating &amp; reviews</div>
+          <div style="display:flex;align-items:center;gap:12px">
+            <div class="re-num" style="font-family:'Saira Condensed';font-weight:800;font-size:46px;line-height:.9">4.9</div>
+            <div>
+              <div style="display:flex;gap:2px">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="#FFB020"><path d="M12 2l2.9 6.3 6.8.7-5.1 4.6 1.4 6.7L12 17.8 6 20.3l1.4-6.7L2.3 9l6.8-.7L12 2Z"/></svg>
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="#FFB020"><path d="M12 2l2.9 6.3 6.8.7-5.1 4.6 1.4 6.7L12 17.8 6 20.3l1.4-6.7L2.3 9l6.8-.7L12 2Z"/></svg>
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="#FFB020"><path d="M12 2l2.9 6.3 6.8.7-5.1 4.6 1.4 6.7L12 17.8 6 20.3l1.4-6.7L2.3 9l6.8-.7L12 2Z"/></svg>
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="#FFB020"><path d="M12 2l2.9 6.3 6.8.7-5.1 4.6 1.4 6.7L12 17.8 6 20.3l1.4-6.7L2.3 9l6.8-.7L12 2Z"/></svg>
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="#FFB020"><path d="M12 2l2.9 6.3 6.8.7-5.1 4.6 1.4 6.7L12 17.8 6 20.3l1.4-6.7L2.3 9l6.8-.7L12 2Z"/></svg>
+              </div>
+              <div class="re-num" style="font-size:12px;color:#74746e;margin-top:4px;font-weight:500">from 47 runners</div>
+            </div>
+          </div>
+          <div style="background:#F6F6F3;border-radius:10px;padding:13px 15px;margin-top:16px">
+            <div style="font-size:13px;line-height:1.5;color:#3a3a36">"Great pace-keeper, waited for everyone at the top. Knew all the best viewpoints."</div>
+            <div style="font-size:11.5px;color:#74746e;margin-top:8px;font-weight:600">— Ana, after Monsanto Hills</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- INPUTS + SEGMENTED + TOGGLE -->
+      <div style="background:#fff;border:1px solid #E4E4DE;border-radius:14px;padding:26px 28px;margin-bottom:14px">
+        <div style="font-family:'Saira Condensed';font-weight:700;font-size:13px;letter-spacing:2px;text-transform:uppercase;color:#74746e;margin-bottom:18px">Inputs &amp; selection</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:24px">
+          <div>
+            <label style="font-size:12px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;color:#74746e;display:block;margin-bottom:7px">Run goal</label>
+            <div style="border:1.5px solid #0B0B0C;border-radius:10px;padding:13px 15px;font-size:15px;font-weight:500;color:#0B0B0C;background:#fff">Easy social 5k to see the old town</div>
+            <label style="font-size:12px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;color:#74746e;display:block;margin:16px 0 7px">Max group size</label>
+            <div style="display:flex;align-items:center;gap:0;border:1.5px solid #E4E4DE;border-radius:10px;width:140px;overflow:hidden">
+              <div style="width:42px;height:46px;display:flex;align-items:center;justify-content:center;font-size:22px;color:#74746e;border-right:1px solid #E4E4DE">−</div>
+              <div class="re-num" style="flex:1;text-align:center;font-family:'Saira Condensed';font-weight:800;font-size:20px">6</div>
+              <div style="width:42px;height:46px;display:flex;align-items:center;justify-content:center;font-size:22px;color:#0B0B0C;border-left:1px solid #E4E4DE">+</div>
+            </div>
+          </div>
+          <div>
+            <label style="font-size:12px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;color:#74746e;display:block;margin-bottom:7px">Type — segmented</label>
+            <div style="display:flex;gap:4px;background:#EDEDE8;border-radius:10px;padding:4px">
+              <div style="flex:1;text-align:center;font-family:'Saira Condensed';font-weight:800;font-size:14px;letter-spacing:.5px;text-transform:uppercase;color:#fff;background:#1466FF;border-radius:7px;padding:9px 0">Discover</div>
+              <div style="flex:1;text-align:center;font-family:'Saira Condensed';font-weight:800;font-size:14px;letter-spacing:.5px;text-transform:uppercase;color:#74746e;padding:9px 0">Challenge</div>
+              <div style="flex:1;text-align:center;font-family:'Saira Condensed';font-weight:800;font-size:14px;letter-spacing:.5px;text-transform:uppercase;color:#74746e;padding:9px 0">Social</div>
+            </div>
+            <label style="font-size:12px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;color:#74746e;display:block;margin:16px 0 7px">Visibility</label>
+            <div style="display:flex;flex-direction:column;gap:8px">
+              <div style="display:flex;align-items:center;justify-content:space-between;border:1.5px solid #0B0B0C;border-radius:10px;padding:11px 14px"><span style="font-size:14px;font-weight:600">Open · anyone can join</span><div style="width:18px;height:18px;border-radius:50%;border:5px solid #0B0B0C"></div></div>
+              <div style="display:flex;align-items:center;justify-content:space-between;border:1.5px solid #E4E4DE;border-radius:10px;padding:11px 14px"><span style="font-size:14px;font-weight:500;color:#74746e">Approval required</span><div style="width:18px;height:18px;border-radius:50%;border:1.5px solid #cdcdc6"></div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- TAB BAR -->
+      <div style="background:#fff;border:1px solid #E4E4DE;border-radius:14px;padding:26px 28px">
+        <div style="font-family:'Saira Condensed';font-weight:700;font-size:13px;letter-spacing:2px;text-transform:uppercase;color:#74746e;margin-bottom:18px">Tab bar — 5-tab, center Create +</div>
+        <div style="max-width:390px;margin:0 auto;background:#fff;border:1px solid #EDEDE8;border-radius:18px;box-shadow:0 6px 16px rgba(11,11,12,.08);padding:10px 8px 12px;display:flex;align-items:center;justify-content:space-around">
+          <div style="display:flex;flex-direction:column;align-items:center;gap:4px;color:#0B0B0C"><svg width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M12 21s7-6.5 7-12a7 7 0 1 0-14 0c0 5.5 7 12 7 12Z" stroke="#0B0B0C" stroke-width="2"/><circle cx="12" cy="9" r="2.4" fill="#0B0B0C"/></svg><span style="font-size:10px;font-weight:700;letter-spacing:.3px">Explore</span></div>
+          <div style="display:flex;flex-direction:column;align-items:center;gap:4px;color:#a3a39d"><svg width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M4 7h16M4 12h16M4 17h10" stroke="#a3a39d" stroke-width="2" stroke-linecap="round"/></svg><span style="font-size:10px;font-weight:600">My Runs</span></div>
+          <div style="display:flex;flex-direction:column;align-items:center;margin-top:-22px"><div style="width:54px;height:54px;border-radius:16px;background:#C8FA00;display:flex;align-items:center;justify-content:center;box-shadow:0 6px 14px rgba(200,250,0,.5)"><svg width="26" height="26" viewBox="0 0 24 24" fill="none"><path d="M12 5v14M5 12h14" stroke="#0B0B0C" stroke-width="2.6" stroke-linecap="round"/></svg></div></div>
+          <div style="display:flex;flex-direction:column;align-items:center;gap:4px;color:#a3a39d;position:relative"><svg width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M21 11.5a8 8 0 0 1-11.5 7.2L4 20l1.3-5.4A8 8 0 1 1 21 11.5Z" stroke="#a3a39d" stroke-width="2" stroke-linejoin="round"/></svg><span style="position:absolute;top:-3px;right:14px;width:8px;height:8px;background:#FF3B30;border-radius:50%;border:1.5px solid #fff"></span><span style="font-size:10px;font-weight:600">Messages</span></div>
+          <div style="display:flex;flex-direction:column;align-items:center;gap:4px;color:#a3a39d"><svg width="24" height="24" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="8" r="3.4" stroke="#a3a39d" stroke-width="2"/><path d="M5 20c0-3.6 3.1-6 7-6s7 2.4 7 6" stroke="#a3a39d" stroke-width="2" stroke-linecap="round"/></svg><span style="font-size:10px;font-weight:600">Profile</span></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ======================= UI KIT SCREENS ======================= -->
+    <section style="padding:72px 0 0">
+      <div style="display:flex;align-items:baseline;gap:16px;margin:0 0 8px">
+        <span style="font-family:'Saira Condensed';font-weight:800;font-size:13px;letter-spacing:2px;color:#0B0B0C;background:#C8FA00;padding:5px 11px 3px;border-radius:3px">05</span>
+        <h2 style="font-family:'Saira Condensed';font-weight:900;text-transform:uppercase;letter-spacing:-1px;font-size:40px;margin:0">UI Kit · Screens</h2>
+      </div>
+      <p style="font-size:14px;color:#74746e;font-weight:500;margin:0 0 30px;max-width:560px">The system assembled — every screen is built only from the tokens &amp; components above. The new-city landing is the headline use case: "You're in Lisbon."</p>
+    </section>
+    </div><!-- /padding wrapper -->
+
+    <!-- phone frames on dark gallery -->
+    <div style="background:#0B0B0C;padding:56px;overflow-x:auto">
+      <div style="display:flex;gap:32px;align-items:flex-start;width:max-content;margin:0 auto">
+
+        <!-- SCREEN 1: New-city / Explore map -->
+        <div style="flex:none">
+          <div style="font-family:'Saira Condensed';font-weight:800;font-size:15px;letter-spacing:1px;text-transform:uppercase;color:#fff;margin-bottom:12px">01 · Explore — You're in Lisbon</div>
+          <div style="width:300px;height:640px;background:#fff;border-radius:34px;overflow:hidden;box-shadow:0 30px 70px rgba(0,0,0,.5);position:relative;border:1px solid #26262c">
+            <!-- map base -->
+            <div style="position:absolute;inset:0;background:#e8ede9">
+              <div style="position:absolute;inset:0;background-image:linear-gradient(#dde3dd 1px,transparent 1px),linear-gradient(90deg,#dde3dd 1px,transparent 1px);background-size:34px 34px"></div>
+              <div style="position:absolute;top:120px;left:-40px;width:200px;height:300px;background:#d4e7d6;border-radius:50%;transform:rotate(20deg)"></div>
+              <div style="position:absolute;bottom:-40px;right:-30px;width:260px;height:200px;background:#cfe0ee"></div>
+              <svg style="position:absolute;inset:0" width="300" height="640"><path d="M-10 200 Q120 240 160 360 T320 520" stroke="#fff" stroke-width="14" fill="none"/><path d="M40 -10 Q70 160 200 220 T280 460" stroke="#fff" stroke-width="10" fill="none"/></svg>
+            </div>
+            <!-- status bar -->
+            <div class="re-num" style="position:relative;height:44px;display:flex;align-items:center;justify-content:space-between;padding:0 22px;font-size:13px;font-weight:700">9:41<span style="display:flex;gap:5px;align-items:center"><svg width="16" height="11" viewBox="0 0 16 11" fill="#0B0B0C"><rect x="0" y="6" width="3" height="5" rx="1"/><rect x="4.5" y="4" width="3" height="7" rx="1"/><rect x="9" y="2" width="3" height="9" rx="1"/><rect x="13.5" y="0" width="3" height="11" rx="1"/></svg><svg width="22" height="11" viewBox="0 0 24 12" fill="none"><rect x="1" y="1" width="19" height="10" rx="2.5" stroke="#0B0B0C" stroke-width="1.2"/><rect x="2.5" y="2.5" width="13" height="7" rx="1.2" fill="#0B0B0C"/><rect x="21" y="4" width="2" height="4" rx="1" fill="#0B0B0C"/></svg></span></div>
+            <!-- city banner -->
+            <div style="position:relative;margin:6px 14px 0;background:#0B0B0C;color:#fff;border-radius:14px;padding:13px 15px;display:flex;align-items:center;gap:11px;box-shadow:0 8px 20px rgba(0,0,0,.3)">
+              <div style="width:34px;height:34px;border-radius:9px;background:#C8FA00;display:flex;align-items:center;justify-content:center;flex:none"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M12 21s7-6.5 7-12a7 7 0 1 0-14 0c0 5.5 7 12 7 12Z" stroke="#0B0B0C" stroke-width="2"/><circle cx="12" cy="9" r="2.2" fill="#0B0B0C"/></svg></div>
+              <div style="flex:1"><div style="font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:#C8FA00;font-weight:700">You're in</div><div style="font-family:'Saira Condensed';font-weight:800;font-size:21px;line-height:1;text-transform:uppercase">Lisbon</div></div>
+              <div class="re-num" style="text-align:right"><div style="font-family:'Saira Condensed';font-weight:800;font-size:20px;line-height:1">18</div><div style="font-size:9px;color:#9b9ba0;letter-spacing:.5px">RUNS NEARBY</div></div>
+            </div>
+            <!-- filter chips -->
+            <div style="position:relative;display:flex;gap:7px;padding:12px 14px 0;overflow:hidden">
+              <span style="font-family:'Saira Condensed';font-weight:800;font-size:12px;letter-spacing:.5px;text-transform:uppercase;background:#0B0B0C;color:#fff;padding:7px 12px 5px;border-radius:999px;display:inline-flex;gap:5px;align-items:center;white-space:nowrap"><svg width="12" height="12" viewBox="0 0 24 24" fill="none"><path d="M3 5h18M6 12h12M10 19h4" stroke="#fff" stroke-width="2.4" stroke-linecap="round"/></svg>Filter</span>
+              <span style="font-family:'Saira Condensed';font-weight:800;font-size:12px;letter-spacing:.5px;text-transform:uppercase;background:#fff;color:#1466FF;border:1.5px solid #1466FF;padding:6px 11px 4px;border-radius:999px;white-space:nowrap">Discover</span>
+              <span style="font-family:'Saira Condensed';font-weight:800;font-size:12px;letter-spacing:.5px;text-transform:uppercase;background:#fff;color:#74746e;border:1.5px solid #E4E4DE;padding:6px 11px 4px;border-radius:999px;white-space:nowrap">Today</span>
+            </div>
+            <!-- pins on map -->
+            <div style="position:absolute;top:300px;left:50px"><div style="display:inline-flex;align-items:center;gap:4px;background:#1466FF;color:#fff;padding:5px 10px 5px 7px;border-radius:999px;box-shadow:0 4px 10px rgba(20,102,255,.5)"><svg width="12" height="12" viewBox="0 0 24 24" fill="none"><path d="M12 21s7-6.5 7-12a7 7 0 1 0-14 0c0 5.5 7 12 7 12Z" stroke="#fff" stroke-width="2.4"/></svg><span class="re-num" style="font-family:'Saira Condensed';font-weight:800;font-size:13px">7.5</span></div></div>
+            <div style="position:absolute;top:240px;right:54px"><div style="display:inline-flex;align-items:center;gap:4px;background:#FF3B30;color:#fff;padding:5px 10px 5px 7px;border-radius:999px;box-shadow:0 4px 10px rgba(255,59,48,.5)"><svg width="11" height="11" viewBox="0 0 24 24" fill="none"><path d="M13 2 4 14h7l-1 8 9-12h-7l1-8Z" stroke="#fff" stroke-width="2.4" stroke-linejoin="round"/></svg><span class="re-num" style="font-family:'Saira Condensed';font-weight:800;font-size:13px">12</span></div></div>
+            <div style="position:absolute;top:380px;right:90px"><div style="display:inline-flex;align-items:center;gap:4px;background:#16C172;color:#06210f;padding:5px 10px 5px 7px;border-radius:999px;box-shadow:0 4px 10px rgba(22,193,114,.5)"><svg width="11" height="11" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="8" r="3.2" stroke="#06210f" stroke-width="2.4"/></svg><span class="re-num" style="font-family:'Saira Condensed';font-weight:800;font-size:13px">5</span></div></div>
+            <div style="position:absolute;top:340px;left:150px"><div style="width:34px;height:34px;border-radius:50%;background:#0B0B0C;color:#fff;display:flex;align-items:center;justify-content:center;font-family:'Saira Condensed';font-weight:800;font-size:14px;border:2.5px solid #fff;box-shadow:0 4px 10px rgba(0,0,0,.4)" class="re-num">6</div></div>
+            <!-- bottom callout card -->
+            <div style="position:absolute;left:14px;right:14px;bottom:84px;background:#fff;border-radius:14px;box-shadow:0 12px 30px rgba(0,0,0,.25);padding:12px;display:flex;gap:11px;align-items:center">
+              <div style="width:46px;height:46px;border-radius:11px;background:#1466FF;display:flex;flex-direction:column;align-items:center;justify-content:center;color:#fff;flex:none"><span class="re-num" style="font-family:'Saira Condensed';font-weight:800;font-size:17px;line-height:.9">7.5</span><span style="font-size:8px;font-weight:700">KM</span></div>
+              <div style="flex:1;min-width:0"><div style="font-family:'Saira Condensed';font-weight:800;font-size:17px;text-transform:uppercase;line-height:1">Old Town Loop</div><div class="re-num" style="font-size:11.5px;color:#74746e;font-weight:500;margin-top:2px">Sat 08:00 · 5:30/km · 3/6</div></div>
+              <div style="font-family:'Saira Condensed';font-weight:800;font-size:12px;text-transform:uppercase;letter-spacing:.5px;color:#fff;background:#0B0B0C;padding:9px 12px;border-radius:9px">View</div>
+            </div>
+            <!-- tab bar -->
+            <div style="position:absolute;left:0;right:0;bottom:0;height:72px;background:#fff;border-top:1px solid #EDEDE8;display:flex;align-items:center;justify-content:space-around;padding-bottom:8px">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M12 21s7-6.5 7-12a7 7 0 1 0-14 0c0 5.5 7 12 7 12Z" stroke="#0B0B0C" stroke-width="2"/><circle cx="12" cy="9" r="2.2" fill="#0B0B0C"/></svg>
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M4 7h16M4 12h16M4 17h10" stroke="#a3a39d" stroke-width="2" stroke-linecap="round"/></svg>
+              <div style="width:46px;height:46px;border-radius:14px;background:#C8FA00;display:flex;align-items:center;justify-content:center;margin-top:-20px;box-shadow:0 6px 14px rgba(200,250,0,.5)"><svg width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M12 5v14M5 12h14" stroke="#0B0B0C" stroke-width="2.6" stroke-linecap="round"/></svg></div>
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M21 11.5a8 8 0 0 1-11.5 7.2L4 20l1.3-5.4A8 8 0 1 1 21 11.5Z" stroke="#a3a39d" stroke-width="2" stroke-linejoin="round"/></svg>
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="8" r="3.4" stroke="#a3a39d" stroke-width="2"/><path d="M5 20c0-3.6 3.1-6 7-6s7 2.4 7 6" stroke="#a3a39d" stroke-width="2" stroke-linecap="round"/></svg>
+            </div>
+          </div>
+        </div>
+
+        <!-- SCREEN 2: Run detail -->
+        <div style="flex:none">
+          <div style="font-family:'Saira Condensed';font-weight:800;font-size:15px;letter-spacing:1px;text-transform:uppercase;color:#fff;margin-bottom:12px">02 · Run detail — request to join</div>
+          <div style="width:300px;height:640px;background:#fff;border-radius:34px;overflow:hidden;box-shadow:0 30px 70px rgba(0,0,0,.5);position:relative;border:1px solid #26262c">
+            <!-- map header -->
+            <div style="height:210px;position:relative;background:linear-gradient(135deg,#dde7f5,#eaf1ff)">
+              <div style="position:absolute;inset:0;background-image:linear-gradient(#cdd9ec 1px,transparent 1px),linear-gradient(90deg,#cdd9ec 1px,transparent 1px);background-size:30px 30px;opacity:.7"></div>
+              <svg style="position:absolute;inset:0" width="300" height="210" viewBox="0 0 300 210" preserveAspectRatio="none"><path d="M40 170 C90 150 70 80 130 70 S230 110 260 50" stroke="#1466FF" stroke-width="5" fill="none" stroke-linecap="round"/><circle cx="40" cy="170" r="7" fill="#fff" stroke="#1466FF" stroke-width="4"/><circle cx="260" cy="50" r="7" fill="#1466FF"/></svg>
+              <div class="re-num" style="position:absolute;top:0;left:0;right:0;height:44px;display:flex;align-items:center;justify-content:space-between;padding:0 22px;font-size:13px;font-weight:700;color:#0B0B0C">9:41<span></span></div>
+              <div style="position:absolute;top:52px;left:14px;width:36px;height:36px;border-radius:10px;background:#fff;box-shadow:0 4px 10px rgba(0,0,0,.15);display:flex;align-items:center;justify-content:center"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M15 5l-7 7 7 7" stroke="#0B0B0C" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+              <div style="position:absolute;top:52px;right:14px;display:flex;gap:8px"><div style="width:36px;height:36px;border-radius:10px;background:#fff;box-shadow:0 4px 10px rgba(0,0,0,.15);display:flex;align-items:center;justify-content:center"><svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M12 21s-7-4.6-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 11c0 5.4-7 10-7 10Z" stroke="#FF3B30" stroke-width="2"/></svg></div><div style="width:36px;height:36px;border-radius:10px;background:#fff;box-shadow:0 4px 10px rgba(0,0,0,.15);display:flex;align-items:center;justify-content:center"><svg width="18" height="18" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="5" r="1.6" fill="#0B0B0C"/><circle cx="12" cy="12" r="1.6" fill="#0B0B0C"/><circle cx="12" cy="19" r="1.6" fill="#0B0B0C"/></svg></div></div>
+            </div>
+            <!-- content -->
+            <div style="padding:16px 16px 0">
+              <span style="font-family:'Saira Condensed';font-weight:800;font-size:12px;letter-spacing:1.5px;text-transform:uppercase;background:#1466FF;color:#fff;padding:5px 10px 3px;border-radius:6px">Discover · Open ○</span>
+              <h3 style="font-family:'Saira Condensed';font-weight:800;font-size:30px;line-height:.95;text-transform:uppercase;margin:11px 0 3px">Old Town Loop</h3>
+              <div style="font-size:13px;color:#74746e;font-weight:500">Alfama · Lisbon</div>
+              <p style="font-size:14px;line-height:1.5;color:#3a3a36;margin:13px 0 0">"Easy social run through the old town — we stop at the best miradouros for photos. Coffee after by the river."</p>
+              <!-- stats -->
+              <div style="display:flex;margin:16px 0;border:1px solid #EDEDE8;border-radius:12px;overflow:hidden">
+                <div style="flex:1;padding:11px 12px;border-right:1px solid #EDEDE8"><div class="re-num" style="font-family:'Saira Condensed';font-weight:800;font-size:22px;line-height:1">7.5</div><div style="font-size:9px;letter-spacing:1px;text-transform:uppercase;color:#74746e;font-weight:700;margin-top:2px">KM</div></div>
+                <div style="flex:1;padding:11px 12px;border-right:1px solid #EDEDE8"><div class="re-num" style="font-family:'Saira Condensed';font-weight:800;font-size:22px;line-height:1">5:30</div><div style="font-size:9px;letter-spacing:1px;text-transform:uppercase;color:#74746e;font-weight:700;margin-top:2px">/KM</div></div>
+                <div style="flex:1;padding:11px 12px"><div class="re-num" style="font-family:'Saira Condensed';font-weight:800;font-size:22px;line-height:1">Sat</div><div style="font-size:9px;letter-spacing:1px;text-transform:uppercase;color:#74746e;font-weight:700;margin-top:2px">08:00</div></div>
+              </div>
+              <!-- host -->
+              <div style="display:flex;align-items:center;gap:11px">
+                <div style="position:relative"><div style="width:42px;height:42px;border-radius:50%;background:linear-gradient(135deg,#1466FF,#0B3FB0);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:15px">MR</div><div style="position:absolute;bottom:-2px;right:-2px;width:17px;height:17px;border-radius:50%;background:#0B0B0C;border:2px solid #fff;display:flex;align-items:center;justify-content:center"><svg width="9" height="9" viewBox="0 0 24 24" fill="none"><path d="M5 12l4 4L19 6" stroke="#C8FA00" stroke-width="3.6" stroke-linecap="round" stroke-linejoin="round"/></svg></div></div>
+                <div style="flex:1"><div style="font-size:14px;font-weight:700;line-height:1.1">Marco R. <span style="font-size:11px;color:#74746e;font-weight:500">· hosts</span></div><div style="display:flex;align-items:center;gap:3px;margin-top:2px"><svg width="12" height="12" viewBox="0 0 24 24" fill="#FFB020"><path d="M12 2l2.9 6.3 6.8.7-5.1 4.6 1.4 6.7L12 17.8 6 20.3l1.4-6.7L2.3 9l6.8-.7L12 2Z"/></svg><span class="re-num" style="font-size:11.5px;font-weight:700">4.9</span><span class="re-num" style="font-size:11.5px;color:#74746e">· 63 runs</span></div></div>
+                <div style="width:36px;height:36px;border-radius:10px;border:1.5px solid #E4E4DE;display:flex;align-items:center;justify-content:center"><svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M21 11.5a8 8 0 0 1-11.5 7.2L4 20l1.3-5.4A8 8 0 1 1 21 11.5Z" stroke="#0B0B0C" stroke-width="2" stroke-linejoin="round"/></svg></div>
+              </div>
+              <!-- joined -->
+              <div style="display:flex;align-items:center;gap:10px;margin-top:15px">
+                <div style="display:flex;align-items:center"><div style="width:30px;height:30px;border-radius:50%;background:linear-gradient(135deg,#FF3B30,#B61C13);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:11px;border:2px solid #fff">SK</div><div style="width:30px;height:30px;border-radius:50%;background:linear-gradient(135deg,#16C172,#0A7A47);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:11px;border:2px solid #fff;margin-left:-10px">JL</div><div style="width:30px;height:30px;border-radius:50%;background:#EDEDE8;color:#3a3a36;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:11px;border:2px solid #fff;margin-left:-10px" class="re-num">+1</div></div>
+                <span class="re-num" style="font-size:12.5px;color:#74746e;font-weight:600">3 of 6 joined · 3 spots left</span>
+              </div>
+            </div>
+            <!-- sticky CTA -->
+            <div style="position:absolute;left:0;right:0;bottom:0;background:#fff;border-top:1px solid #EDEDE8;padding:14px 16px 22px;display:flex;gap:10px;align-items:center">
+              <div style="flex:1"><div class="re-num" style="font-family:'Saira Condensed';font-weight:800;font-size:18px;line-height:.9">+120 <span style="font-size:11px;color:#74746e">pts</span></div><div style="font-size:10px;color:#74746e;font-weight:600">for finishing</div></div>
+              <div style="flex:2;font-family:'Saira Condensed';font-weight:800;font-size:17px;letter-spacing:.5px;text-transform:uppercase;color:#fff;background:#0B0B0C;border-radius:11px;padding:14px 0;text-align:center">Request to join</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- SCREEN 3: Your Runs -->
+        <div style="flex:none">
+          <div style="font-family:'Saira Condensed';font-weight:800;font-size:15px;letter-spacing:1px;text-transform:uppercase;color:#fff;margin-bottom:12px">03 · Your Runs</div>
+          <div style="width:300px;height:640px;background:#F6F6F3;border-radius:34px;overflow:hidden;box-shadow:0 30px 70px rgba(0,0,0,.5);position:relative;border:1px solid #26262c">
+            <div class="re-num" style="height:44px;display:flex;align-items:center;justify-content:space-between;padding:0 22px;font-size:13px;font-weight:700;background:#fff">9:41<span></span></div>
+            <div style="background:#fff;padding:6px 18px 0">
+              <h3 style="font-family:'Saira Condensed';font-weight:900;font-size:32px;text-transform:uppercase;letter-spacing:-.5px;margin:0">Your Runs</h3>
+              <div style="display:flex;gap:18px;margin-top:14px;border-bottom:1px solid #EDEDE8">
+                <div style="font-family:'Saira Condensed';font-weight:800;font-size:14px;letter-spacing:.5px;text-transform:uppercase;padding-bottom:11px;border-bottom:2.5px solid #0B0B0C">All</div>
+                <div style="font-family:'Saira Condensed';font-weight:800;font-size:14px;letter-spacing:.5px;text-transform:uppercase;padding-bottom:11px;color:#a3a39d">Managed</div>
+                <div style="font-family:'Saira Condensed';font-weight:800;font-size:14px;letter-spacing:.5px;text-transform:uppercase;padding-bottom:11px;color:#a3a39d">Joined</div>
+              </div>
+            </div>
+            <div style="padding:14px 14px;display:flex;flex-direction:column;gap:11px">
+              <!-- upcoming label -->
+              <div style="font-size:11px;letter-spacing:1.5px;text-transform:uppercase;color:#74746e;font-weight:700">Upcoming</div>
+              <!-- card row 1 -->
+              <div style="display:flex;align-items:center;gap:11px;background:#fff;border-radius:13px;padding:11px 13px;box-shadow:0 2px 6px rgba(11,11,12,.05)">
+                <div style="width:46px;height:46px;border-radius:11px;background:#1466FF;display:flex;flex-direction:column;align-items:center;justify-content:center;color:#fff;flex:none"><span class="re-num" style="font-family:'Saira Condensed';font-weight:800;font-size:17px;line-height:.9">7.5</span><span style="font-size:8px;font-weight:700">KM</span></div>
+                <div style="flex:1;min-width:0"><div style="font-family:'Saira Condensed';font-weight:800;font-size:17px;text-transform:uppercase;line-height:1">Old Town Loop</div><div class="re-num" style="font-size:11.5px;color:#74746e;font-weight:500;margin-top:2px">Sat 08:00 · hosting</div></div>
+                <span style="font-family:'Saira Condensed';font-weight:800;font-size:10px;letter-spacing:.5px;text-transform:uppercase;color:#0B0B0C;background:#C8FA00;padding:5px 8px 3px;border-radius:6px">Manage</span>
+              </div>
+              <!-- card row 2 -->
+              <div style="display:flex;align-items:center;gap:11px;background:#fff;border-radius:13px;padding:11px 13px;box-shadow:0 2px 6px rgba(11,11,12,.05)">
+                <div style="width:46px;height:46px;border-radius:11px;background:#FF3B30;display:flex;flex-direction:column;align-items:center;justify-content:center;color:#fff;flex:none"><span class="re-num" style="font-family:'Saira Condensed';font-weight:800;font-size:17px;line-height:.9">12</span><span style="font-size:8px;font-weight:700">KM</span></div>
+                <div style="flex:1;min-width:0"><div style="font-family:'Saira Condensed';font-weight:800;font-size:17px;text-transform:uppercase;line-height:1">Monsanto Hills</div><div class="re-num" style="font-size:11.5px;color:#74746e;font-weight:500;margin-top:2px">Sun 07:00 · joined</div></div>
+                <div style="display:flex;align-items:center"><div style="width:24px;height:24px;border-radius:50%;background:linear-gradient(135deg,#FF3B30,#B61C13);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:9px;border:2px solid #fff">SK</div><div style="width:24px;height:24px;border-radius:50%;background:#EDEDE8;color:#3a3a36;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:9px;border:2px solid #fff;margin-left:-8px" class="re-num">+1</div></div>
+              </div>
+              <div style="font-size:11px;letter-spacing:1.5px;text-transform:uppercase;color:#74746e;font-weight:700;margin-top:6px">Completed</div>
+              <!-- completed row -->
+              <div style="display:flex;align-items:center;gap:11px;background:#fff;border-radius:13px;padding:11px 13px;box-shadow:0 2px 6px rgba(11,11,12,.05);opacity:.92">
+                <div style="width:46px;height:46px;border-radius:11px;background:#16C172;display:flex;flex-direction:column;align-items:center;justify-content:center;color:#06210f;flex:none"><span class="re-num" style="font-family:'Saira Condensed';font-weight:800;font-size:17px;line-height:.9">5</span><span style="font-size:8px;font-weight:700">KM</span></div>
+                <div style="flex:1;min-width:0"><div style="font-family:'Saira Condensed';font-weight:800;font-size:17px;text-transform:uppercase;line-height:1">Sunset 5K</div><div class="re-num" style="font-size:11.5px;color:#74746e;font-weight:500;margin-top:2px">Fri · done · +90 pts</div></div>
+                <span style="font-family:'Saira Condensed';font-weight:800;font-size:10px;letter-spacing:.5px;text-transform:uppercase;color:#74746e;border:1.5px solid #E4E4DE;padding:5px 8px 3px;border-radius:6px">Review</span>
+              </div>
+            </div>
+            <!-- tab bar -->
+            <div style="position:absolute;left:0;right:0;bottom:0;height:72px;background:#fff;border-top:1px solid #EDEDE8;display:flex;align-items:center;justify-content:space-around;padding-bottom:8px">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M12 21s7-6.5 7-12a7 7 0 1 0-14 0c0 5.5 7 12 7 12Z" stroke="#a3a39d" stroke-width="2"/></svg>
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M4 7h16M4 12h16M4 17h10" stroke="#0B0B0C" stroke-width="2" stroke-linecap="round"/></svg>
+              <div style="width:46px;height:46px;border-radius:14px;background:#C8FA00;display:flex;align-items:center;justify-content:center;margin-top:-20px;box-shadow:0 6px 14px rgba(200,250,0,.5)"><svg width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M12 5v14M5 12h14" stroke="#0B0B0C" stroke-width="2.6" stroke-linecap="round"/></svg></div>
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M21 11.5a8 8 0 0 1-11.5 7.2L4 20l1.3-5.4A8 8 0 1 1 21 11.5Z" stroke="#a3a39d" stroke-width="2" stroke-linejoin="round"/></svg>
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="8" r="3.4" stroke="#a3a39d" stroke-width="2"/><path d="M5 20c0-3.6 3.1-6 7-6s7 2.4 7 6" stroke="#a3a39d" stroke-width="2" stroke-linecap="round"/></svg>
+            </div>
+          </div>
+        </div>
+
+        <!-- SCREEN 4: Profile -->
+        <div style="flex:none">
+          <div style="font-family:'Saira Condensed';font-weight:800;font-size:15px;letter-spacing:1px;text-transform:uppercase;color:#fff;margin-bottom:12px">04 · Profile</div>
+          <div style="width:300px;height:640px;background:#F6F6F3;border-radius:34px;overflow:hidden;box-shadow:0 30px 70px rgba(0,0,0,.5);position:relative;border:1px solid #26262c">
+            <!-- dark header -->
+            <div style="background:#0B0B0C;color:#fff;padding:0 18px 22px;position:relative">
+              <div class="re-num" style="height:44px;display:flex;align-items:center;justify-content:space-between;font-size:13px;font-weight:700;color:#fff">9:41<span></span></div>
+              <div style="position:absolute;top:52px;right:18px;width:34px;height:34px;border-radius:10px;background:#1A1A1C;display:flex;align-items:center;justify-content:center"><svg width="18" height="18" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="3" stroke="#fff" stroke-width="2"/><path d="M19 12a7 7 0 0 0-.1-1.2l2-1.6-2-3.4-2.4 1a7 7 0 0 0-2-1.2L16 3H8l-.5 2.6a7 7 0 0 0-2 1.2l-2.4-1-2 3.4 2 1.6A7 7 0 0 0 3 12c0 .4 0 .8.1 1.2l-2 1.6 2 3.4 2.4-1c.6.5 1.3.9 2 1.2L8 21h8l.5-2.6c.7-.3 1.4-.7 2-1.2l2.4 1 2-3.4-2-1.6c.1-.4.1-.8.1-1.2Z" stroke="#fff" stroke-width="1.6" stroke-linejoin="round"/></svg></div>
+              <div style="display:flex;align-items:center;gap:14px;margin-top:16px">
+                <div style="position:relative"><div style="width:72px;height:72px;border-radius:50%;background:linear-gradient(135deg,#1466FF,#0B3FB0);color:#fff;display:flex;align-items:center;justify-content:center;font-family:'Saira Condensed';font-weight:800;font-size:28px">MR</div><div style="position:absolute;bottom:0;right:0;width:22px;height:22px;border-radius:50%;background:#C8FA00;border:3px solid #0B0B0C;display:flex;align-items:center;justify-content:center"><svg width="11" height="11" viewBox="0 0 24 24" fill="none"><path d="M5 12l4 4L19 6" stroke="#0B0B0C" stroke-width="3.6" stroke-linecap="round" stroke-linejoin="round"/></svg></div></div>
+                <div><div style="font-family:'Saira Condensed';font-weight:800;font-size:26px;line-height:1;text-transform:uppercase">Marco R.</div><div style="font-size:12.5px;color:#9b9ba0;margin-top:3px;font-weight:500">Lisbon · 🇵🇹 PT · EN</div><div style="display:flex;align-items:center;gap:4px;margin-top:6px"><svg width="13" height="13" viewBox="0 0 24 24" fill="#FFB020"><path d="M12 2l2.9 6.3 6.8.7-5.1 4.6 1.4 6.7L12 17.8 6 20.3l1.4-6.7L2.3 9l6.8-.7L12 2Z"/></svg><span class="re-num" style="font-size:12px;font-weight:700">4.9</span><span style="font-size:12px;color:#9b9ba0">level 7</span></div></div>
+              </div>
+            </div>
+            <!-- stats -->
+            <div style="background:#0B0B0C;color:#fff;display:flex;padding:0 18px 20px">
+              <div style="flex:1;border-right:1px solid #26262c"><div class="re-num" style="font-family:'Saira Condensed';font-weight:800;font-size:30px;line-height:.9">842</div><div style="font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:#74747c;font-weight:600;margin-top:3px">KM</div></div>
+              <div style="flex:1;border-right:1px solid #26262c;padding-left:16px"><div class="re-num" style="font-family:'Saira Condensed';font-weight:800;font-size:30px;line-height:.9">63</div><div style="font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:#74747c;font-weight:600;margin-top:3px">Runs</div></div>
+              <div style="flex:1;padding-left:16px"><div class="re-num" style="font-family:'Saira Condensed';font-weight:800;font-size:30px;line-height:.9;color:#C8FA00">9.4k</div><div style="font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:#74747c;font-weight:600;margin-top:3px">D+</div></div>
+            </div>
+            <!-- body -->
+            <div style="padding:16px 16px">
+              <div style="font-size:11px;letter-spacing:1.5px;text-transform:uppercase;color:#74746e;font-weight:700;margin-bottom:10px">Other runners say</div>
+              <div style="background:#fff;border-radius:12px;padding:13px 14px;box-shadow:0 2px 6px rgba(11,11,12,.05)">
+                <div style="display:flex;gap:2px;margin-bottom:7px"><svg width="13" height="13" viewBox="0 0 24 24" fill="#FFB020"><path d="M12 2l2.9 6.3 6.8.7-5.1 4.6 1.4 6.7L12 17.8 6 20.3l1.4-6.7L2.3 9l6.8-.7L12 2Z"/></svg><svg width="13" height="13" viewBox="0 0 24 24" fill="#FFB020"><path d="M12 2l2.9 6.3 6.8.7-5.1 4.6 1.4 6.7L12 17.8 6 20.3l1.4-6.7L2.3 9l6.8-.7L12 2Z"/></svg><svg width="13" height="13" viewBox="0 0 24 24" fill="#FFB020"><path d="M12 2l2.9 6.3 6.8.7-5.1 4.6 1.4 6.7L12 17.8 6 20.3l1.4-6.7L2.3 9l6.8-.7L12 2Z"/></svg><svg width="13" height="13" viewBox="0 0 24 24" fill="#FFB020"><path d="M12 2l2.9 6.3 6.8.7-5.1 4.6 1.4 6.7L12 17.8 6 20.3l1.4-6.7L2.3 9l6.8-.7L12 2Z"/></svg><svg width="13" height="13" viewBox="0 0 24 24" fill="#FFB020"><path d="M12 2l2.9 6.3 6.8.7-5.1 4.6 1.4 6.7L12 17.8 6 20.3l1.4-6.7L2.3 9l6.8-.7L12 2Z"/></svg></div>
+                <div style="font-size:13px;line-height:1.5;color:#3a3a36">"Knew all the best viewpoints, waited for everyone. Brilliant host."</div>
+                <div style="font-size:11px;color:#74746e;margin-top:8px;font-weight:600">— Ana · Sunset 5K</div>
+              </div>
+              <div style="display:flex;gap:10px;margin-top:14px">
+                <div style="flex:1;font-family:'Saira Condensed';font-weight:800;font-size:14px;letter-spacing:.5px;text-transform:uppercase;color:#fff;background:#0B0B0C;border-radius:10px;padding:12px 0;text-align:center">Message</div>
+                <div style="width:46px;height:46px;border-radius:10px;border:1.5px solid #E4E4DE;background:#fff;display:flex;align-items:center;justify-content:center"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M12 21s-7-4.6-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 11c0 5.4-7 10-7 10Z" stroke="#FF3B30" stroke-width="2"/></svg></div>
+              </div>
+            </div>
+            <!-- tab bar -->
+            <div style="position:absolute;left:0;right:0;bottom:0;height:72px;background:#fff;border-top:1px solid #EDEDE8;display:flex;align-items:center;justify-content:space-around;padding-bottom:8px">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M12 21s7-6.5 7-12a7 7 0 1 0-14 0c0 5.5 7 12 7 12Z" stroke="#a3a39d" stroke-width="2"/></svg>
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M4 7h16M4 12h16M4 17h10" stroke="#a3a39d" stroke-width="2" stroke-linecap="round"/></svg>
+              <div style="width:46px;height:46px;border-radius:14px;background:#C8FA00;display:flex;align-items:center;justify-content:center;margin-top:-20px;box-shadow:0 6px 14px rgba(200,250,0,.5)"><svg width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M12 5v14M5 12h14" stroke="#0B0B0C" stroke-width="2.6" stroke-linecap="round"/></svg></div>
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M21 11.5a8 8 0 0 1-11.5 7.2L4 20l1.3-5.4A8 8 0 1 1 21 11.5Z" stroke="#a3a39d" stroke-width="2" stroke-linejoin="round"/></svg>
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="8" r="3.4" stroke="#0B0B0C" stroke-width="2"/><path d="M5 20c0-3.6 3.1-6 7-6s7 2.4 7 6" stroke="#0B0B0C" stroke-width="2" stroke-linecap="round"/></svg>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- footer -->
+    <div style="padding:40px 56px;display:flex;align-items:center;justify-content:space-between;color:#74746e;font-size:12.5px;font-weight:600">
+      <span style="font-family:'Saira Condensed';font-weight:800;letter-spacing:1px;text-transform:uppercase;color:#0B0B0C">Run Everywhere — Design System v1.0</span>
+      <span>Saira Condensed · Hanken Grotesk · Volt #C8FA00</span>
+    </div>
+
+  </div>
+</div>
+</x-dc>
+</body>
+</html>

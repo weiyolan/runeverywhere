@@ -1,0 +1,23 @@
+<!-- @dsCard group="Colors" viewport="700x190" name="Ink & paper ramp" subtitle="Warm-neutral ramp from near-black to off-white." -->
+<!DOCTYPE html><html><head><meta charset="utf-8"><link rel="stylesheet" href="../styles.css">
+<style>
+  body{margin:0;font-family:var(--font-body);background:var(--paper);padding:20px}
+  .row{display:flex;gap:0;border-radius:var(--r-sm);overflow:hidden;border:1px solid var(--ink-200)}
+  .c{flex:1;height:84px;display:flex;align-items:flex-end;padding:8px}
+  .lbl{display:flex;flex-direction:column;gap:1px}
+  .n{font-family:var(--font-display);font-weight:700;text-transform:uppercase;font-size:11px;letter-spacing:.04em}
+  .h{font-size:10px;font-variant-numeric:tabular-nums;opacity:.85}
+  .legend{margin-top:12px;font-size:12px;color:var(--ink-500)}
+</style></head>
+<body>
+  <div class="row">
+    <div class="c" style="background:var(--ink-900);color:#fff"><div class="lbl"><span class="n">900</span><span class="h">0B0B0C</span></div></div>
+    <div class="c" style="background:var(--ink-700);color:#fff"><div class="lbl"><span class="n">700</span><span class="h">2A2A2E</span></div></div>
+    <div class="c" style="background:var(--ink-500);color:#fff"><div class="lbl"><span class="n">500</span><span class="h">6B6B73</span></div></div>
+    <div class="c" style="background:var(--ink-300)"><div class="lbl"><span class="n">300</span><span class="h">B7B7BD</span></div></div>
+    <div class="c" style="background:var(--ink-200)"><div class="lbl"><span class="n">200</span><span class="h">DEDEE2</span></div></div>
+    <div class="c" style="background:var(--paper-2);border-left:1px solid var(--ink-200)"><div class="lbl"><span class="n">Paper2</span><span class="h">F5F5F3</span></div></div>
+    <div class="c" style="background:var(--paper);border-left:1px solid var(--ink-200)"><div class="lbl"><span class="n">Paper</span><span class="h">FFFFFF</span></div></div>
+  </div>
+  <div class="legend">Text: 900 primary · 500 secondary · 400 muted. Surfaces: Paper / Paper-2 (app bg) / Paper-3 (sunken).</div>
+</body></html>

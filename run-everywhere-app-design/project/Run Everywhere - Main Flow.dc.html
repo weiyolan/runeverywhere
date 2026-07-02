@@ -1,0 +1,882 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Saira+Condensed:wght@500;600;700;800;900&family=Hanken+Grotesk:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  *{box-sizing:border-box}
+  html,body{margin:0}
+  .re-num{font-variant-numeric:tabular-nums}
+  ::-webkit-scrollbar{width:0;height:0}
+  @keyframes rePulse{0%{transform:scale(1);opacity:.5}70%{transform:scale(2.6);opacity:0}100%{opacity:0}}
+  @keyframes rePop{0%{transform:scale(.6);opacity:0}60%{transform:scale(1.06)}100%{transform:scale(1);opacity:1}}
+  @keyframes reUp{0%{transform:translateY(14px);opacity:0}100%{transform:translateY(0);opacity:1}}
+  @keyframes reSheet{0%{transform:translateY(100%)}100%{transform:translateY(0)}}
+  @keyframes reFade{0%{opacity:0}100%{opacity:1}}
+  textarea::placeholder{color:#B7B7BD}
+</style>
+</helmet>
+
+<div style="min-height:100vh;width:100%;background:radial-gradient(120% 90% at 50% -10%, #232329 0%, #131316 55%, #0B0B0C 100%);display:flex;align-items:center;justify-content:center;padding:40px 20px;font-family:'Hanken Grotesk',system-ui,sans-serif;-webkit-font-smoothing:antialiased">
+
+  <div style="width:390px;height:844px;position:relative;flex:none;background:#F6F6F3;border-radius:46px;overflow:hidden;box-shadow:0 40px 90px rgba(0,0,0,.55), 0 0 0 11px #1c1c20, 0 0 0 13px #2a2a30">
+    <div style="position:absolute;top:12px;left:50%;transform:translateX(-50%);width:120px;height:30px;background:#0B0B0C;border-radius:18px;z-index:60"></div>
+
+    <!-- ============ EXPLORE / HOME ============ -->
+    <sc-if value="{{ isExplore }}" hint-placeholder-val="{{ true }}">
+    <div style="position:absolute;inset:0;background:#e8ede9">
+      <!-- map base -->
+      <div style="position:absolute;inset:0">
+        <div style="position:absolute;inset:0;background-image:linear-gradient(#dde3dd 1px,transparent 1px),linear-gradient(90deg,#dde3dd 1px,transparent 1px);background-size:38px 38px"></div>
+        <div style="position:absolute;top:150px;left:-60px;width:260px;height:380px;background:#d4e7d6;border-radius:50%;transform:rotate(20deg)"></div>
+        <div style="position:absolute;bottom:-60px;right:-50px;width:330px;height:280px;background:#cfe0ee"></div>
+        <div style="position:absolute;top:430px;left:120px;width:150px;height:150px;background:#cfe0ee;border-radius:40% 60% 55% 45%"></div>
+        <svg style="position:absolute;inset:0" width="390" height="844"><path d="M-10 250 Q150 300 200 460 T400 680" stroke="#fff" stroke-width="16" fill="none"/><path d="M50 -10 Q90 200 260 280 T360 600" stroke="#fff" stroke-width="11" fill="none"/><path d="M-10 540 Q120 520 230 600 T420 560" stroke="#fff" stroke-width="9" fill="none"/></svg>
+      </div>
+
+      <!-- status bar -->
+      <div class="re-num" style="position:absolute;top:0;left:0;right:0;height:50px;z-index:50;display:flex;align-items:center;justify-content:space-between;padding:0 26px;color:#0B0B0C;pointer-events:none">
+        <span style="font-family:'Saira Condensed';font-weight:800;font-size:15px">7:24</span>
+        <div style="display:flex;gap:6px;align-items:center"><svg width="18" height="12" viewBox="0 0 18 12" fill="currentColor"><rect x="0" y="7" width="3" height="5" rx="1"/><rect x="5" y="4" width="3" height="8" rx="1"/><rect x="10" y="1" width="3" height="11" rx="1"/><rect x="15" y="1" width="3" height="11" rx="1" opacity="0.4"/></svg><svg width="22" height="12" viewBox="0 0 22 12" fill="none" stroke="currentColor" stroke-width="1.2"><rect x="1" y="1.5" width="17" height="9" rx="2.5"/><rect x="2.5" y="3" width="12" height="6" rx="1" fill="currentColor" stroke="none"/><rect x="19.5" y="4" width="1.5" height="4" rx="0.7" fill="currentColor" stroke="none"/></svg></div>
+      </div>
+
+      <!-- city banner -->
+      <div style="position:absolute;top:58px;left:14px;right:14px;background:#0B0B0C;color:#fff;border-radius:16px;padding:14px 16px;display:flex;align-items:center;gap:12px;box-shadow:0 10px 26px rgba(0,0,0,.32);z-index:20">
+        <div style="width:38px;height:38px;border-radius:10px;background:#C8FA00;display:flex;align-items:center;justify-content:center;flex:none"><svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M12 21s7-6.5 7-12a7 7 0 1 0-14 0c0 5.5 7 12 7 12Z" stroke="#0B0B0C" stroke-width="2"/><circle cx="12" cy="9" r="2.2" fill="#0B0B0C"/></svg></div>
+        <div style="flex:1"><div style="font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:#C8FA00;font-weight:700">You're in</div><div style="font-family:'Saira Condensed';font-weight:800;font-size:23px;line-height:1;text-transform:uppercase">Lisbon</div></div>
+        <div class="re-num" style="text-align:right"><div style="font-family:'Saira Condensed';font-weight:800;font-size:22px;line-height:1">18</div><div style="font-size:9px;color:#9b9ba0;letter-spacing:.5px">RUNS NEARBY</div></div>
+      </div>
+
+      <!-- filter chips -->
+      <div style="position:absolute;top:130px;left:0;right:0;display:flex;gap:7px;padding:0 14px;z-index:20;overflow:hidden">
+        <button onClick="{{ goDiscoverFilter }}" style="font-family:'Saira Condensed';font-weight:800;font-size:12px;letter-spacing:.5px;text-transform:uppercase;background:#0B0B0C;color:#fff;border:none;padding:8px 13px 6px;border-radius:999px;display:inline-flex;gap:5px;align-items:center;white-space:nowrap;cursor:pointer"><svg width="12" height="12" viewBox="0 0 24 24" fill="none"><path d="M3 5h18M6 12h12M10 19h4" stroke="#fff" stroke-width="2.4" stroke-linecap="round"/></svg>Filter</button>
+        <sc-for list="{{ typeFilters }}" as="f" hint-placeholder-count="3">
+          <button onClick="{{ f.onClick }}" style="{{ f.style }}">{{ f.label }}</button>
+        </sc-for>
+      </div>
+
+      <!-- pins -->
+      <sc-for list="{{ pins }}" as="p" hint-placeholder-count="3">
+        <div onClick="{{ p.onClick }}" style="{{ p.wrapStyle }}">
+          <div style="{{ p.pinStyle }}"><span class="re-num" style="font-family:'Saira Condensed';font-weight:800;font-size:13px">{{ p.km }}</span></div>
+        </div>
+      </sc-for>
+      <!-- cluster + you -->
+      <div style="position:absolute;top:360px;left:60px;width:36px;height:36px;border-radius:50%;background:#0B0B0C;color:#fff;display:flex;align-items:center;justify-content:center;font-family:'Saira Condensed';font-weight:800;font-size:14px;border:2.5px solid #fff;box-shadow:0 4px 10px rgba(0,0,0,.4);z-index:14" class="re-num">9</div>
+      <div style="position:absolute;top:560px;left:175px;width:40px;height:40px;display:flex;align-items:center;justify-content:center;z-index:14"><span style="position:absolute;width:26px;height:26px;border-radius:50%;background:#C8FA00;animation:rePulse 1.9s ease-out infinite"></span><span style="position:relative;width:18px;height:18px;border-radius:50%;background:#0B0B0C;border:3px solid #C8FA00"></span></div>
+
+      <!-- selected callout card -->
+      <div style="position:absolute;left:14px;right:14px;bottom:88px;z-index:30;animation:reUp .28s ease">
+        <div onClick="{{ openSelected }}" style="background:#fff;border-radius:16px;box-shadow:0 14px 34px rgba(0,0,0,.26);padding:13px;display:flex;gap:12px;align-items:center;cursor:pointer">
+          <div style="width:50px;height:50px;border-radius:12px;background:{{ sel.color }};display:flex;flex-direction:column;align-items:center;justify-content:center;color:{{ sel.onColor }};flex:none"><span class="re-num" style="font-family:'Saira Condensed';font-weight:800;font-size:18px;line-height:.9">{{ sel.km }}</span><span style="font-size:8px;font-weight:700;letter-spacing:.5px">KM</span></div>
+          <div style="flex:1;min-width:0">
+            <div style="display:flex;align-items:center;gap:6px"><span style="{{ sel.tagStyle }}">{{ sel.type }}</span><span class="re-num" style="font-size:11px;color:#74746e;font-weight:600">{{ sel.spots }}</span></div>
+            <div style="font-family:'Saira Condensed';font-weight:800;font-size:19px;text-transform:uppercase;line-height:1;margin-top:5px">{{ sel.title }}</div>
+            <div class="re-num" style="font-size:11.5px;color:#74746e;font-weight:500;margin-top:2px">{{ sel.meta }}</div>
+          </div>
+          <div style="font-family:'Saira Condensed';font-weight:800;font-size:12px;text-transform:uppercase;letter-spacing:.5px;color:#fff;background:#0B0B0C;padding:11px 13px;border-radius:10px;flex:none">View</div>
+        </div>
+      </div>
+
+      <!-- tab bar -->
+      {{ tabBar }}
+    </div>
+    </sc-if>
+
+    <!-- ============ RUN DETAIL ============ -->
+    <sc-if value="{{ isDetail }}" hint-placeholder-val="{{ false }}">
+    <div style="position:absolute;inset:0;background:#F6F6F3;display:flex;flex-direction:column">
+      <!-- scroll body -->
+      <div style="flex:1;overflow-y:auto">
+        <!-- map header -->
+        <div style="height:212px;position:relative;background:{{ d.headerBg }}">
+          <div style="position:absolute;inset:0;background-image:linear-gradient(#ffffff55 1px,transparent 1px),linear-gradient(90deg,#ffffff55 1px,transparent 1px);background-size:30px 30px"></div>
+          {{ d.routeSvg }}
+          <div class="re-num" style="position:absolute;top:0;left:0;right:0;height:50px;display:flex;align-items:center;justify-content:space-between;padding:0 26px;font-size:15px;font-weight:800;font-family:'Saira Condensed';color:#0B0B0C">7:24<span></span></div>
+          <button onClick="{{ goExplore }}" style="position:absolute;top:56px;left:14px;width:38px;height:38px;border-radius:11px;background:#fff;box-shadow:0 4px 12px rgba(0,0,0,.16);border:none;display:flex;align-items:center;justify-content:center;cursor:pointer" style-active="transform:scale(.94)"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M15 5l-7 7 7 7" stroke="#0B0B0C" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+          <div style="position:absolute;top:56px;right:14px;display:flex;gap:8px">
+            <div style="width:38px;height:38px;border-radius:11px;background:#fff;box-shadow:0 4px 12px rgba(0,0,0,.16);display:flex;align-items:center;justify-content:center;cursor:pointer"><svg width="19" height="19" viewBox="0 0 24 24" fill="none"><path d="M12 21s-7-4.6-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 11c0 5.4-7 10-7 10Z" stroke="#FF3B30" stroke-width="2" stroke-linejoin="round"/></svg></div>
+            <div style="width:38px;height:38px;border-radius:11px;background:#fff;box-shadow:0 4px 12px rgba(0,0,0,.16);display:flex;align-items:center;justify-content:center;cursor:pointer"><svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M8 12h8M12 8v8" stroke="#0B0B0C" stroke-width="0" /><path d="M18 8l-6 6m0 0V9m0 5h5" stroke="#0B0B0C" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+          </div>
+          <div style="position:absolute;left:14px;bottom:12px;display:inline-flex;align-items:center;gap:6px;background:#fff;padding:6px 11px;border-radius:999px;box-shadow:0 4px 12px rgba(0,0,0,.12)"><span style="{{ d.routeDot }}"></span><span style="font-family:'Saira Condensed';font-weight:800;font-size:12px;letter-spacing:.5px;text-transform:uppercase;color:#0B0B0C">{{ d.routeLabel }}</span></div>
+        </div>
+
+        <!-- content -->
+        <div style="padding:16px 18px 0">
+          <div style="display:flex;align-items:center;gap:8px"><span style="{{ d.tagStyle }}">{{ d.type }}</span><span style="font-family:'Saira Condensed';font-weight:800;font-size:11px;letter-spacing:.5px;text-transform:uppercase;color:#74746e">{{ d.visibility }}</span></div>
+          <h1 style="font-family:'Saira Condensed';font-weight:900;font-size:34px;line-height:.92;text-transform:uppercase;letter-spacing:-.5px;margin:11px 0 3px">{{ d.title }}</h1>
+          <div style="font-size:13px;color:#74746e;font-weight:500">{{ d.area }}</div>
+          <p style="font-size:14.5px;line-height:1.5;color:#3a3a36;margin:13px 0 0;font-weight:500">{{ d.blurb }}</p>
+
+          <!-- stats -->
+          <div style="display:flex;margin:16px 0;border:1px solid #E4E4DE;border-radius:14px;overflow:hidden;background:#fff">
+            <div style="flex:1;padding:13px 14px;border-right:1px solid #EDEDE8"><div class="re-num" style="font-family:'Saira Condensed';font-weight:800;font-size:24px;line-height:1">{{ d.km }}</div><div style="font-size:9px;letter-spacing:1px;text-transform:uppercase;color:#74746e;font-weight:700;margin-top:3px">KM</div></div>
+            <div style="flex:1;padding:13px 14px;border-right:1px solid #EDEDE8"><div class="re-num" style="font-family:'Saira Condensed';font-weight:800;font-size:24px;line-height:1">{{ d.pace }}</div><div style="font-size:9px;letter-spacing:1px;text-transform:uppercase;color:#74746e;font-weight:700;margin-top:3px">/KM</div></div>
+            <div style="flex:1;padding:13px 14px"><div class="re-num" style="font-family:'Saira Condensed';font-weight:800;font-size:24px;line-height:1">{{ d.day }}</div><div class="re-num" style="font-size:9px;letter-spacing:1px;text-transform:uppercase;color:#74746e;font-weight:700;margin-top:3px">{{ d.time }}</div></div>
+          </div>
+
+          <!-- host -->
+          <div style="display:flex;align-items:center;gap:11px;background:#fff;border:1px solid #E4E4DE;border-radius:14px;padding:12px 14px">
+            <div onClick="{{ viewHost }}" style="position:relative;flex:none;cursor:pointer"><div style="width:44px;height:44px;border-radius:50%;background:{{ d.hostGrad }};color:#fff;display:flex;align-items:center;justify-content:center;font-family:'Saira Condensed';font-weight:800;font-size:16px">{{ d.initials }}</div><div style="position:absolute;bottom:-2px;right:-2px;width:18px;height:18px;border-radius:50%;background:#0B0B0C;border:2px solid #fff;display:flex;align-items:center;justify-content:center"><svg width="10" height="10" viewBox="0 0 24 24" fill="none"><path d="M5 12l4 4L19 6" stroke="#C8FA00" stroke-width="3.6" stroke-linecap="round" stroke-linejoin="round"/></svg></div></div>
+            <div onClick="{{ viewHost }}" style="flex:1;min-width:0;cursor:pointer"><div style="font-size:14px;font-weight:700;line-height:1.1">{{ d.host }} <span style="font-size:11px;color:#74746e;font-weight:500">· hosts ›</span></div><div style="display:flex;align-items:center;gap:4px;margin-top:3px"><svg width="12" height="12" viewBox="0 0 24 24" fill="#FFB020"><path d="M12 2l2.9 6.3 6.8.7-5.1 4.6 1.4 6.7L12 17.8 6 20.3l1.4-6.7L2.3 9l6.8-.7L12 2Z"/></svg><span class="re-num" style="font-size:11.5px;font-weight:700">{{ d.rating }}</span><span class="re-num" style="font-size:11.5px;color:#74746e">· {{ d.runsCount }} runs</span></div></div>
+            <button onClick="{{ goDm }}" style="height:36px;padding:0 14px;border-radius:10px;border:1.5px solid #0B0B0C;background:#fff;font-family:'Saira Condensed';font-weight:800;font-size:13px;text-transform:uppercase;letter-spacing:.04em;cursor:pointer;flex:none" style-active="transform:scale(.96)">Message</button>
+          </div>
+
+          <!-- who's joined -->
+          <div style="display:flex;align-items:center;gap:11px;margin-top:13px;padding:0 2px">
+            <div style="display:flex;align-items:center">
+              <div style="width:32px;height:32px;border-radius:50%;background:linear-gradient(135deg,#FF3B30,#B61C13);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:11px;border:2px solid #F6F6F3">SK</div>
+              <div style="width:32px;height:32px;border-radius:50%;background:linear-gradient(135deg,#16C172,#0A7A47);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:11px;border:2px solid #F6F6F3;margin-left:-10px">JL</div>
+              <div style="width:32px;height:32px;border-radius:50%;background:#EDEDE8;color:#3a3a36;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:11px;border:2px solid #F6F6F3;margin-left:-10px" class="re-num">{{ d.extra }}</div>
+            </div>
+            <span class="re-num" style="font-size:12.5px;color:#3a3a36;font-weight:600">{{ d.spotsLine }}</span>
+          </div>
+
+          <!-- safety note -->
+          <div style="display:flex;gap:10px;background:#0B0B0C;color:#fff;border-radius:14px;padding:13px 15px;margin-top:14px;margin-bottom:18px">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" style="flex:none;margin-top:1px"><path d="M12 3l7 3v5c0 4.5-3 7.7-7 9-4-1.3-7-4.5-7-9V6l7-3Z" stroke="#C8FA00" stroke-width="2" stroke-linejoin="round"/><path d="M9 12l2 2 4-4" stroke="#C8FA00" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            <div><div style="font-family:'Saira Condensed';font-weight:800;font-size:14px;text-transform:uppercase;letter-spacing:.5px">Meeting strangers? Stay safe</div><div style="font-size:12px;color:#b9b9be;font-weight:500;margin-top:2px;line-height:1.45">Share live location with a contact for this run. Public meeting point · group of {{ d.cap }}.</div></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- sticky CTA -->
+      <div style="background:#fff;border-top:1px solid #EDEDE8;padding:13px 16px 26px;display:flex;gap:12px;align-items:center">
+        <div style="flex:none"><div class="re-num" style="font-family:'Saira Condensed';font-weight:800;font-size:19px;line-height:.9;color:#0B0B0C">+{{ d.pts }} <span style="font-size:11px;color:#74746e">pts</span></div><div style="font-size:10px;color:#74746e;font-weight:600">for finishing</div></div>
+        <button onClick="{{ openSheet }}" style="flex:1;font-family:'Saira Condensed';font-weight:800;font-size:17px;letter-spacing:.5px;text-transform:uppercase;color:#fff;background:#0B0B0C;border:none;border-radius:12px;padding:15px 0;cursor:pointer" style-active="transform:scale(.98)">{{ d.ctaLabel }}</button>
+      </div>
+
+      <!-- request-to-join sheet -->
+      <sc-if value="{{ showSheet }}" hint-placeholder-val="{{ false }}">
+      <div style="position:absolute;inset:0;z-index:70">
+        <div onClick="{{ closeSheet }}" style="position:absolute;inset:0;background:rgba(11,11,12,.5);animation:reFade .2s ease"></div>
+        <div style="position:absolute;left:0;right:0;bottom:0;background:#fff;border-radius:22px 22px 0 0;padding:10px 20px 26px;animation:reSheet .28s cubic-bezier(.2,.8,.2,1);box-shadow:0 -16px 40px rgba(0,0,0,.25)">
+          <div style="width:40px;height:5px;border-radius:3px;background:#E4E4DE;margin:0 auto 16px"></div>
+          <div style="display:flex;align-items:center;gap:11px">
+            <div style="width:40px;height:40px;border-radius:50%;background:{{ d.hostGrad }};color:#fff;display:flex;align-items:center;justify-content:center;font-family:'Saira Condensed';font-weight:800;font-size:15px;flex:none">{{ d.initials }}</div>
+            <div style="flex:1;min-width:0"><div style="font-family:'Saira Condensed';font-weight:900;font-size:22px;line-height:.95;text-transform:uppercase;letter-spacing:-.5px">Request to join</div><div style="font-size:12.5px;color:#74746e;font-weight:500;margin-top:1px">{{ d.host }} hosts · {{ d.visibility }}</div></div>
+          </div>
+
+          <div style="display:flex;align-items:center;justify-content:space-between;margin:18px 0 8px">
+            <span style="font-family:'Saira Condensed';font-weight:800;font-size:12px;text-transform:uppercase;letter-spacing:.08em;color:#6B6B73">Add a message to {{ d.host }}</span>
+            <span class="re-num" style="font-size:11.5px;color:#a3a39d;font-weight:600">{{ msgCount }}/240</span>
+          </div>
+          <textarea value="{{ requestMsg }}" onChange="{{ onRequestMsg }}" maxlength="240" placeholder="Say hi and why you'd like to join — pace, experience, anything the host should know." style="width:100%;height:96px;resize:none;border:1.5px solid #DEDEE2;border-radius:12px;padding:13px 14px;font-family:'Hanken Grotesk';font-size:14.5px;font-weight:500;line-height:1.45;color:#0B0B0C;outline:none" style-focus="border-color:#0B0B0C"></textarea>
+
+          <!-- quick prompts -->
+          <div style="display:flex;gap:7px;flex-wrap:wrap;margin-top:11px">
+            <sc-for list="{{ msgPrompts }}" as="p" hint-placeholder-count="3">
+              <button onClick="{{ p.onClick }}" style="font-size:12.5px;font-weight:600;background:#F6F6F3;border:1px solid #E4E4DE;color:#3a3a36;padding:7px 12px;border-radius:999px;cursor:pointer;text-align:left" style-active="transform:scale(.97)">+ {{ p.label }}</button>
+            </sc-for>
+          </div>
+
+          <button onClick="{{ sendRequest }}" style="width:100%;margin-top:18px;font-family:'Saira Condensed';font-weight:800;font-size:17px;letter-spacing:.5px;text-transform:uppercase;color:#fff;background:#0B0B0C;border:none;border-radius:12px;padding:15px 0;cursor:pointer" style-active="transform:scale(.98)">Send request</button>
+          <div style="text-align:center;font-size:11.5px;color:#74746e;font-weight:500;margin-top:10px">The host sees your profile, rating &amp; this note.</div>
+        </div>
+      </div>
+      </sc-if>
+    </div>
+    </sc-if>
+
+    <!-- ============ REQUEST SENT (pending) ============ -->
+    <sc-if value="{{ isSent }}" hint-placeholder-val="{{ false }}">
+    <div style="position:absolute;inset:0;background:#F6F6F3;display:flex;flex-direction:column">
+      <div class="re-num" style="height:50px;display:flex;align-items:center;justify-content:space-between;padding:0 26px;font-size:15px;font-weight:800;font-family:'Saira Condensed'">7:24<span></span></div>
+      <div style="padding:8px 18px 0">
+        <button onClick="{{ openSelected }}" style="width:38px;height:38px;border-radius:11px;border:1.5px solid #E4E4DE;background:#fff;display:flex;align-items:center;justify-content:center;cursor:pointer" style-active="transform:scale(.94)"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M15 5l-7 7 7 7" stroke="#0B0B0C" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+      </div>
+
+      <div style="flex:1;overflow-y:auto;padding:18px 24px 0;display:flex;flex-direction:column;align-items:center;text-align:center">
+        <div style="position:relative;width:96px;height:96px;display:flex;align-items:center;justify-content:center;margin-top:14px">
+          <span style="position:absolute;width:96px;height:96px;border-radius:50%;background:#C8FA00;opacity:.3;animation:rePulse 2.1s ease-out infinite"></span>
+          <div style="width:78px;height:78px;border-radius:50%;background:#0B0B0C;display:flex;align-items:center;justify-content:center;animation:rePop .4s ease"><svg width="36" height="36" viewBox="0 0 24 24" fill="none"><path d="M3 11l18-8-8 18-2.5-7.5L3 11Z" stroke="#C8FA00" stroke-width="2" stroke-linejoin="round"/></svg></div>
+        </div>
+        <h1 style="font-family:'Saira Condensed';font-weight:900;font-size:36px;line-height:.92;text-transform:uppercase;letter-spacing:-.5px;margin:22px 0 0">Request sent</h1>
+        <p style="font-size:15px;line-height:1.5;color:#3a3a36;font-weight:500;margin:10px 0 0;max-width:280px"><strong>{{ d.host }}</strong> will review your request to join <strong>{{ d.title }}</strong>.</p>
+
+        <!-- run mini-card -->
+        <div style="width:100%;display:flex;gap:12px;align-items:center;background:#fff;border:1px solid #E4E4DE;border-radius:14px;padding:12px;margin-top:22px;text-align:left">
+          <div style="width:48px;height:48px;border-radius:12px;background:{{ sel.color }};display:flex;flex-direction:column;align-items:center;justify-content:center;color:{{ sel.onColor }};flex:none"><span class="re-num" style="font-family:'Saira Condensed';font-weight:800;font-size:17px;line-height:.9">{{ sel.km }}</span><span style="font-size:8px;font-weight:700">KM</span></div>
+          <div style="flex:1;min-width:0"><div style="font-family:'Saira Condensed';font-weight:800;font-size:18px;text-transform:uppercase;line-height:1">{{ d.title }}</div><div class="re-num" style="font-size:11.5px;color:#74746e;font-weight:500;margin-top:2px">{{ d.day }} {{ d.time }} · {{ d.pace }}/km</div></div>
+          <span style="font-family:'Saira Condensed';font-weight:800;font-size:11px;letter-spacing:.5px;text-transform:uppercase;color:#9a7b16;background:#FFF2D6;padding:6px 10px 4px;border-radius:999px;flex:none">Pending</span>
+        </div>
+
+        <!-- next steps -->
+        <div style="width:100%;text-align:left;margin-top:22px">
+          <div style="font-family:'Saira Condensed';font-weight:800;font-size:12px;letter-spacing:1.5px;text-transform:uppercase;color:#74746e;margin-bottom:14px">What happens next</div>
+          <div style="display:flex;gap:13px;align-items:flex-start;margin-bottom:14px"><div style="width:26px;height:26px;border-radius:50%;background:#0B0B0C;color:#C8FA00;display:flex;align-items:center;justify-content:center;font-family:'Saira Condensed';font-weight:800;font-size:13px;flex:none">1</div><div><div style="font-size:14px;font-weight:700;line-height:1.2">Host reviews your request</div><div style="font-size:12.5px;color:#74746e;font-weight:500;margin-top:1px">Usually within a few hours</div></div></div>
+          <div style="display:flex;gap:13px;align-items:flex-start;margin-bottom:14px"><div style="width:26px;height:26px;border-radius:50%;background:#EDEDE8;color:#74746e;display:flex;align-items:center;justify-content:center;font-family:'Saira Condensed';font-weight:800;font-size:13px;flex:none">2</div><div><div style="font-size:14px;font-weight:700;line-height:1.2">You get notified</div><div style="font-size:12.5px;color:#74746e;font-weight:500;margin-top:1px">Accepted or declined — either way you'll know</div></div></div>
+          <div style="display:flex;gap:13px;align-items:flex-start"><div style="width:26px;height:26px;border-radius:50%;background:#EDEDE8;color:#74746e;display:flex;align-items:center;justify-content:center;font-family:'Saira Condensed';font-weight:800;font-size:13px;flex:none">3</div><div><div style="font-size:14px;font-weight:700;line-height:1.2">Group chat unlocks</div><div style="font-size:12.5px;color:#74746e;font-weight:500;margin-top:1px">Coordinate the meetup with everyone</div></div></div>
+        </div>
+      </div>
+
+      <!-- prototype: switch perspective -->
+      <div style="padding:14px 16px 26px">
+        <button onClick="{{ goHost }}" style="width:100%;display:flex;align-items:center;justify-content:center;gap:9px;border:1.5px dashed #b9b9be;background:transparent;border-radius:12px;padding:13px 0;cursor:pointer;font-family:'Saira Condensed';font-weight:800;font-size:14px;letter-spacing:.5px;text-transform:uppercase;color:#3a3a36" style-active="transform:scale(.98)"><svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M8 5v14l11-7L8 5Z" fill="#0B0B0C"/></svg>Continue as host — review request</button>
+      </div>
+    </div>
+    </sc-if>
+
+    <!-- ============ HOST INBOX / ACCEPT-DECLINE ============ -->
+    <sc-if value="{{ isHost }}" hint-placeholder-val="{{ false }}">
+    <div style="position:absolute;inset:0;background:#F6F6F3;display:flex;flex-direction:column">
+      <!-- dark host header -->
+      <div style="background:#0B0B0C;color:#fff;padding:0 18px 18px">
+        <div class="re-num" style="height:50px;display:flex;align-items:center;justify-content:space-between;font-size:15px;font-weight:800;font-family:'Saira Condensed'">7:24<span></span></div>
+        <div style="display:flex;align-items:center;gap:12px;margin-top:4px">
+          <button onClick="{{ goSent }}" style="width:38px;height:38px;border-radius:11px;border:none;background:#1A1A1C;display:flex;align-items:center;justify-content:center;cursor:pointer;flex:none" style-active="transform:scale(.94)"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M15 5l-7 7 7 7" stroke="#fff" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+          <div style="flex:1;min-width:0"><div style="font-size:11px;letter-spacing:1.5px;text-transform:uppercase;color:#C8FA00;font-weight:700">Hosting</div><div style="font-family:'Saira Condensed';font-weight:800;font-size:22px;line-height:1;text-transform:uppercase">{{ d.title }}</div></div>
+          <span style="font-family:'Saira Condensed';font-weight:800;font-size:11px;letter-spacing:.5px;text-transform:uppercase;color:#0B0B0C;background:#C8FA00;padding:6px 10px 4px;border-radius:999px;flex:none">Host</span>
+        </div>
+      </div>
+
+      <div style="flex:1;overflow-y:auto;padding:18px 18px 0">
+        <!-- requests heading -->
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:13px">
+          <span style="font-family:'Saira Condensed';font-weight:800;font-size:13px;letter-spacing:1.5px;text-transform:uppercase;color:#0B0B0C">Join requests</span>
+          <span class="re-num" style="font-family:'Saira Condensed';font-weight:800;font-size:11px;color:#fff;background:#FF3B30;min-width:20px;height:20px;border-radius:999px;display:inline-flex;align-items:center;justify-content:center;padding:0 6px">1</span>
+        </div>
+
+        <!-- request card -->
+        <div style="background:#fff;border:1px solid #E4E4DE;border-radius:16px;padding:16px;box-shadow:0 6px 16px rgba(11,11,12,.06)">
+          <div style="display:flex;align-items:center;gap:12px">
+            <div style="width:50px;height:50px;border-radius:50%;background:linear-gradient(135deg,#7C3AED,#4C1D95);color:#fff;display:flex;align-items:center;justify-content:center;font-family:'Saira Condensed';font-weight:800;font-size:18px;flex:none">AR</div>
+            <div style="flex:1;min-width:0">
+              <div style="display:flex;align-items:center;gap:7px"><span style="font-size:16px;font-weight:700;line-height:1">Alex R.</span><span style="font-size:9.5px;font-weight:800;letter-spacing:.5px;text-transform:uppercase;color:#1466FF;background:#EAF1FF;padding:3px 7px 2px;border-radius:5px">You</span></div>
+              <div style="display:flex;align-items:center;gap:4px;margin-top:4px"><svg width="12" height="12" viewBox="0 0 24 24" fill="#FFB020"><path d="M12 2l2.9 6.3 6.8.7-5.1 4.6 1.4 6.7L12 17.8 6 20.3l1.4-6.7L2.3 9l6.8-.7L12 2Z"/></svg><span class="re-num" style="font-size:12px;font-weight:700">4.8</span><span class="re-num" style="font-size:12px;color:#74746e">· 27 runs</span></div>
+            </div>
+          </div>
+          <!-- match meta -->
+          <div style="display:flex;gap:7px;flex-wrap:wrap;margin-top:13px">
+            <span style="display:inline-flex;align-items:center;gap:5px;font-size:12px;font-weight:700;background:#E3F8EE;color:#0A7A47;padding:5px 10px;border-radius:999px"><svg width="12" height="12" viewBox="0 0 24 24" fill="none"><path d="M5 12l4 4L19 6" stroke="#0A7A47" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>Pace match</span>
+            <span class="re-num" style="font-size:12px;font-weight:700;background:#F6F6F3;border:1px solid #E4E4DE;color:#3a3a36;padding:5px 10px;border-radius:999px">Usual 5:20/km</span>
+            <span class="re-num" style="font-size:12px;font-weight:700;background:#F6F6F3;border:1px solid #E4E4DE;color:#3a3a36;padding:5px 10px;border-radius:999px">PT · EN</span>
+          </div>
+          <!-- message -->
+          <div style="background:#F6F6F3;border-radius:11px;padding:12px 13px;margin-top:13px"><div style="font-size:13.5px;line-height:1.5;color:#3a3a36">"{{ hostMsg }}"</div></div>
+          <!-- actions -->
+          <div style="display:flex;gap:10px;margin-top:14px">
+            <button onClick="{{ declineReq }}" style="flex:1;height:48px;border-radius:11px;border:1.5px solid #E4E4DE;background:#fff;color:#74746e;font-family:'Saira Condensed';font-weight:800;font-size:15px;text-transform:uppercase;letter-spacing:.04em;cursor:pointer" style-active="transform:scale(.97)">Decline</button>
+            <button onClick="{{ acceptReq }}" style="flex:2;height:48px;border-radius:11px;border:none;background:#C8FA00;color:#0B0B0C;font-family:'Saira Condensed';font-weight:800;font-size:15px;text-transform:uppercase;letter-spacing:.04em;cursor:pointer;box-shadow:0 6px 16px rgba(200,250,0,.45)" style-active="transform:scale(.97)">Accept</button>
+          </div>
+        </div>
+
+        <!-- confirmed roster -->
+        <div style="font-family:'Saira Condensed';font-weight:800;font-size:13px;letter-spacing:1.5px;text-transform:uppercase;color:#74746e;margin:24px 0 12px">Going · {{ d.goingCount }}</div>
+        <div style="display:flex;flex-direction:column;gap:9px">
+          <div style="display:flex;align-items:center;gap:11px;background:#fff;border:1px solid #E4E4DE;border-radius:12px;padding:10px 13px"><div style="width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,#FF3B30,#B61C13);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:13px">SK</div><div style="flex:1"><div style="font-size:14px;font-weight:700;line-height:1">Sofia K.</div><div style="font-size:11.5px;color:#74746e;font-weight:500">Confirmed</div></div><svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M5 12l4 4L19 6" stroke="#16C172" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+          <div style="display:flex;align-items:center;gap:11px;background:#fff;border:1px solid #E4E4DE;border-radius:12px;padding:10px 13px"><div style="width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,#16C172,#0A7A47);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:13px">JL</div><div style="flex:1"><div style="font-size:14px;font-weight:700;line-height:1">João L.</div><div style="font-size:11.5px;color:#74746e;font-weight:500">Confirmed</div></div><svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M5 12l4 4L19 6" stroke="#16C172" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        </div>
+        <div style="height:20px"></div>
+      </div>
+    </div>
+    </sc-if>
+
+    <!-- ============ YOU'RE IN / JOINED ============ -->
+    <sc-if value="{{ isJoined }}" hint-placeholder-val="{{ false }}">
+    <div style="position:absolute;inset:0;background:#F6F6F3;display:flex;flex-direction:column">
+      <!-- ink celebration hero -->
+      <div style="background:#0B0B0C;color:#fff;padding:0 24px 30px;position:relative;overflow:hidden">
+        <div style="position:absolute;top:60px;left:30px;width:8px;height:8px;background:#C8FA00;border-radius:2px;transform:rotate(20deg)"></div>
+        <div style="position:absolute;top:96px;right:46px;width:10px;height:10px;background:#1466FF;border-radius:2px;transform:rotate(-15deg)"></div>
+        <div style="position:absolute;top:150px;left:60px;width:7px;height:7px;background:#FF3B30;border-radius:50%"></div>
+        <div style="position:absolute;top:78px;right:90px;width:6px;height:6px;background:#16C172;border-radius:50%"></div>
+        <div style="position:absolute;top:138px;right:30px;width:9px;height:9px;background:#FFB020;border-radius:2px;transform:rotate(30deg)"></div>
+        <div class="re-num" style="height:50px;display:flex;align-items:center;justify-content:space-between;font-size:15px;font-weight:800;font-family:'Saira Condensed';color:#fff;position:relative">7:24<span></span></div>
+        <div style="position:relative;display:flex;flex-direction:column;align-items:center;text-align:center;margin-top:14px">
+          <div style="width:84px;height:84px;border-radius:50%;background:#C8FA00;display:flex;align-items:center;justify-content:center;animation:rePop .45s ease;box-shadow:0 0 0 10px rgba(200,250,0,.14)"><svg width="42" height="42" viewBox="0 0 24 24" fill="none"><path d="M5 12l4 4L19 6" stroke="#0B0B0C" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+          <h1 style="font-family:'Saira Condensed';font-weight:900;font-size:44px;line-height:.9;text-transform:uppercase;letter-spacing:-1px;margin:20px 0 0">You're in!</h1>
+          <p style="font-size:14.5px;line-height:1.5;color:#b9b9be;font-weight:500;margin:10px 0 0;max-width:280px"><strong style="color:#fff">{{ d.host }}</strong> accepted you into <strong style="color:#fff">{{ d.title }}</strong>.</p>
+        </div>
+      </div>
+
+      <div style="flex:1;overflow-y:auto;padding:18px 18px 0">
+        <!-- run card with date -->
+        <div style="background:#fff;border:1px solid #E4E4DE;border-radius:16px;padding:14px;display:flex;gap:13px;align-items:center;box-shadow:0 6px 16px rgba(11,11,12,.06)">
+          <div style="width:54px;height:54px;border-radius:13px;background:{{ sel.color }};display:flex;flex-direction:column;align-items:center;justify-content:center;color:{{ sel.onColor }};flex:none"><span class="re-num" style="font-family:'Saira Condensed';font-weight:800;font-size:19px;line-height:.9">{{ sel.km }}</span><span style="font-size:8px;font-weight:700">KM</span></div>
+          <div style="flex:1;min-width:0"><div style="display:flex;align-items:center;gap:6px"><span style="{{ sel.tagStyle }}">{{ sel.type }}</span></div><div style="font-family:'Saira Condensed';font-weight:800;font-size:20px;text-transform:uppercase;line-height:1;margin-top:5px">{{ d.title }}</div><div class="re-num" style="font-size:12px;color:#74746e;font-weight:500;margin-top:3px">{{ d.day }} {{ d.time }} · {{ d.area }}</div></div>
+        </div>
+
+        <!-- going avatars -->
+        <div style="display:flex;align-items:center;gap:11px;margin:16px 2px 0">
+          <div style="display:flex;align-items:center">
+            <div style="width:34px;height:34px;border-radius:50%;background:{{ d.hostGrad }};color:#fff;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:12px;border:2.5px solid #F6F6F3">{{ d.initials }}</div>
+            <div style="width:34px;height:34px;border-radius:50%;background:linear-gradient(135deg,#FF3B30,#B61C13);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:12px;border:2.5px solid #F6F6F3;margin-left:-11px">SK</div>
+            <div style="width:34px;height:34px;border-radius:50%;background:linear-gradient(135deg,#16C172,#0A7A47);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:12px;border:2.5px solid #F6F6F3;margin-left:-11px">JL</div>
+            <div style="width:34px;height:34px;border-radius:50%;background:linear-gradient(135deg,#7C3AED,#4C1D95);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:12px;border:2.5px solid #C8FA00;margin-left:-11px">AR</div>
+          </div>
+          <span class="re-num" style="font-size:13px;color:#3a3a36;font-weight:600">You + 3 going</span>
+        </div>
+
+        <!-- group chat unlocked -->
+        <button onClick="{{ goGroup }}" style="width:100%;display:flex;align-items:center;gap:13px;background:#fff;border:1.5px solid #0B0B0C;border-radius:14px;padding:14px;margin-top:18px;cursor:pointer;text-align:left" style-active="transform:scale(.98)">
+          <div style="width:44px;height:44px;border-radius:12px;background:#0B0B0C;display:flex;align-items:center;justify-content:center;flex:none;position:relative"><svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M21 11.5a8 8 0 0 1-11.5 7.2L4 20l1.3-5.4A8 8 0 1 1 21 11.5Z" stroke="#C8FA00" stroke-width="2" stroke-linejoin="round"/></svg><span style="position:absolute;top:-3px;right:-3px;width:14px;height:14px;background:#FF3B30;border-radius:50%;border:2px solid #fff"></span></div>
+          <div style="flex:1"><div style="font-family:'Saira Condensed';font-weight:800;font-size:17px;text-transform:uppercase;line-height:1">Group chat unlocked</div><div style="font-size:12.5px;color:#74746e;font-weight:500;margin-top:2px">Say hi — sort the meeting point</div></div>
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M9 6l6 6-6 6" stroke="#0B0B0C" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+
+        <!-- points + safety row -->
+        <div style="display:flex;gap:11px;margin-top:11px">
+          <div style="flex:1;background:#C8FA00;border-radius:14px;padding:14px"><div class="re-num" style="font-family:'Saira Condensed';font-weight:800;font-size:26px;line-height:.9;color:#0B0B0C">+{{ d.pts }}</div><div style="font-size:11px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;color:#0B0B0C;margin-top:3px">Pts when you finish</div></div>
+          <button onClick="{{ goExplore }}" style="flex:1;background:#0B0B0C;border:none;border-radius:14px;padding:14px;text-align:left;cursor:pointer" style-active="transform:scale(.98)"><svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M12 3l7 3v5c0 4.5-3 7.7-7 9-4-1.3-7-4.5-7-9V6l7-3Z" stroke="#C8FA00" stroke-width="2" stroke-linejoin="round"/><path d="M9 12l2 2 4-4" stroke="#C8FA00" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg><div style="font-family:'Saira Condensed';font-weight:800;font-size:15px;text-transform:uppercase;line-height:1;color:#fff;margin-top:8px">Set up safety</div><div style="font-size:10.5px;color:#9b9ba0;font-weight:500;margin-top:2px">Share live location</div></button>
+        </div>
+      </div>
+
+      <!-- bottom CTA -->
+      <div style="padding:13px 16px 26px;display:flex;gap:11px">
+        <button onClick="{{ goDiscover }}" style="flex:1;font-family:'Saira Condensed';font-weight:800;font-size:15px;letter-spacing:.5px;text-transform:uppercase;color:#0B0B0C;background:#fff;border:1.5px solid #E4E4DE;border-radius:12px;padding:14px 0;cursor:pointer" style-active="transform:scale(.98)">Explore</button>
+        <button onClick="{{ goStartRun }}" style="flex:1.5;display:flex;align-items:center;justify-content:center;gap:8px;font-family:'Saira Condensed';font-weight:800;font-size:16px;letter-spacing:.5px;text-transform:uppercase;color:#0B0B0C;background:#C8FA00;border:none;border-radius:12px;padding:14px 0;cursor:pointer;box-shadow:0 8px 22px rgba(200,250,0,.32)" style-active="transform:scale(.98)"><svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M8 5v14l11-7L8 5Z" fill="#0B0B0C"/></svg>Start run</button>
+      </div>
+    </div>
+    </sc-if>
+
+    <!-- ============ YOUR RUNS ============ -->
+    <sc-if value="{{ isMyRuns }}" hint-placeholder-val="{{ false }}">
+    <div style="position:absolute;inset:0;background:#F6F6F3;display:flex;flex-direction:column">
+      <div style="background:#fff;border-bottom:1px solid #EDEDE8;padding:0 18px">
+        <div class="re-num" style="height:50px;display:flex;align-items:center;justify-content:space-between;font-size:15px;font-weight:800;font-family:'Saira Condensed'">7:24<span></span></div>
+        <div style="display:flex;align-items:flex-end;justify-content:space-between;padding-bottom:14px">
+          <h1 style="font-family:'Saira Condensed';font-weight:900;font-size:34px;line-height:.9;text-transform:uppercase;letter-spacing:-.5px;margin:0">Your Runs</h1>
+          <button onClick="{{ goNotifications }}" style="position:relative;width:42px;height:42px;border-radius:12px;border:1.5px solid #E4E4DE;background:#fff;display:flex;align-items:center;justify-content:center;cursor:pointer" style-active="transform:scale(.94)">
+            <svg width="21" height="21" viewBox="0 0 24 24" fill="none"><path d="M18 8a6 6 0 1 0-12 0c0 7-3 9-3 9h18s-3-2-3-9Z" stroke="#0B0B0C" stroke-width="2" stroke-linejoin="round"/><path d="M10.3 21a2 2 0 0 0 3.4 0" stroke="#0B0B0C" stroke-width="2" stroke-linecap="round"/></svg>
+            <span class="re-num" style="position:absolute;top:-5px;right:-5px;min-width:19px;height:19px;background:#FF3B30;border:2px solid #fff;border-radius:999px;color:#fff;font-family:'Saira Condensed';font-weight:800;font-size:10px;display:flex;align-items:center;justify-content:center;padding:0 4px">3</span>
+          </button>
+        </div>
+        <div style="display:flex;gap:4px;background:#EDEDE8;border-radius:11px;padding:4px;margin-bottom:14px">
+          <sc-for list="{{ runsTabs }}" as="t" hint-placeholder-count="3">
+            <button onClick="{{ t.onClick }}" style="{{ t.style }}">{{ t.label }}<span style="{{ t.countStyle }}">{{ t.count }}</span></button>
+          </sc-for>
+        </div>
+      </div>
+      <div style="flex:1;overflow-y:auto;padding:16px 16px 100px">
+        <sc-for list="{{ runsList }}" as="r" hint-placeholder-count="3">
+          <div onClick="{{ r.onClick }}" style="background:#fff;border:1px solid #E4E4DE;border-left:5px solid {{ r.color }};border-radius:14px;padding:14px;margin-bottom:12px;box-shadow:0 4px 12px rgba(11,11,12,.05);cursor:pointer" style-active="transform:scale(.99)">
+            <div style="display:flex;gap:12px;align-items:flex-start">
+              <div style="width:50px;height:50px;border-radius:12px;background:{{ r.color }};display:flex;flex-direction:column;align-items:center;justify-content:center;color:{{ r.onColor }};flex:none"><span class="re-num" style="font-family:'Saira Condensed';font-weight:800;font-size:18px;line-height:.9">{{ r.km }}</span><span style="font-size:8px;font-weight:700">KM</span></div>
+              <div style="flex:1;min-width:0">
+                <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap"><span style="{{ r.tagStyle }}">{{ r.type }}</span><span style="font-family:'Saira Condensed';font-weight:800;font-size:10px;letter-spacing:.5px;text-transform:uppercase;padding:4px 9px 2px;border-radius:999px;{{ r.statusStyle }}">{{ r.statusLabel }}</span></div>
+                <div style="font-family:'Saira Condensed';font-weight:800;font-size:20px;text-transform:uppercase;line-height:1;margin-top:6px">{{ r.title }}</div>
+                <div class="re-num" style="font-size:12px;color:#74746e;font-weight:500;margin-top:3px">{{ r.meta }}</div>
+              </div>
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" style="flex:none;margin-top:4px"><path d="M9 6l6 6-6 6" stroke="#c2c2bd" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </div>
+            <div style="display:flex;align-items:center;gap:10px;margin-top:12px;padding-top:12px;border-top:1px solid #EDEDE8">
+              <div style="display:flex;align-items:center">
+                <sc-for list="{{ r.avatars }}" as="a" hint-placeholder-count="3"><div style="{{ a.style }}">{{ a.initials }}</div></sc-for>
+              </div>
+              <span style="font-size:12.5px;font-weight:700;color:{{ r.footerColor }}">{{ r.footer }}</span>
+            </div>
+          </div>
+        </sc-for>
+      </div>
+      {{ tabBar }}
+    </div>
+    </sc-if>
+
+    <!-- ============ MANAGE RUN (HOST) ============ -->
+    <sc-if value="{{ isManage }}" hint-placeholder-val="{{ false }}">
+    <div style="position:absolute;inset:0;background:#F6F6F3;display:flex;flex-direction:column">
+      <div style="background:#0B0B0C;color:#fff;padding:0 18px 18px">
+        <div class="re-num" style="height:50px;display:flex;align-items:center;justify-content:space-between;font-size:15px;font-weight:800;font-family:'Saira Condensed'">7:24<span></span></div>
+        <div style="display:flex;align-items:center;gap:12px;margin-top:4px">
+          <button onClick="{{ goMyRuns }}" style="width:38px;height:38px;border-radius:11px;border:none;background:#1A1A1C;display:flex;align-items:center;justify-content:center;cursor:pointer;flex:none" style-active="transform:scale(.94)"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M15 5l-7 7 7 7" stroke="#fff" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+          <div style="flex:1;min-width:0"><div style="font-size:11px;letter-spacing:1.5px;text-transform:uppercase;color:#C8FA00;font-weight:700">Hosting · {{ d.visibility }}</div><div style="font-family:'Saira Condensed';font-weight:800;font-size:22px;line-height:1;text-transform:uppercase">{{ d.title }}</div></div>
+          <span style="font-family:'Saira Condensed';font-weight:800;font-size:11px;letter-spacing:.5px;text-transform:uppercase;color:#0B0B0C;background:#C8FA00;padding:6px 10px 4px;border-radius:999px;flex:none">Host</span>
+        </div>
+      </div>
+      <div style="flex:1;overflow-y:auto;padding:16px 18px 0">
+        <!-- summary stat strip -->
+        <div class="re-num" style="font-size:13px;color:#3a3a36;font-weight:600;margin-bottom:10px">{{ d.day }} · {{ d.time }} · {{ d.area }}</div>
+        <div style="display:flex;border:1px solid #E4E4DE;border-radius:14px;overflow:hidden;background:#fff">
+          <div style="flex:1;padding:13px 14px;border-right:1px solid #EDEDE8"><div class="re-num" style="font-family:'Saira Condensed';font-weight:800;font-size:24px;line-height:1">{{ d.km }}</div><div style="font-size:9px;letter-spacing:1px;text-transform:uppercase;color:#74746e;font-weight:700;margin-top:3px">KM</div></div>
+          <div style="flex:1;padding:13px 14px;border-right:1px solid #EDEDE8"><div class="re-num" style="font-family:'Saira Condensed';font-weight:800;font-size:24px;line-height:1">{{ d.pace }}</div><div style="font-size:9px;letter-spacing:1px;text-transform:uppercase;color:#74746e;font-weight:700;margin-top:3px">/KM</div></div>
+          <div style="flex:1;padding:13px 14px"><div class="re-num" style="font-family:'Saira Condensed';font-weight:800;font-size:24px;line-height:1">{{ d.cap }}</div><div style="font-size:9px;letter-spacing:1px;text-transform:uppercase;color:#74746e;font-weight:700;margin-top:3px">CAP</div></div>
+        </div>
+
+        <!-- requests banner -->
+        <button onClick="{{ goReviewRequests }}" style="width:100%;display:flex;align-items:center;gap:13px;background:#C8FA00;border:none;border-radius:14px;padding:14px;margin-top:14px;cursor:pointer;text-align:left;box-shadow:0 6px 16px rgba(200,250,0,.35)" style-active="transform:scale(.99)">
+          <div style="width:42px;height:42px;border-radius:11px;background:#0B0B0C;display:flex;align-items:center;justify-content:center;flex:none;position:relative"><svg width="22" height="22" viewBox="0 0 24 24" fill="none"><circle cx="9" cy="8" r="3.2" stroke="#C8FA00" stroke-width="2"/><path d="M3.5 19c0-3 2.5-5 5.5-5s5.5 2 5.5 5" stroke="#C8FA00" stroke-width="2" stroke-linecap="round"/><path d="M17 9v6M14 12h6" stroke="#C8FA00" stroke-width="2" stroke-linecap="round"/></svg></div>
+          <div style="flex:1"><div style="font-family:'Saira Condensed';font-weight:800;font-size:17px;text-transform:uppercase;line-height:1;color:#0B0B0C">2 requests waiting</div><div style="font-size:12.5px;color:#2c3a00;font-weight:600;margin-top:2px">Alex R. and 1 other want to join</div></div>
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M9 6l6 6-6 6" stroke="#0B0B0C" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+
+        <!-- manage actions -->
+        <div style="font-family:'Saira Condensed';font-weight:800;font-size:13px;letter-spacing:1.5px;text-transform:uppercase;color:#74746e;margin:22px 0 12px">Manage</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:11px">
+          <button onClick="{{ goGroup }}" style="background:#fff;border:1px solid #E4E4DE;border-radius:14px;padding:15px 14px;text-align:left;cursor:pointer" style-active="transform:scale(.98)"><svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M21 11.5a8 8 0 0 1-11.5 7.2L4 20l1.3-5.4A8 8 0 1 1 21 11.5Z" stroke="#0B0B0C" stroke-width="2" stroke-linejoin="round"/></svg><div style="font-family:'Saira Condensed';font-weight:800;font-size:15px;text-transform:uppercase;line-height:1;margin-top:9px">Message group</div><div style="font-size:11.5px;color:#74746e;font-weight:500;margin-top:2px">3 going can see it</div></button>
+          <button style="background:#fff;border:1px solid #E4E4DE;border-radius:14px;padding:15px 14px;text-align:left;cursor:pointer" style-active="transform:scale(.98)"><svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M4 14.5V20h5.5L20 9.5 14.5 4 4 14.5Z" stroke="#0B0B0C" stroke-width="2" stroke-linejoin="round"/><path d="M13 5.5L18.5 11" stroke="#0B0B0C" stroke-width="2"/></svg><div style="font-family:'Saira Condensed';font-weight:800;font-size:15px;text-transform:uppercase;line-height:1;margin-top:9px">Edit run</div><div style="font-size:11.5px;color:#74746e;font-weight:500;margin-top:2px">Route, pace, time</div></button>
+          <button style="background:#fff;border:1px solid #E4E4DE;border-radius:14px;padding:15px 14px;text-align:left;cursor:pointer" style-active="transform:scale(.98)"><svg width="22" height="22" viewBox="0 0 24 24" fill="none"><circle cx="18" cy="5" r="2.6" stroke="#0B0B0C" stroke-width="2"/><circle cx="6" cy="12" r="2.6" stroke="#0B0B0C" stroke-width="2"/><circle cx="18" cy="19" r="2.6" stroke="#0B0B0C" stroke-width="2"/><path d="M8.3 10.7l7.4-4.4M8.3 13.3l7.4 4.4" stroke="#0B0B0C" stroke-width="2"/></svg><div style="font-family:'Saira Condensed';font-weight:800;font-size:15px;text-transform:uppercase;line-height:1;margin-top:9px">Share invite</div><div style="font-size:11.5px;color:#74746e;font-weight:500;margin-top:2px">Send a link</div></button>
+          <button style="background:#fff;border:1px solid #F4D4D1;border-radius:14px;padding:15px 14px;text-align:left;cursor:pointer" style-active="transform:scale(.98)"><svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M6 7h12M9 7V5h6v2M8 7l1 13h6l1-13" stroke="#FF3B30" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg><div style="font-family:'Saira Condensed';font-weight:800;font-size:15px;text-transform:uppercase;line-height:1;margin-top:9px;color:#D32A1F">Cancel run</div><div style="font-size:11.5px;color:#c98a83;font-weight:500;margin-top:2px">Notify everyone</div></button>
+        </div>
+
+        <!-- roster -->
+        <div style="font-family:'Saira Condensed';font-weight:800;font-size:13px;letter-spacing:1.5px;text-transform:uppercase;color:#74746e;margin:24px 0 12px">Going · 4 of {{ d.cap }}</div>
+        <div style="display:flex;flex-direction:column;gap:9px;padding-bottom:20px">
+          <div style="display:flex;align-items:center;gap:11px;background:#fff;border:1px solid #E4E4DE;border-radius:12px;padding:10px 13px"><div style="width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,#1466FF,#0B3FB0);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:13px">MR</div><div style="flex:1"><div style="font-size:14px;font-weight:700;line-height:1">Marco R. <span style="font-size:11px;color:#74746e;font-weight:500">· you</span></div><div style="font-size:11.5px;color:#74746e;font-weight:500">Host</div></div><span style="font-family:'Saira Condensed';font-weight:800;font-size:10px;letter-spacing:.5px;text-transform:uppercase;color:#0B0B0C;background:#C8FA00;padding:4px 8px 2px;border-radius:999px">Host</span></div>
+          <div style="display:flex;align-items:center;gap:11px;background:#fff;border:1px solid #E4E4DE;border-radius:12px;padding:10px 13px"><div style="width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,#FF3B30,#B61C13);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:13px">SK</div><div style="flex:1"><div style="font-size:14px;font-weight:700;line-height:1">Sofia K.</div><div style="font-size:11.5px;color:#74746e;font-weight:500">Confirmed</div></div><svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M5 12l4 4L19 6" stroke="#16C172" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+          <div style="display:flex;align-items:center;gap:11px;background:#fff;border:1px solid #E4E4DE;border-radius:12px;padding:10px 13px"><div style="width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,#16C172,#0A7A47);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:13px">JL</div><div style="flex:1"><div style="font-size:14px;font-weight:700;line-height:1">João L.</div><div style="font-size:11.5px;color:#74746e;font-weight:500">Confirmed</div></div><svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M5 12l4 4L19 6" stroke="#16C172" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+          <div style="display:flex;align-items:center;gap:11px;background:#fff;border:1px solid #E4E4DE;border-radius:12px;padding:10px 13px"><div style="width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,#7C3AED,#4C1D95);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:13px">AR</div><div style="flex:1"><div style="font-size:14px;font-weight:700;line-height:1">Alex R.</div><div style="font-size:11.5px;color:#74746e;font-weight:500">Just accepted</div></div><svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M5 12l4 4L19 6" stroke="#16C172" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        </div>
+      </div>
+      <div style="background:#fff;border-top:1px solid #EDEDE8;padding:13px 16px 26px">
+        <button onClick="{{ openSelected }}" style="width:100%;font-family:'Saira Condensed';font-weight:800;font-size:16px;letter-spacing:.5px;text-transform:uppercase;color:#0B0B0C;background:#fff;border:1.5px solid #0B0B0C;border-radius:12px;padding:14px 0;cursor:pointer" style-active="transform:scale(.98)">View public page</button>
+      </div>
+    </div>
+    </sc-if>
+
+    <!-- ============ MESSAGES LIST ============ -->
+    <sc-if value="{{ isMsgList }}" hint-placeholder-val="{{ false }}">
+    <div style="position:absolute;inset:0;background:#F6F6F3;display:flex;flex-direction:column">
+      <div style="background:#fff;border-bottom:1px solid #EDEDE8;padding:0 18px 14px">
+        <div class="re-num" style="height:50px;display:flex;align-items:center;justify-content:space-between;font-size:15px;font-weight:800;font-family:'Saira Condensed'">7:24<span></span></div>
+        <h1 style="font-family:'Saira Condensed';font-weight:900;font-size:34px;line-height:.9;text-transform:uppercase;letter-spacing:-.5px;margin:0 0 12px">Messages</h1>
+        <div style="display:flex;align-items:center;gap:9px;background:#F0F0EC;border-radius:11px;padding:10px 13px"><svg width="18" height="18" viewBox="0 0 24 24" fill="none"><circle cx="11" cy="11" r="7" stroke="#a3a39d" stroke-width="2"/><path d="M20 20l-3.5-3.5" stroke="#a3a39d" stroke-width="2" stroke-linecap="round"/></svg><span style="font-size:14px;color:#a3a39d;font-weight:500">Search runners and runs</span></div>
+      </div>
+      <div style="flex:1;overflow-y:auto;padding:16px 16px 100px">
+        <div style="font-family:'Saira Condensed';font-weight:800;font-size:12px;letter-spacing:1.5px;text-transform:uppercase;color:#74746e;margin:0 2px 10px">Run groups</div>
+        <div style="display:flex;flex-direction:column;gap:10px;margin-bottom:22px">
+          <sc-for list="{{ msgGroups }}" as="g" hint-placeholder-count="2">
+            <div onClick="{{ g.onClick }}" style="display:flex;align-items:center;gap:12px;background:#fff;border:1px solid #E4E4DE;border-left:5px solid {{ g.color }};border-radius:14px;padding:12px 13px;cursor:pointer" style-active="transform:scale(.99)">
+              <div style="display:flex;align-items:center;flex:none">
+                <sc-for list="{{ g.avatars }}" as="a" hint-placeholder-count="3"><div style="{{ a.style }}">{{ a.initials }}</div></sc-for>
+              </div>
+              <div style="flex:1;min-width:0">
+                <div style="display:flex;align-items:center;justify-content:space-between;gap:8px"><span style="font-family:'Saira Condensed';font-weight:800;font-size:16px;text-transform:uppercase;line-height:1">{{ g.title }}</span><span class="re-num" style="font-size:11px;color:#a3a39d;font-weight:600;flex:none">{{ g.time }}</span></div>
+                <div style="font-size:12.5px;color:#74746e;font-weight:500;margin-top:4px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">{{ g.last }}</div>
+              </div>
+              <span class="re-num" style="{{ g.unreadStyle }};min-width:20px;height:20px;border-radius:999px;font-family:'Saira Condensed';font-weight:800;font-size:11px;display:flex;align-items:center;justify-content:center;padding:0 6px;flex:none">{{ g.unreadCount }}</span>
+            </div>
+          </sc-for>
+        </div>
+        <div style="font-family:'Saira Condensed';font-weight:800;font-size:12px;letter-spacing:1.5px;text-transform:uppercase;color:#74746e;margin:0 2px 10px">Direct</div>
+        <div style="display:flex;flex-direction:column;gap:10px">
+          <sc-for list="{{ dmList }}" as="p" hint-placeholder-count="2">
+            <div onClick="{{ p.onClick }}" style="display:flex;align-items:center;gap:12px;background:#fff;border:1px solid #E4E4DE;border-radius:14px;padding:12px 13px;cursor:pointer" style-active="transform:scale(.99)">
+              <div style="{{ p.avStyle }}">{{ p.initials }}</div>
+              <div style="flex:1;min-width:0">
+                <div style="display:flex;align-items:center;justify-content:space-between;gap:8px"><span style="font-size:15px;font-weight:700;line-height:1">{{ p.name }}</span><span class="re-num" style="font-size:11px;color:#a3a39d;font-weight:600;flex:none">{{ p.time }}</span></div>
+                <div style="font-size:12.5px;color:#74746e;font-weight:500;margin-top:4px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">{{ p.last }}</div>
+              </div>
+              <span class="re-num" style="{{ p.unreadStyle }};min-width:20px;height:20px;border-radius:999px;font-family:'Saira Condensed';font-weight:800;font-size:11px;display:flex;align-items:center;justify-content:center;padding:0 6px;flex:none">{{ p.unreadCount }}</span>
+            </div>
+          </sc-for>
+        </div>
+      </div>
+      {{ tabBar }}
+    </div>
+    </sc-if>
+
+    <!-- ============ RUN GROUP CHAT ============ -->
+    <sc-if value="{{ isGroup }}" hint-placeholder-val="{{ false }}">
+    <div style="position:absolute;inset:0;background:#ECECE7;display:flex;flex-direction:column">
+      <!-- header -->
+      <div style="background:#fff;border-bottom:1px solid #EDEDE8;flex:none">
+        <div class="re-num" style="height:50px;display:flex;align-items:center;justify-content:space-between;padding:0 26px;font-size:15px;font-weight:800;font-family:'Saira Condensed'">7:24<span></span></div>
+        <div style="display:flex;align-items:center;gap:11px;padding:0 14px 12px">
+          <button onClick="{{ goMsgs }}" style="width:36px;height:36px;border-radius:10px;border:none;background:transparent;display:flex;align-items:center;justify-content:center;cursor:pointer;flex:none" style-active="transform:scale(.94)"><svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M15 5l-7 7 7 7" stroke="#0B0B0C" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+          <div style="width:40px;height:40px;border-radius:11px;background:{{ d.tagBg }};display:flex;align-items:center;justify-content:center;flex:none"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M12 21s7-6.5 7-12a7 7 0 1 0-14 0c0 5.5 7 12 7 12Z" stroke="#fff" stroke-width="2"/><circle cx="12" cy="9" r="2.2" fill="#fff"/></svg></div>
+          <div style="flex:1;min-width:0"><div style="font-family:'Saira Condensed';font-weight:800;font-size:19px;text-transform:uppercase;line-height:1">{{ d.title }}</div><div style="font-size:12px;color:#74746e;font-weight:500;margin-top:1px">You + 3 going · {{ d.day }} {{ d.time }}</div></div>
+          <button onClick="{{ openSelected }}" style="width:36px;height:36px;border-radius:10px;border:1.5px solid #E4E4DE;background:#fff;display:flex;align-items:center;justify-content:center;cursor:pointer;flex:none" style-active="transform:scale(.94)"><svg width="18" height="18" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke="#0B0B0C" stroke-width="2"/><path d="M12 11v5M12 7.5v.5" stroke="#0B0B0C" stroke-width="2" stroke-linecap="round"/></svg></button>
+        </div>
+      </div>
+
+      <!-- pinned meeting point -->
+      <div style="flex:none;padding:11px 14px;background:#ECECE7">
+        <div style="display:flex;align-items:center;gap:11px;background:#0B0B0C;color:#fff;border-radius:13px;padding:11px 13px">
+          <div style="width:38px;height:38px;border-radius:10px;background:#1A1A1C;display:flex;align-items:center;justify-content:center;flex:none"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M12 21s7-6.5 7-12a7 7 0 1 0-14 0c0 5.5 7 12 7 12Z" stroke="#C8FA00" stroke-width="2"/><circle cx="12" cy="9" r="2.2" fill="#C8FA00"/></svg></div>
+          <div style="flex:1;min-width:0"><div style="display:flex;align-items:center;gap:6px"><svg width="12" height="12" viewBox="0 0 24 24" fill="none"><path d="M12 17l-5 3 1-5.6L4 11l5.5-.8L12 5l2.5 5.2L20 11l-4 3.4 1 5.6-5-3Z" fill="#C8FA00"/></svg><span style="font-family:'Saira Condensed';font-weight:800;font-size:11px;letter-spacing:1px;text-transform:uppercase;color:#C8FA00">Meeting point</span></div><div class="re-num" style="font-size:13.5px;font-weight:600;margin-top:3px">Praça do Comércio · arch · 7:50</div></div>
+          <button style="font-family:'Saira Condensed';font-weight:800;font-size:11px;text-transform:uppercase;letter-spacing:.5px;color:#0B0B0C;background:#C8FA00;border:none;padding:8px 11px 6px;border-radius:9px;cursor:pointer;flex:none" style-active="transform:scale(.96)">Map</button>
+        </div>
+      </div>
+
+      <!-- messages -->
+      <div style="flex:1;overflow-y:auto;padding:6px 14px 14px">
+        <sc-for list="{{ chatMsgs }}" as="m" hint-placeholder-count="5">
+          <div style="{{ m.rowStyle }}">
+            <sc-if value="{{ m.showAvatar }}" hint-placeholder-val="{{ false }}"><div style="{{ m.avStyle }}">{{ m.initials }}</div></sc-if>
+            <div style="{{ m.colStyle }}">
+              <sc-if value="{{ m.showName }}" hint-placeholder-val="{{ false }}"><div style="font-size:11px;font-weight:700;color:#74746e;margin:0 0 3px 3px">{{ m.name }}</div></sc-if>
+              <div style="{{ m.bubbleStyle }}">{{ m.text }}</div>
+              <div class="re-num" style="{{ m.timeStyle }}">{{ m.time }}</div>
+            </div>
+          </div>
+        </sc-for>
+      </div>
+
+      <!-- composer -->
+      <div style="flex:none;background:#fff;border-top:1px solid #EDEDE8;padding:11px 14px 26px;display:flex;align-items:center;gap:10px">
+        <input value="{{ chatText }}" onChange="{{ onChatText }}" placeholder="Message the group" style="flex:1;height:46px;border:1.5px solid #DEDEE2;border-radius:999px;padding:0 18px;font-family:'Hanken Grotesk';font-size:14.5px;font-weight:500;color:#0B0B0C;outline:none" style-focus="border-color:#0B0B0C"/>
+        <button onClick="{{ sendChat }}" style="width:46px;height:46px;border-radius:50%;border:none;background:#C8FA00;display:flex;align-items:center;justify-content:center;cursor:pointer;flex:none;box-shadow:0 4px 12px rgba(200,250,0,.5)" style-active="transform:scale(.94)"><svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M4 12l16-8-8 16-2-6-6-2Z" stroke="#0B0B0C" stroke-width="2" stroke-linejoin="round"/></svg></button>
+      </div>
+    </div>
+    </sc-if>
+
+    <!-- ============ DIRECT MESSAGE ============ -->
+    <sc-if value="{{ isDm }}" hint-placeholder-val="{{ false }}">
+    <div style="position:absolute;inset:0;background:#ECECE7;display:flex;flex-direction:column">
+      <div style="background:#fff;border-bottom:1px solid #EDEDE8;flex:none">
+        <div class="re-num" style="height:50px;display:flex;align-items:center;justify-content:space-between;padding:0 26px;font-size:15px;font-weight:800;font-family:'Saira Condensed'">7:24<span></span></div>
+        <div style="display:flex;align-items:center;gap:11px;padding:0 14px 12px">
+          <button onClick="{{ goMsgs }}" style="width:36px;height:36px;border-radius:10px;border:none;background:transparent;display:flex;align-items:center;justify-content:center;cursor:pointer;flex:none" style-active="transform:scale(.94)"><svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M15 5l-7 7 7 7" stroke="#0B0B0C" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+          <div style="{{ dmHeader.avStyle }}">{{ dmHeader.initials }}</div>
+          <div style="flex:1;min-width:0"><div style="font-size:16px;font-weight:700;line-height:1.05">{{ dmHeader.name }}</div><div style="font-size:12px;color:#74746e;font-weight:500;margin-top:2px">{{ dmHeader.sub }}</div></div>
+          <button style="width:36px;height:36px;border-radius:10px;border:1.5px solid #E4E4DE;background:#fff;display:flex;align-items:center;justify-content:center;cursor:pointer;flex:none" style-active="transform:scale(.94)"><svg width="18" height="18" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="8" r="3.4" stroke="#0B0B0C" stroke-width="2"/><path d="M5 20c0-3.6 3.1-6 7-6s7 2.4 7 6" stroke="#0B0B0C" stroke-width="2" stroke-linecap="round"/></svg></button>
+        </div>
+      </div>
+      <div style="flex:1;overflow-y:auto;padding:14px 14px">
+        <div style="text-align:center;margin-bottom:10px"><span style="font-size:11px;font-weight:700;color:#9a9a93;background:#E1E1DB;padding:4px 11px;border-radius:999px">Today</span></div>
+        <sc-for list="{{ dmMsgs }}" as="m" hint-placeholder-count="3">
+          <div style="{{ m.rowStyle }}">
+            <div style="{{ m.colStyle }}">
+              <div style="{{ m.bubbleStyle }}">{{ m.text }}</div>
+              <div class="re-num" style="{{ m.timeStyle }}">{{ m.time }}</div>
+            </div>
+          </div>
+        </sc-for>
+      </div>
+      <div style="flex:none;background:#fff;border-top:1px solid #EDEDE8;padding:11px 14px 26px;display:flex;align-items:center;gap:10px">
+        <input value="{{ dmText }}" onChange="{{ onDmText }}" placeholder="Message {{ dmHeader.name }}" style="flex:1;height:46px;border:1.5px solid #DEDEE2;border-radius:999px;padding:0 18px;font-family:'Hanken Grotesk';font-size:14.5px;font-weight:500;color:#0B0B0C;outline:none" style-focus="border-color:#0B0B0C"/>
+        <button onClick="{{ sendDm }}" style="width:46px;height:46px;border-radius:50%;border:none;background:#C8FA00;display:flex;align-items:center;justify-content:center;cursor:pointer;flex:none;box-shadow:0 4px 12px rgba(200,250,0,.5)" style-active="transform:scale(.94)"><svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M4 12l16-8-8 16-2-6-6-2Z" stroke="#0B0B0C" stroke-width="2" stroke-linejoin="round"/></svg></button>
+      </div>
+    </div>
+    </sc-if>
+
+    <!-- ============ NOTIFICATIONS ============ -->
+    <sc-if value="{{ isNotif }}" hint-placeholder-val="{{ false }}">
+    <div style="position:absolute;inset:0;background:#F6F6F3;display:flex;flex-direction:column">
+      <div style="background:#fff;border-bottom:1px solid #EDEDE8;padding:0 14px 12px">
+        <div class="re-num" style="height:50px;display:flex;align-items:center;justify-content:space-between;padding:0 12px;font-size:15px;font-weight:800;font-family:'Saira Condensed'">7:24<span></span></div>
+        <div style="display:flex;align-items:center;gap:11px">
+          <button onClick="{{ goMyRuns }}" style="width:36px;height:36px;border-radius:10px;border:none;background:transparent;display:flex;align-items:center;justify-content:center;cursor:pointer;flex:none" style-active="transform:scale(.94)"><svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M15 5l-7 7 7 7" stroke="#0B0B0C" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+          <h1 style="flex:1;font-family:'Saira Condensed';font-weight:900;font-size:28px;line-height:.9;text-transform:uppercase;letter-spacing:-.5px;margin:0">Notifications</h1>
+          <button onClick="{{ markAllRead }}" style="font-family:'Saira Condensed';font-weight:800;font-size:12px;letter-spacing:.5px;text-transform:uppercase;color:#0B0B0C;background:transparent;border:none;cursor:pointer;flex:none" style-active="transform:scale(.96)">Mark all read</button>
+        </div>
+      </div>
+      <div style="flex:1;overflow-y:auto;padding:16px 14px 30px">
+        <div style="font-family:'Saira Condensed';font-weight:800;font-size:12px;letter-spacing:1.5px;text-transform:uppercase;color:#74746e;margin:0 4px 8px">Today</div>
+        <div style="display:flex;flex-direction:column;gap:4px;margin-bottom:20px">
+          <sc-for list="{{ notifToday }}" as="n" hint-placeholder-count="3">
+            <div onClick="{{ n.onClick }}" style="{{ n.rowStyle }}" style-active="transform:scale(.99)">
+              <div style="{{ n.avWrap }}"><div style="{{ n.avStyle }}">{{ n.initials }}</div><div style="{{ n.badgeStyle }}"></div></div>
+              <div style="flex:1;min-width:0"><div style="font-size:14px;font-weight:700;line-height:1.25">{{ n.title }}</div><div style="font-size:12.5px;color:#74746e;font-weight:500;margin-top:2px;line-height:1.35">{{ n.body }}</div></div>
+              <div style="display:flex;flex-direction:column;align-items:flex-end;gap:6px;flex:none"><span class="re-num" style="font-size:11px;color:#a3a39d;font-weight:600">{{ n.time }}</span><span style="{{ n.dotStyle }}"></span></div>
+            </div>
+          </sc-for>
+        </div>
+        <div style="font-family:'Saira Condensed';font-weight:800;font-size:12px;letter-spacing:1.5px;text-transform:uppercase;color:#74746e;margin:0 4px 8px">Earlier</div>
+        <div style="display:flex;flex-direction:column;gap:4px">
+          <sc-for list="{{ notifEarlier }}" as="n" hint-placeholder-count="3">
+            <div onClick="{{ n.onClick }}" style="{{ n.rowStyle }}" style-active="transform:scale(.99)">
+              <div style="{{ n.avWrap }}"><div style="{{ n.avStyle }}">{{ n.initials }}</div><div style="{{ n.badgeStyle }}"></div></div>
+              <div style="flex:1;min-width:0"><div style="font-size:14px;font-weight:700;line-height:1.25">{{ n.title }}</div><div style="font-size:12.5px;color:#74746e;font-weight:500;margin-top:2px;line-height:1.35">{{ n.body }}</div></div>
+              <div style="display:flex;flex-direction:column;align-items:flex-end;gap:6px;flex:none"><span class="re-num" style="font-size:11px;color:#a3a39d;font-weight:600">{{ n.time }}</span><span style="{{ n.dotStyle }}"></span></div>
+            </div>
+          </sc-for>
+        </div>
+      </div>
+    </div>
+    </sc-if>
+
+
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:390,&quot;height&quot;:844}}">
+class Component extends DCLogic {
+  state = this.boot({ screen: 'explore', sel: 0, typeFilter: null, showSheet: false, requestMsg: '', runsTab: 'all', chatText: '', groupMsgs: [], dmText: '', dmMsgs: [], dmPeer: 0, notifRead: false });
+
+  boot(def){ try{ const p=new URLSearchParams(window.location.search); const s=p.get('s'), run=p.get('run'), tab=p.get('tab'); if(run!=null&&run!==''){ const n=parseInt(run,10); if(!isNaN(n)) def.sel=Math.max(0,Math.min(5,n)); } if(tab && ['all','managed','joined','past'].includes(tab)) def.runsTab=tab; if(s) def.screen=s; }catch(e){} return def; }
+  toDiscover(s,run){ window.location.href='Run%20Everywhere%20-%20Discover%20Flow.dc.html'+(s?'?s='+s:'')+(run!=null?(s?'&':'?')+'run='+run:''); }
+  toReward(s,run){ window.location.href='Run%20Everywhere%20-%20Reward%20Loop.dc.html'+(s?'?s='+s:'')+(run!=null?(s?'&':'?')+'run='+run:''); }
+  toProfile(s){ window.location.href='Run%20Everywhere%20-%20Profile%20Flow.dc.html'+(s?'?s='+s:''); }
+  toCreate(s){ window.location.href='Run%20Everywhere%20-%20Create%20Flow.dc.html'+(s?'?s='+s:''); }
+
+  go(s){ this.setState({ screen: s }); window.scrollTo && window.scrollTo(0,0); }
+
+  runs(){
+    return [
+      { id:0, title:'Old Town Loop', type:'Discover', color:'#1466FF', onColor:'#fff', tint:'#EAF1FF', km:'7.5', pace:'5:30', day:'Sat', time:'08:00', area:'Alfama · Lisbon', joined:3, cap:6, host:'Marco R.', initials:'MR', rating:'4.9', runsCount:63, pts:120, visibility:'Approval required', closed:false,
+        blurb:'Easy social run through the old town — we stop at the best miradouros for photos. Coffee after by the river.', top:300, left:48 },
+      { id:1, title:'Monsanto Hills', type:'Challenge', color:'#FF3B30', onColor:'#fff', tint:'#FFECEA', km:'12', pace:'4:45', day:'Sun', time:'07:00', area:'Hill repeats · Lisbon', joined:2, cap:4, host:'Sofia K.', initials:'SK', rating:'4.8', runsCount:41, pts:180, visibility:'Approval required', closed:true,
+        blurb:'Lung-busting hill repeats up Monsanto. Bring your A-game — we push hard and regroup at the summit.', top:225, left:250 },
+      { id:2, title:'Sunset 5K', type:'Social', color:'#16C172', onColor:'#06210f', tint:'#E3F8EE', km:'5', pace:'6:15', day:'Fri', time:'19:30', area:'Easy & chatty · Belém', joined:8, cap:10, host:'João L.', initials:'JL', rating:'4.9', runsCount:88, pts:90, visibility:'Open · anyone joins', closed:false,
+        blurb:'Relaxed riverside 5K to watch the sunset. All paces welcome, we regroup at every corner. Pastéis after.', top:402, left:262 },
+      { id:3, title:'Riverside Tempo', type:'Challenge', color:'#FF3B30', onColor:'#fff', tint:'#FFECEA', km:'8', pace:'4:30', day:'Sat', time:'06:30', area:'Tempo · Cais do Sodré', joined:1, cap:5, host:'Ana P.', initials:'AP', rating:'4.7', runsCount:52, pts:150, visibility:'Approval required', closed:false,
+        blurb:'Tempo effort along the river, steady and strong. We hold pace together and finish by the bridge.', top:470, left:96 },
+      { id:4, title:'Bairro Coffee Run', type:'Social', color:'#16C172', onColor:'#06210f', tint:'#E3F8EE', km:'4', pace:'6:40', day:'Sun', time:'09:30', area:'Easy · Bairro Alto', joined:5, cap:8, host:'Tó M.', initials:'TM', rating:'5.0', runsCount:34, pts:80, visibility:'Open · anyone joins', closed:true,
+        blurb:'Gentle wake-up jog through the bairro, then espresso for anyone keen. All paces, zero pressure.', top:360, left:150 },
+      { id:5, title:'Belém Discovery', type:'Discover', color:'#1466FF', onColor:'#fff', tint:'#EAF1FF', km:'6', pace:'5:50', day:'Sat', time:'17:00', area:'Monuments · Belém', joined:4, cap:8, host:'Rita F.', initials:'RF', rating:'4.8', runsCount:47, pts:110, visibility:'Open · anyone joins', closed:false,
+        blurb:'A monuments tour on foot — history at a jog, from the tower to the monastery with stories along the way.', top:540, left:206 },
+    ];
+  }
+
+  tagStyle(r, big){
+    const onC = r.type==='Social' ? '#06210f' : '#fff';
+    return `font-family:'Saira Condensed';font-weight:800;font-size:${big?13:11}px;letter-spacing:1px;text-transform:uppercase;background:${r.color};color:${onC};padding:${big?'6px 11px 4px':'4px 8px 2px'};border-radius:6px;display:inline-block`;
+  }
+
+  pinStyle(r, active){
+    const onC = r.type==='Social' ? '#06210f' : '#fff';
+    const sh = active ? `0 0 0 4px rgba(11,11,12,.12), 0 8px 18px ${r.color}88` : `0 4px 10px ${r.color}77`;
+    return `display:inline-flex;align-items:center;gap:4px;background:${r.color};color:${onC};padding:6px 11px 6px 9px;border-radius:999px;box-shadow:${sh};transform:scale(${active?1.12:1});transition:transform .16s`;
+  }
+
+  renderVals(){
+    const s = this.state, R = this.runs(), sel = R[s.sel];
+    const h = React.createElement;
+
+    // type filter chips
+    const types = [['Discover','#1466FF'],['Challenge','#FF3B30'],['Social','#16C172']];
+    const typeFilters = types.map(([label,col]) => {
+      const on = s.typeFilter === label;
+      const onC = (label==='Social') ? '#06210f' : '#fff';
+      return { label, onClick: () => this.setState({ typeFilter: on ? null : label }),
+        style: `font-family:'Saira Condensed';font-weight:800;font-size:12px;letter-spacing:.5px;text-transform:uppercase;border:1.5px solid ${on?col:'#E4E4DE'};background:${on?col:'#fff'};color:${on?onC:'#74746e'};padding:${on?'8px 12px 6px':'6px 11px 4px'};border-radius:999px;white-space:nowrap;cursor:pointer` };
+    });
+
+    // pins
+    const pins = R.slice(0,3).map(r => {
+      const active = r.id === s.sel;
+      const dim = s.typeFilter && s.typeFilter !== r.type;
+      return { km:r.km,
+        onClick: () => this.setState({ sel: r.id }),
+        wrapStyle: `position:absolute;top:${r.top}px;left:${r.left}px;z-index:${active?16:15};cursor:pointer;opacity:${dim?0.32:1};transition:opacity .16s`,
+        pinStyle: this.pinStyle(r, active) };
+    });
+
+    // tab bar (shared)
+    const tab = (active, label, badge, icon) => h('div',{ style:{display:'flex',flexDirection:'column',alignItems:'center',gap:'4px',color:active?'#0B0B0C':'#a3a39d',position:'relative'} },
+      icon,
+      badge ? h('span',{ style:{position:'absolute',top:'-3px',right:'14px',width:'8px',height:'8px',background:'#FF3B30',borderRadius:'50%',border:'1.5px solid #fff'} }) : null,
+      h('span',{ style:{fontSize:'10px',fontWeight:active?700:600,letterSpacing:'.3px'} }, label));
+    const ic = (d, col, fill) => h('svg',{ width:23, height:23, viewBox:'0 0 24 24', fill:'none' }, h('path',{ d, stroke:col, strokeWidth:2, strokeLinecap:'round', strokeLinejoin:'round' }), fill?h('circle',{cx:12,cy:9,r:2.3,fill:col}):null);
+    const aExplore = s.screen === 'explore', aRuns = s.screen === 'myRuns', aMsgs = s.screen === 'msgList';
+    const gc = on => on ? '#0B0B0C' : '#a3a39d';
+    const tabBar = h('div',{ style:{position:'absolute',left:0,right:0,bottom:0,height:'80px',background:'#fff',borderTop:'1px solid #EDEDE8',display:'flex',alignItems:'center',justifyContent:'space-around',paddingBottom:'12px',zIndex:40} },
+      h('div',{ onClick:()=>this.toDiscover('map'), style:{cursor:'pointer'} }, tab(aExplore,'Explore',false, ic('M12 21s7-6.5 7-12a7 7 0 1 0-14 0c0 5.5 7 12 7 12Z', gc(aExplore), true))),
+      h('div',{ onClick:()=>this.go('myRuns'), style:{cursor:'pointer'} }, tab(aRuns,'My Runs',false, h('svg',{width:23,height:23,viewBox:'0 0 24 24',fill:'none'},h('path',{d:'M4 7h16M4 12h16M4 17h10',stroke:gc(aRuns),strokeWidth:2,strokeLinecap:'round'})))),
+      h('div',{ onClick:()=>this.toCreate(), style:{display:'flex',flexDirection:'column',alignItems:'center',marginTop:'-22px',cursor:'pointer'} }, h('div',{ style:{width:'52px',height:'52px',borderRadius:'16px',background:'#C8FA00',display:'flex',alignItems:'center',justifyContent:'center',boxShadow:'0 6px 16px rgba(200,250,0,.5)'} }, h('svg',{width:26,height:26,viewBox:'0 0 24 24',fill:'none'},h('path',{d:'M12 5v14M5 12h14',stroke:'#0B0B0C',strokeWidth:2.6,strokeLinecap:'round'})))),
+      h('div',{ onClick:()=>this.go('msgList'), style:{cursor:'pointer'} }, tab(aMsgs,'Messages',!aMsgs, h('svg',{width:23,height:23,viewBox:'0 0 24 24',fill:'none'},h('path',{d:'M21 11.5a8 8 0 0 1-11.5 7.2L4 20l1.3-5.4A8 8 0 1 1 21 11.5Z',stroke:gc(aMsgs),strokeWidth:2,strokeLinejoin:'round'})))),
+      h('div',{ onClick:()=>this.toProfile('myProfile'), style:{cursor:'pointer'} }, tab(false,'Profile',false, h('svg',{width:23,height:23,viewBox:'0 0 24 24',fill:'none'},h('circle',{cx:12,cy:8,r:3.4,stroke:'#a3a39d',strokeWidth:2}),h('path',{d:'M5 20c0-3.6 3.1-6 7-6s7 2.4 7 6',stroke:'#a3a39d',strokeWidth:2,strokeLinecap:'round'})))),
+      h('div',{ style:{position:'absolute',bottom:'7px',left:'50%',transform:'translateX(-50%)',width:'134px',height:'5px',borderRadius:'3px',background:'rgba(0,0,0,.28)'} }));
+
+    // ---- run detail ----
+    const grads = { '#1466FF':'linear-gradient(135deg,#1466FF,#0B3FB0)', '#FF3B30':'linear-gradient(135deg,#FF3B30,#B61C13)', '#16C172':'linear-gradient(135deg,#16C172,#0A7A47)' };
+    const headerBgs = { Discover:'linear-gradient(135deg,#dde7f5,#eaf1ff)', Challenge:'linear-gradient(135deg,#f7e0de,#ffeceb)', Social:'linear-gradient(135deg,#d6f1e3,#e3f8ee)' };
+    const routePaths = {
+      Discover:'M40 172 C90 150 70 78 132 70 S232 112 262 48',
+      Challenge:'M30 176 L88 70 L150 168 L212 60 L268 150',
+      Social:'M150 48 C92 48 56 78 56 110 S96 174 150 174 244 152 244 116 208 48 150 48Z',
+    };
+    const routeSvg = h('svg',{ style:{position:'absolute',inset:0}, width:'100%', height:212, viewBox:'0 0 300 212', preserveAspectRatio:'none' },
+      h('path',{ d:routePaths[sel.type], stroke:sel.color, strokeWidth:5, fill:'none', strokeLinecap:'round', strokeLinejoin:'round' }),
+      h('circle',{ cx:sel.type==='Social'?150:40, cy:sel.type==='Social'?48:172, r:7, fill:'#fff', stroke:sel.color, strokeWidth:4 }),
+      sel.type!=='Social' ? h('circle',{ cx:262, cy:48, r:7, fill:sel.color }) : null );
+    const extra = sel.joined > 2 ? '+'+(sel.joined-2) : '·';
+    const spotsLeft = sel.cap - sel.joined;
+    const d = {
+      headerBg: headerBgs[sel.type], routeSvg,
+      routeDot: `width:9px;height:9px;border-radius:50%;${sel.closed?'background:'+sel.color:'border:2px solid '+sel.color}`,
+      routeLabel: sel.closed ? 'Closed loop' : 'Open route',
+      tagStyle: this.tagStyle(sel, true), type: sel.type, visibility: sel.visibility,
+      title: sel.title, area: sel.area, blurb: sel.blurb,
+      km: sel.km, pace: sel.pace, day: sel.day, time: sel.time,
+      hostGrad: grads[sel.color], initials: sel.initials, host: sel.host, rating: sel.rating, runsCount: sel.runsCount,
+      extra, cap: sel.cap, spotsLine: `${sel.joined} of ${sel.cap} joined · ${spotsLeft} spot${spotsLeft===1?'':'s'} left`,
+      pts: sel.pts, ctaLabel: 'Request to join', goingCount: Math.max(2, sel.joined - 1),
+    };
+
+    const selVal = {
+      color: sel.color, onColor: sel.onColor, km: sel.km, type: sel.type, title: sel.title,
+      tagStyle: this.tagStyle(sel, false),
+      spots: sel.joined + '/' + sel.cap + ' joined',
+      meta: `${sel.day} ${sel.time} · ${sel.pace}/km`,
+    };
+
+    // ===================== RUN TOGETHER SCREENS =====================
+    d.tagBg = sel.color;
+    const gradFor = { '#1466FF':'linear-gradient(135deg,#1466FF,#0B3FB0)', '#FF3B30':'linear-gradient(135deg,#FF3B30,#B61C13)', '#16C172':'linear-gradient(135deg,#16C172,#0A7A47)', '#7C3AED':'linear-gradient(135deg,#7C3AED,#4C1D95)' };
+    const av = (bg,i,ring) => `width:30px;height:30px;border-radius:50%;background:${gradFor[bg]||bg};color:#fff;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:11px;border:2px solid ${ring||'#fff'};margin-left:${i?-9:0}px`;
+
+    // --- Your Runs ---
+    const roleMap = { 0:'managed', 2:'joined', 1:'pending' };
+    const memberAv = { 0:[['MR','#1466FF'],['SK','#FF3B30'],['JL','#16C172']], 1:[['SK','#FF3B30'],['AR','#7C3AED']], 2:[['JL','#16C172'],['MR','#1466FF'],['SK','#FF3B30']] };
+    const statusStyleMap = { managed:'background:#C8FA00;color:#0B0B0C', joined:'background:#E3F8EE;color:#0A7A47', pending:'background:#FFF2D6;color:#9a7b16' };
+    const statusLabelMap = { managed:'Hosting', joined:'Joined', pending:'Pending' };
+    const footerMap = { managed:{ text:'2 requests waiting', color:'#C0391F' }, joined:{ text:'Tap to start · +90 pts', color:'#0A7A47' }, pending:{ text:'Awaiting host approval', color:'#9a7b16' } };
+    const order = [0,2,1];
+    const yr = order.map(id => ({ r:R[id], role:roleMap[id] }));
+    const countRole = role => yr.filter(x=>x.role===role).length;
+    // past (completed) runs
+    const pastDef = [
+      { id:2, date:'Fri 13 Jun', pts:90, gave:'4.9', role:'joined' },
+      { id:1, date:'Sun 8 Jun', pts:180, gave:'4.8', role:'managed' },
+      { id:0, date:'Sat 31 May', pts:120, gave:'5.0', role:'managed' },
+    ];
+    const pastAv = { 0:[['MR','#1466FF'],['SK','#FF3B30'],['JL','#16C172']], 1:[['SK','#FF3B30'],['AR','#7C3AED']], 2:[['JL','#16C172'],['MR','#1466FF'],['SK','#FF3B30']] };
+    const tabsDef = [['all','All',yr.length],['managed','Managed',countRole('managed')],['joined','Joined',countRole('joined')],['past','Past',pastDef.length]];
+    const runsTabs = tabsDef.map(([k,l,c]) => { const on = s.runsTab===k; return {
+      label:l, count:c, onClick:()=>this.setState({ runsTab:k }),
+      style:`flex:1;display:flex;align-items:center;justify-content:center;gap:6px;border:none;background:${on?'#fff':'transparent'};color:${on?'#0B0B0C':'#74746e'};font-family:'Saira Condensed';font-weight:800;font-size:13px;letter-spacing:.5px;text-transform:uppercase;padding:9px 0 7px;border-radius:8px;cursor:pointer;box-shadow:${on?'0 1px 3px rgba(0,0,0,.12)':'none'}`,
+      countStyle:`font-family:'Saira Condensed';font-weight:800;font-size:10px;line-height:1;padding:2px 6px 1px;border-radius:999px;min-width:16px;text-align:center;background:#EDEDE8;color:${on?'#0B0B0C':'#a3a39d'}`,
+    }; });
+    const goByRole = { managed:'manageRun', joined:'detail', pending:'sent' };
+    const upcomingList = yr.filter(x => s.runsTab==='all' || x.role===s.runsTab).map(({r,role}) => ({
+      color:r.color, onColor:r.onColor, km:r.km, type:r.type, title:r.title, tagStyle:this.tagStyle(r,false),
+      statusStyle:statusStyleMap[role], statusLabel:statusLabelMap[role],
+      meta:`${r.day} ${r.time} · ${r.area.split(' · ')[0]} · ${r.pace}/km`,
+      footer:footerMap[role].text, footerColor:footerMap[role].color,
+      avatars: memberAv[r.id].map(([init,bg],i)=>({ initials:init, style:av(bg,i) })),
+      onClick: role==='joined' ? () => this.toReward('live') : () => this.setState({ sel:r.id, screen: goByRole[role] }),
+    }));
+    const pastList = pastDef.map(p => { const r = R[p.id]; return {
+      color:r.color, onColor:r.onColor, km:r.km, type:r.type, title:r.title, tagStyle:this.tagStyle(r,false),
+      statusStyle:'background:#1A1A1C;color:#fff', statusLabel:'Completed',
+      meta:`${p.date} · ${r.area.split(' · ')[0]} · ${r.km}km · ${r.pace}/km`,
+      footer:`You rated ${p.gave} · +${p.pts} pts · view recap`, footerColor:'#74746e',
+      avatars: pastAv[p.id].map(([init,bg],i)=>({ initials:init, style:av(bg,i) })),
+      onClick: () => this.toReward('completed', p.id),
+    }; });
+    const runsList = s.runsTab==='past' ? pastList : upcomingList;
+
+    // --- Messages list ---
+    const msgGroups = [
+      { runId:0, title:'Old Town Loop', color:'#1466FF', last:'Marco: Praça do Comércio, 7:50 — start 8 sharp', time:'7:02', unread:2, avatars:[['MR','#1466FF'],['SK','#FF3B30'],['JL','#16C172']] },
+      { runId:2, title:'Sunset 5K', color:'#16C172', last:'You: see you all by the tower', time:'Yesterday', unread:0, avatars:[['JL','#16C172'],['MR','#1466FF']] },
+    ].map(g => ({
+      title:g.title, color:g.color, last:g.last, time:g.time, unreadCount:g.unread,
+      unreadStyle: g.unread>0 ? 'background:#FF3B30;color:#fff' : 'display:none',
+      avatars: g.avatars.map(([init,bg],i)=>({ initials:init, style:av(bg,i) })),
+      onClick: () => this.setState({ sel:g.runId, screen:'groupChat' }),
+    }));
+    const dmPeers = [
+      { name:'Marco R.', initials:'MR', color:'#1466FF', sub:'Hosts Old Town Loop', last:'Bring a light jacket, can get windy', time:'7:10', unread:1 },
+      { name:'Sofia K.', initials:'SK', color:'#FF3B30', sub:'Ran Monsanto Hills', last:'Great pace today! Same time next week?', time:'Mon', unread:0 },
+    ];
+    const dmList = dmPeers.map((p,idx) => ({
+      name:p.name, last:p.last, time:p.time, initials:p.initials,
+      avStyle:`width:48px;height:48px;border-radius:50%;background:${gradFor[p.color]};color:#fff;display:flex;align-items:center;justify-content:center;font-family:'Saira Condensed';font-weight:800;font-size:17px;flex:none`,
+      unreadCount:p.unread, unreadStyle: p.unread>0 ? 'background:#FF3B30;color:#fff' : 'display:none',
+      onClick: () => this.setState({ dmPeer:idx, dmMsgs:[], screen:'dm' }),
+    }));
+
+    // --- Group chat ---
+    const seedGroup = [
+      { sys:true, text:"You joined the run — say hi to the group." },
+      { name:'Marco R.', init:'MR', color:'#1466FF', text:"Welcome everyone! Easy social pace, we'll stop at the best miradouros for photos.", time:'6:40' },
+      { name:'Sofia K.', init:'SK', color:'#FF3B30', text:"Stoked! What's the meeting point?", time:'6:44' },
+      { name:'Marco R.', init:'MR', color:'#1466FF', text:"Praça do Comércio by the arch. Let's meet 7:50 so we roll out 8 sharp.", time:'6:46' },
+      { mine:true, text:"Perfect — I'll be there a bit early. New in town so good to have locals!", time:'6:58' },
+      { name:'João L.', init:'JL', color:'#16C172', text:"Bringing a friend who runs ~5:30, that cool?", time:'7:01' },
+      { name:'Marco R.', init:'MR', color:'#1466FF', text:"Of course, the more the merrier. Coffee by the river after for anyone keen.", time:'7:02' },
+    ];
+    const chatMsgs = seedGroup.concat(s.groupMsgs).map(m => {
+      if (m.sys) return { isSys:true, text:m.text, time:'', name:'', initials:'', showAvatar:false, showName:false,
+        rowStyle:'display:flex;justify-content:center;margin:8px 0', colStyle:'max-width:82%',
+        avStyle:'', bubbleStyle:'font-size:12px;font-weight:600;color:#74746e;background:#E1E1DB;padding:6px 13px;border-radius:999px;text-align:center', timeStyle:'display:none' };
+      const mine = !!m.mine;
+      return { isSys:false, text:m.text, time:m.time, name:m.name||'', initials:m.init||'', showAvatar:!mine, showName:!mine,
+        rowStyle:`display:flex;gap:8px;align-items:flex-end;margin:10px 0;justify-content:${mine?'flex-end':'flex-start'}`,
+        avStyle:`width:30px;height:30px;border-radius:50%;background:${gradFor[m.color]||'#999'};color:#fff;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:11px;flex:none`,
+        colStyle:`max-width:74%;display:flex;flex-direction:column;align-items:${mine?'flex-end':'flex-start'}`,
+        bubbleStyle:`font-size:14px;line-height:1.4;font-weight:500;padding:9px 13px;border-radius:${mine?'15px 15px 5px 15px':'15px 15px 15px 5px'};${mine?'background:#0B0B0C;color:#fff':'background:#fff;color:#0B0B0C;border:1px solid #E4E4DE'}`,
+        timeStyle:'font-size:10px;color:#a3a39d;font-weight:600;margin:3px 4px 0' };
+    });
+    const nowTime = () => { const n = new Date(); return `${((n.getHours()%12)||12)}:${String(n.getMinutes()).padStart(2,'0')}`; };
+    const sendChat = () => { const t = (this.state.chatText||'').trim(); if(!t) return; this.setState({ groupMsgs: this.state.groupMsgs.concat([{ mine:true, text:t, time: nowTime() }]), chatText:'' }); };
+
+    // --- Direct message ---
+    const seedDm = {
+      0:[ { mine:false, text:"Hey! Glad you're joining Old Town Loop.", time:'7:05' }, { mine:false, text:"Bring a light jacket — gets windy by the river.", time:'7:06' }, { mine:true, text:"Thanks Marco! I'll be there early.", time:'7:08' } ],
+      1:[ { mine:false, text:"Great running with you today!", time:'Mon' }, { mine:true, text:"You too — that last hill was brutal.", time:'Mon' }, { mine:false, text:"Same time next week?", time:'Mon' } ],
+    };
+    const dmPeerCur = dmPeers[s.dmPeer] || dmPeers[0];
+    const dmMsgsView = (seedDm[s.dmPeer]||seedDm[0]).concat(s.dmMsgs).map(m => { const mine = !!m.mine; return {
+      text:m.text, time:m.time,
+      rowStyle:`display:flex;margin:8px 0;justify-content:${mine?'flex-end':'flex-start'}`,
+      colStyle:`max-width:78%;display:flex;flex-direction:column;align-items:${mine?'flex-end':'flex-start'}`,
+      bubbleStyle:`font-size:14px;line-height:1.4;font-weight:500;padding:9px 13px;border-radius:${mine?'15px 15px 5px 15px':'15px 15px 15px 5px'};${mine?'background:#0B0B0C;color:#fff':'background:#fff;color:#0B0B0C;border:1px solid #E4E4DE'}`,
+      timeStyle:'font-size:10px;color:#a3a39d;font-weight:600;margin:3px 4px 0' }; });
+    const sendDm = () => { const t = (this.state.dmText||'').trim(); if(!t) return; this.setState({ dmMsgs: this.state.dmMsgs.concat([{ mine:true, text:t, time: nowTime() }]), dmText:'' }); };
+    const dmHeader = { name:dmPeerCur.name, initials:dmPeerCur.initials, sub:dmPeerCur.sub, avStyle:`width:40px;height:40px;border-radius:50%;background:${gradFor[dmPeerCur.color]};color:#fff;display:flex;align-items:center;justify-content:center;font-family:'Saira Condensed';font-weight:800;font-size:15px;flex:none` };
+
+    // --- Notifications ---
+    const notifTypeColor = { request:'#FF3B30', accept:'#16C172', chat:'#1466FF', reminder:'#C8FA00', star:'#FFB020' };
+    const mkNotif = n => { const unread = n.unread && !s.notifRead; return {
+      title:n.title, body:n.body, time:n.time, initials:n.initials, onClick:n.onClick,
+      rowStyle:`display:flex;gap:13px;align-items:flex-start;padding:13px;border-radius:14px;cursor:pointer;background:${unread?'#fff':'transparent'};border:1px solid ${unread?'#E8E8E2':'transparent'}`,
+      avWrap:'position:relative;flex:none',
+      avStyle:`width:44px;height:44px;border-radius:50%;background:${gradFor[n.color]||'#0B0B0C'};color:#fff;display:flex;align-items:center;justify-content:center;font-family:'Saira Condensed';font-weight:800;font-size:16px`,
+      badgeStyle:`position:absolute;bottom:-2px;right:-2px;width:18px;height:18px;border-radius:50%;background:${notifTypeColor[n.type]};border:2px solid #F6F6F3`,
+      dotStyle: unread ? 'width:9px;height:9px;border-radius:50%;background:#C8FA00' : 'display:none',
+    }; };
+    const goHostInbox = () => this.setState({ sel:0, screen:'host' });
+    const notifToday = [
+      { type:'star', color:'#16C172', initials:'JL', title:'How was Sunset 5K?', body:'Rate the runners you ran with · +10 pts', time:'now', unread:true, onClick:()=>this.toReward('recap') },
+      { type:'request', color:'#7C3AED', initials:'AR', title:'Alex R. wants to join', body:'Old Town Loop · tap to review request', time:'12m', unread:true, onClick:goHostInbox },
+      { type:'accept', color:'#1466FF', initials:'MR', title:"You're in!", body:'Marco R. accepted you into Old Town Loop', time:'1h', unread:true, onClick:()=>this.setState({ sel:0, screen:'joined' }) },
+      { type:'chat', color:'#FF3B30', initials:'SK', title:'Sofia K. · Old Town Loop', body:'"Stoked! What\'s the meeting point?"', time:'1h', unread:true, onClick:()=>this.setState({ sel:0, screen:'groupChat' }) },
+    ].map(mkNotif);
+    const notifEarlier = [
+      { type:'reminder', color:'#16C172', initials:'JL', title:'Sunset 5K is tomorrow', body:'Fri 19:30 · Belém — get ready', time:'1d', unread:false, onClick:()=>this.setState({ sel:2, screen:'detail' }) },
+      { type:'star', color:'#16C172', initials:'JL', title:'João L. reviewed you', body:'5.0 — "Steady pace, great company"', time:'2d', unread:false, onClick:()=>this.toReward('completed') },
+      { type:'accept', color:'#FF3B30', initials:'SK', title:'Sofia K. joined Sunset 5K', body:'Your run now has 8 runners going', time:'3d', unread:false, onClick:()=>this.setState({ sel:2, screen:'detail' }) },
+    ].map(mkNotif);
+
+    return {
+      isMyRuns: s.screen === 'myRuns', goMyRuns: () => this.go('myRuns'), goNotifications: () => this.go('notifications'),
+      runsTabs, runsList,
+      isManage: s.screen === 'manageRun', goReviewRequests: () => this.setState({ sel:0, screen:'host' }),
+      isMsgList: s.screen === 'msgList', msgGroups, dmList, goMsgs: () => this.go('msgList'),
+      isGroup: s.screen === 'groupChat', chatMsgs, chatText: s.chatText, onChatText: (e)=>this.setState({ chatText:e.target.value }), sendChat, goGroup: () => this.setState({ sel:0, screen:'groupChat' }),
+      isDm: s.screen === 'dm', dmMsgs: dmMsgsView, dmText: s.dmText, onDmText: (e)=>this.setState({ dmText:e.target.value }), sendDm, dmHeader, goDm: () => this.setState({ dmPeer:0, dmMsgs:[], screen:'dm' }),
+      isNotif: s.screen === 'notifications', notifToday, notifEarlier, markAllRead: () => this.setState({ notifRead:true }),
+      isExplore: s.screen === 'explore',
+      goExplore: () => this.go('explore'),
+      goDiscover: () => this.toDiscover('map'), goDiscoverFilter: () => this.toDiscover('filter'),
+      goStartRun: () => this.toReward('live'),
+      viewHost: () => this.toProfile('other'),
+      typeFilters, pins, tabBar,
+      sel: selVal,
+      openSelected: () => this.go('detail'),
+      isDetail: s.screen === 'detail',
+      isSent: s.screen === 'sent',
+      isHost: s.screen === 'host',
+      isJoined: s.screen === 'joined',
+      d,
+      showSheet: s.showSheet,
+      openSheet: () => this.setState({ showSheet: true }),
+      closeSheet: () => this.setState({ showSheet: false }),
+      requestMsg: s.requestMsg,
+      onRequestMsg: (e) => this.setState({ requestMsg: e.target.value.slice(0,240) }),
+      msgCount: (s.requestMsg || '').length,
+      msgPrompts: [
+        { label:"I'm new in town", text:"New in Lisbon this week and keen to explore the old town with locals." },
+        { label:'Easy pace', text:"I keep an easy, conversational pace — happy to regroup." },
+        { label:'Coffee after?', text:"Up for coffee after by the river too!" },
+      ].map(p => ({ label: p.label, onClick: () => {
+        const cur = (this.state.requestMsg || '').trim();
+        const next = (cur ? cur + ' ' : '') + p.text;
+        this.setState({ requestMsg: next.slice(0,240) });
+      }})),
+      hostMsg: (s.requestMsg || '').trim() || 'New in Lisbon this week — would love to see the old town with locals. I keep an easy pace, happy to bring coffee money!',
+      requestJoin: () => this.setState({ showSheet: true }),
+      sendRequest: () => this.setState({ showSheet: false, screen: 'sent' }),
+      goSent: () => this.go('sent'),
+      goHost: () => this.go('host'),
+      acceptReq: () => this.go('joined'),
+      declineReq: () => this.go('sent'),
+    };
+  }
+}
+</script>
+</body>
+</html>

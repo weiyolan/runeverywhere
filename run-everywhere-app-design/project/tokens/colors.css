@@ -1,0 +1,67 @@
+/* Run Everywhere — Color tokens
+   High-contrast athletic. Black/white base, Volt electric-lime hero accent,
+   a three-color run-type system, and functional signal colors. */
+
+:root {
+  /* ---- Ink / neutral ramp (warm-neutral, near-black base) ---- */
+  --ink-900: #0B0B0C;   /* primary text, dark surfaces, headlines */
+  --ink-800: #18181B;
+  --ink-700: #2A2A2E;   /* secondary dark surface */
+  --ink-500: #6B6B73;   /* muted text, captions */
+  --ink-400: #8E8E96;
+  --ink-300: #B7B7BD;   /* disabled, hairline-on-dark */
+  --ink-200: #DEDEE2;   /* borders, dividers */
+  --ink-100: #ECECEE;   /* track, subtle fill */
+  --paper:   #FFFFFF;   /* primary surface */
+  --paper-2: #F5F5F3;   /* app background, off-white */
+  --paper-3: #EBEBE7;   /* sunken / inset surface */
+
+  /* ---- Volt — brand hero accent ---- */
+  --volt:        #CCFF00;  /* primary action, highlights, logo */
+  --volt-bright: #DBFF3D;
+  --volt-press:  #B2E000;  /* pressed / active CTA */
+  --volt-ink:    #0B0B0C;  /* text/icon ON volt (always near-black) */
+
+  /* ---- Run-type system (category coding) ---- */
+  --discover:        #1463FF;  /* DISCOVER — explore a city/route */
+  --discover-soft:   #E7F0FF;
+  --discover-ink:    #FFFFFF;
+
+  --challenge:       #FF3D2E;  /* CHALLENGE — race pace, hard effort */
+  --challenge-soft:  #FFE9E6;
+  --challenge-ink:   #FFFFFF;
+
+  --social:          #7C5CFC;  /* SOCIAL — easy, meet-up, recovery */
+  --social-soft:     #EFEAFF;
+  --social-ink:      #FFFFFF;
+
+  /* ---- Functional signals ---- */
+  --go:        #00C271;  /* live, verified, GPS active, success */
+  --go-soft:   #DAF7EC;
+  --warn:      #FFB020;  /* caution, pending */
+  --warn-soft: #FFF2D8;
+  --danger:    #E5342A;  /* destructive, errors, report */
+  --danger-soft:#FCE5E3;
+  --star:      #FFC32B;  /* rating gold */
+
+  /* ---- Semantic aliases (use these in components) ---- */
+  --bg-app:        var(--paper-2);
+  --bg-surface:    var(--paper);
+  --bg-sunken:     var(--paper-3);
+  --bg-inverse:    var(--ink-900);
+
+  --text-primary:   var(--ink-900);
+  --text-secondary: var(--ink-500);
+  --text-muted:     var(--ink-400);
+  --text-onDark:    var(--paper);
+  --text-onVolt:    var(--volt-ink);
+
+  --border-hairline: var(--ink-200);
+  --border-strong:   var(--ink-900);
+
+  --action:        var(--volt);
+  --action-press:  var(--volt-press);
+  --action-ink:    var(--volt-ink);
+
+  --focus-ring:    var(--discover);
+}

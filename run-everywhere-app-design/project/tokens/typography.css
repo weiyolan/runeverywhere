@@ -1,0 +1,43 @@
+/* Run Everywhere — Typography tokens
+   Saira Condensed for display/metrics (uppercase, tight). Saira for body/UI. */
+
+:root {
+  /* ---- Families ---- */
+  --font-display: "Saira Condensed", "Arial Narrow", system-ui, sans-serif;
+  --font-body:    "Saira", system-ui, -apple-system, sans-serif;
+  /* Big numeric readouts reuse the condensed display face (tabular) */
+  --font-metric:  "Saira Condensed", "Arial Narrow", system-ui, sans-serif;
+
+  /* ---- Weights ---- */
+  --w-regular: 400;
+  --w-medium:  500;
+  --w-semibold:600;
+  --w-bold:    700;
+  --w-extra:   800;
+  --w-black:   900;
+
+  /* ---- Display scale (condensed, uppercase headlines) ---- */
+  --d-hero:    64px;  /* hero numerals / splash */
+  --d-1:       40px;  /* screen title */
+  --d-2:       30px;  /* section header */
+  --d-3:       22px;  /* card title */
+  --d-eyebrow: 13px;  /* tracked label / eyebrow */
+
+  /* ---- Body scale ---- */
+  --t-lg:   18px;
+  --t-md:   16px;  /* default body */
+  --t-sm:   14px;
+  --t-xs:   12px;
+  --t-2xs:  11px;  /* micro labels */
+
+  /* ---- Line-heights ---- */
+  --lh-tight:  1.02;  /* big condensed display */
+  --lh-snug:   1.15;
+  --lh-normal: 1.45;
+
+  /* ---- Tracking ---- */
+  --track-tight:  -0.01em;
+  --track-flat:    0em;
+  --track-label:   0.08em;  /* eyebrows, type chips */
+  --track-caps:    0.04em;
+}

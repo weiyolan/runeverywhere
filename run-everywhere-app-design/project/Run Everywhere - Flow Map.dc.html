@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Saira+Condensed:wght@500;600;700;800;900&family=Hanken+Grotesk:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  *{box-sizing:border-box}
+  body{margin:0}
+  .re-num{font-variant-numeric:tabular-nums}
+  ::-webkit-scrollbar{height:10px;width:10px}
+  ::-webkit-scrollbar-thumb{background:#2a2a30;border-radius:99px}
+  ::-webkit-scrollbar-track{background:#0b0b0c}
+</style>
+</helmet>
+<div style="background:#0B0B0C;min-height:100vh;font-family:'Hanken Grotesk',sans-serif;color:#fff;-webkit-font-smoothing:antialiased">
+  <!-- header -->
+  <div style="padding:30px 32px 0;max-width:1280px;margin:0 auto">
+    <div style="display:flex;align-items:flex-end;justify-content:space-between;flex-wrap:wrap;gap:16px">
+      <div>
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px">
+          <div style="width:26px;height:26px;background:#C8FA00;border-radius:7px;display:flex;align-items:center;justify-content:center"><svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M12 21s7-6.5 7-12a7 7 0 1 0-14 0c0 5.5 7 12 7 12Z" stroke="#0B0B0C" stroke-width="2.2"/><circle cx="12" cy="9" r="2.2" fill="#0B0B0C"/></svg></div>
+          <span style="font-family:'Saira Condensed';font-weight:700;font-size:13px;letter-spacing:3px;text-transform:uppercase;color:#74747c">Run Everywhere · IA</span>
+        </div>
+        <h1 style="font-family:'Saira Condensed';font-weight:900;font-size:52px;line-height:.9;letter-spacing:-1px;text-transform:uppercase;margin:0">App Flow Map</h1>
+        <p style="font-size:14px;color:#9b9ba0;font-weight:500;margin:10px 0 0;max-width:520px">Every screen and how they connect. <strong style="color:#fff">Click any node</strong> for detail, filter by stage, or trace the core loop. <span class="re-num" style="color:#C8FA00;font-weight:700">40 built</span> — the <strong style="color:#fff">Discover</strong> flow, the <strong style="color:#fff">Run Together</strong> flow (Your Runs, host, messages, chat, notifications), the <strong style="color:#fff">Reward loop</strong> (live GPS run, recap, reviews, completed-run record, badges &amp; leaderboard) and now the full <strong style="color:#fff">Profile</strong> flow (my profile, edit, settings, safety &amp; live location, other-runner profile, report / block) and now the complete <strong style="color:#fff">Create</strong> flow (type + start point, details &amp; goal, visibility, review, published) are live and cross-linked. <strong style="color:#fff">Every flow is built.</strong></p>
+      </div>
+    </div>
+    <!-- toolbar -->
+    <div style="display:flex;align-items:center;gap:18px;flex-wrap:wrap;margin-top:24px">
+      <button onClick="{{ toggleGolden }}" style="{{ goldenBtnStyle }}">{{ goldenLabel }}</button>
+      <div style="width:1px;height:26px;background:#26262c"></div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap">
+        <sc-for list="{{ chips }}" as="chip" hint-placeholder-count="7">
+          <button onClick="{{ chip.onClick }}" style="{{ chip.style }}">{{ chip.label }}</button>
+        </sc-for>
+      </div>
+    </div>
+    <!-- legend -->
+    <div style="display:flex;gap:20px;margin-top:16px;font-size:12px;color:#74747c;font-weight:600;flex-wrap:wrap">
+      <span style="display:inline-flex;align-items:center;gap:6px"><span style="width:9px;height:9px;border-radius:50%;border:1.5px solid #6b6b72"></span>To build</span>
+      <span style="display:inline-flex;align-items:center;gap:6px"><span style="width:9px;height:9px;border-radius:50%;background:#16C172"></span>Built</span>
+      <span style="display:inline-flex;align-items:center;gap:6px"><span style="width:16px;height:2px;background:#C8FA00"></span>Core loop</span>
+      <span style="display:inline-flex;align-items:center;gap:6px"><span style="width:16px;height:0;border-top:2px dashed #6b6b72"></span>Feeds / loops back</span>
+    </div>
+  </div>
+
+  <!-- board -->
+  <div style="padding:24px 32px 80px;width:1344px;margin:0 auto">
+    {{ board }}
+  </div>
+
+  <!-- detail panel -->
+  <sc-if value="{{ selOpen }}" hint-placeholder-val="{{ false }}">
+    <div style="position:fixed;top:24px;right:24px;width:320px;max-height:calc(100vh - 48px);overflow-y:auto;background:#15151a;border:1px solid #2a2a30;border-radius:16px;box-shadow:0 24px 60px rgba(0,0,0,.6);padding:22px;z-index:50">
+      <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:12px">
+        <span style="{{ sel.clusterStyle }}">{{ sel.clusterLabel }}</span>
+        <button onClick="{{ closeSel }}" style="background:#26262c;border:none;color:#9b9ba0;width:28px;height:28px;border-radius:8px;cursor:pointer;font-size:16px;line-height:1;flex:none">✕</button>
+      </div>
+      <h3 style="font-family:'Saira Condensed';font-weight:800;font-size:26px;line-height:1;text-transform:uppercase;margin:14px 0 0">{{ sel.title }}</h3>
+      <div style="display:inline-flex;align-items:center;gap:7px;margin-top:10px;font-size:12px;font-weight:700;color:{{ sel.statusColor }}">
+        <span style="width:9px;height:9px;border-radius:50%;background:{{ sel.statusColor }}"></span>{{ sel.statusLabel }}
+      </div>
+      <p style="font-size:13.5px;line-height:1.55;color:#c8c8cf;margin:14px 0 0;font-weight:500">{{ sel.does }}</p>
+      <div style="font-family:'Saira Condensed';font-weight:700;font-size:12px;letter-spacing:2px;text-transform:uppercase;color:#74747c;margin:20px 0 10px">Connects to</div>
+      <div style="display:flex;flex-direction:column;gap:7px">
+        <sc-for list="{{ sel.links }}" as="lnk" hint-placeholder-count="3">
+          <button onClick="{{ lnk.onClick }}" style="display:flex;align-items:center;gap:9px;background:#0f0f12;border:1px solid #26262c;border-radius:9px;padding:9px 11px;cursor:pointer;text-align:left;width:100%">
+            <span style="width:7px;height:7px;border-radius:50%;background:{{ lnk.color }};flex:none"></span>
+            <span style="font-size:13px;font-weight:600;color:#e8e8ee">{{ lnk.label }}</span>
+            <span style="margin-left:auto;color:#5a5a62;font-size:14px">→</span>
+          </button>
+        </sc-for>
+      </div>
+    </div>
+  </sc-if>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+class Component extends DCLogic {
+  state = { sel: null, filter: null, golden: false };
+
+  data() {
+    // id, label, cluster, status, x, y
+    const N = [
+      ['splash','Splash / Logged out','entry','done',28,60],
+      ['login','Login','entry','done',232,60],
+      ['register1','Register · Step 1','entry','done',436,60],
+      ['register2','Register · Step 2','entry','done',640,60],
+      ['onboard','Onboarding · prefs','entry','done',844,60],
+      ['permissions','Permissions + Connect apps','entry','done',1048,60],
+      ['hub','HOME · 5-Tab Shell — Explore · Runs · Create + · Messages · Profile','hub','done',28,150],
+
+      ['newcity','New-city landing','discover','done',28,262],
+      ['exploreMap','Explore · Map','discover','done',232,262],
+      ['search','Search','discover','done',28,346],
+      ['exploreList','Explore · List','discover','done',232,346],
+      ['filter','Filter sheet','discover','done',28,430],
+      ['runDetail','Run detail','discover','done',232,514],
+
+      ['createType','Create · type + start','create','done',436,262],
+      ['createDetails','Create · details + goal','create','done',436,346],
+      ['createVis','Create · visibility','create','done',436,430],
+      ['createReview','Create · review','create','done',436,514],
+      ['published','Published ✓','create','done',436,598],
+
+      ['myRuns','Your Runs · tabs','coordinate','done',640,262],
+      ['manageRun','Manage run (host)','coordinate','done',640,346],
+      ['hostInbox','Request inbox (host)','coordinate','done',640,430],
+      ['acceptDecline','Accept / Decline','coordinate','done',640,514],
+      ['joined','You\u2019re in → Joined','coordinate','done',640,598],
+      ['requestJoin','Request to join','coordinate','done',232,598],
+      ['requestSent','Request sent','coordinate','done',232,682],
+
+      ['msgList','Messages list','coordinate','done',844,262],
+      ['groupChat','Run group chat','coordinate','done',844,346],
+      ['dm','Direct message','coordinate','done',844,430],
+      ['notifications','Notifications','coordinate','done',844,514],
+
+      ['myProfile','My profile','profile','done',1048,262],
+      ['otherProfile','Other runner profile','profile','done',1048,346],
+      ['editProfile','Edit profile / prefs','profile','done',1048,430],
+      ['settings','Settings','profile','done',1048,514],
+      ['reportBlock','Report / block','profile','done',1048,598],
+      ['safety','Safety / live location','profile','done',1048,682],
+
+      ['completedDetail','Completed run detail','reward','done',232,848],
+      ['liveRun','Live run (GPS)','reward','done',436,764],
+      ['recap','Post-run recap','reward','done',436,848],
+      ['writeReview','Write a review','reward','done',640,848],
+      ['badges','Badges / leaderboard','reward','done',844,764],
+    ];
+    // [from, to, core, soft]
+    const E = [
+      ['splash','login'],['splash','register1'],['register1','register2'],['register2','onboard'],['onboard','permissions'],['permissions','hub'],['login','hub'],
+      ['hub','exploreMap',1],['hub','newcity'],['newcity','exploreMap',1],['search','exploreList'],['filter','exploreMap'],['exploreMap','exploreList'],['exploreMap','runDetail',1],['exploreList','runDetail'],
+      ['hub','createType'],['createType','createDetails'],['createDetails','createVis'],['createVis','createReview'],['createReview','published'],['published','myRuns'],
+      ['hub','myRuns'],['myRuns','manageRun'],['manageRun','hostInbox'],['runDetail','requestJoin',1],['requestJoin','requestSent',1],['requestSent','hostInbox',1],['hostInbox','acceptDecline',1],['acceptDecline','joined',1],['joined','myRuns',0,1],
+      ['hub','msgList'],['msgList','groupChat'],['msgList','dm'],['joined','groupChat',1],['notifications','msgList',0,1],
+      ['hub','myProfile'],['myProfile','editProfile'],['myProfile','settings'],['settings','safety'],['runDetail','otherProfile'],['otherProfile','reportBlock'],
+      ['joined','liveRun',1],['liveRun','recap',1],['recap','writeReview',1],['writeReview','otherProfile',0,1],['recap','completedDetail'],['recap','badges'],['recap','myProfile',0,1],['completedDetail','myRuns',0,1],['myRuns','liveRun',1],['notifications','recap',0,1],
+    ];
+    return { N, E };
+  }
+
+  cfg() {
+    return {
+      colors: { entry:'#9b9ba0', hub:'#C8FA00', discover:'#1466FF', create:'#C8FA00', coordinate:'#FF3B30', reward:'#16C172', profile:'#FFB020' },
+      labels: { entry:'Auth', hub:'Home', discover:'Discover', create:'Create', coordinate:'Run together', reward:'Reward', profile:'Profile' },
+      status: { done:{c:'#16C172',l:'Built'}, partial:{c:'#FFB020',l:'Partially built'}, todo:{c:'#6b6b72',l:'To build'} },
+      does: {
+        splash:'Entry screen for logged-out users — value prop + sign in / register.',
+        login:'Email / social sign in.',
+        register1:'Account basics — name, email, password.',
+        register2:'Profile setup — photo, home city.',
+        onboard:'Capture running preferences: pace, usual distance, languages — seeds matching.',
+        permissions:'Location permission + connect Strava / Apple Health / Garmin (the tracking decision).',
+        hub:'The 5-tab shell. Center + opens Create. Decided IA: Explore · Runs · Create · Messages · Profile.',
+        newcity:'Headline use case — "You\u2019re in Lisbon, here are runs near you." Surfaces on city change.',
+        exploreMap:'City map with type-colored pins. Tap a pin → Run detail.',
+        exploreList:'Same runs as a scannable list with full run cards — goal, host, rating, distance away. Toggle from map.',
+        search:'Search runs, areas and runners — recent searches, area shortcuts and live results.',
+        filter:'Filter sheet — type, pace, distance, date, spots left, open/closed loop.',
+        runDetail:'The keystone. Goal, host, route map, who\u2019s joined, stats, Request-to-join. Nothing acts on a discovered run today.',
+        createType:'Choose run type and drop the start point on the Lisbon map — step 1 of the Create wizard.',
+        createDetails:'Distance, pace, date/time, open vs closed loop, max group size, free-text goal.',
+        createVis:'Visibility: open · approval-required · invite-only.',
+        createReview:'Review summary before publishing.',
+        published:'Confirmation — run is live; lands in Managed-by-you and on the map.',
+        myRuns:'Your Runs with ALL / MANAGED BY YOU / JOINED tabs.',
+        manageRun:'Host view of a run — edit, see requests, message group, cancel.',
+        hostInbox:'Incoming join requests for a run — accept / decline.',
+        acceptDecline:'Host acts on a request; requester is notified.',
+        joined:'Accepted → "You\u2019re in." Run lands in JOINED, group chat unlocks.',
+        requestJoin:'Requester taps Request-to-join from Run detail, then adds an optional intro message (pace, why they want in) the host sees with their profile.',
+        requestSent:'Pending state — awaiting host (or auto-join if open).',
+        msgList:'Conversation list — run groups + DMs with unread counts and search.',
+        groupChat:'Per-run group thread for coordination on the day.',
+        dm:'1:1 direct message between runners.',
+        notifications:'Join requests, accepts, reminders, reviews.',
+        myProfile:'Your own profile variant (vs the someone-else profile already drawn).',
+        otherProfile:'Another runner — rating, reviews, KM/RUNS/D+, favourite/report.',
+        editProfile:'Edit bio, pace, usual distance, home city, languages.',
+        settings:'Units km/mi, notifications, connected apps, logout.',
+        reportBlock:'Report / block flow for safety (icon exists, no flow).',
+        safety:'Share live location + emergency contact for meeting strangers.',
+        completedDetail:'Read-only record of a finished run — result stats, points earned and the crew you rated. Reached from the recap (Save run) or a review notification.',
+        liveRun:'In-app GPS live screen — ticking timer, live distance / pace / D+, route trace and pause / finish. Started from a JOINED run or the You’re-in screen.',
+        recap:'Post-run celebration — animated points award, result stat strip, points breakdown and rate-the-crew. Routes to reviews, badges or saving the run.',
+        writeReview:'Star rating + quick tags + optional note for each co-runner; ratings feed back into the recap and “Other runners say.”',
+        badges:'Level ring, earned / locked badge grid and the weekly Lisbon leaderboard off the points engine. Opened from the Profile tab anywhere.',
+      }
+    };
+  }
+
+  select(id){ this.setState({ sel: id }); }
+
+  renderVals(){
+    const h = React.createElement;
+    const { N, E } = this.data();
+    const cfg = this.cfg();
+    const W = 176, H = 54, HUBH = 50, BW = 1280, BH = 940;
+    const byId = {}; N.forEach(n => byId[n[0]] = { id:n[0], label:n[1], cluster:n[2], status:n[3], x:n[4], y:n[5] });
+    const isHub = id => id === 'hub';
+    const nW = id => isHub(id) ? BW - 56 : W;
+    const nH = id => isHub(id) ? HUBH : H;
+    const cx = id => byId[id].x + nW(id)/2;
+    const cy = id => byId[id].y + nH(id)/2;
+
+    const sel = this.state.sel, filter = this.state.filter, golden = this.state.golden;
+    const coreNodes = new Set();
+    E.forEach(e => { if(e[2]){ coreNodes.add(e[0]); coreNodes.add(e[1]); } });
+
+    // neighbors of selected
+    const neigh = new Set();
+    if(sel){ E.forEach(e => { if(e[0]===sel) neigh.add(e[1]); if(e[1]===sel) neigh.add(e[0]); }); }
+
+    const nodeOpacity = id => {
+      let op = 1;
+      if(golden && !coreNodes.has(id)) op = Math.min(op, .26);
+      if(filter && byId[id].cluster !== filter && !isHub(id)) op = Math.min(op, .2);
+      if(sel && id !== sel && !neigh.has(id)) op = Math.min(op, .24);
+      return op;
+    };
+
+    // ---- edges svg ----
+    const edgeEls = E.map((e,i) => {
+      const a = byId[e[0]], b = byId[e[1]];
+      const x1 = cx(e[0]), y1 = cy(e[0]) + nH(e[0])/2 - 2;
+      const x2 = cx(e[1]), y2 = cy(e[1]) - nH(e[1])/2 + 2;
+      const core = !!e[2], soft = !!e[3];
+      const dy = Math.max(26, Math.abs(y2-y1)*0.4);
+      let sx1=cx(e[0]), sy1=cy(e[0]), sx2=cx(e[1]), sy2=cy(e[1]);
+      // route from bottom of upper to top of lower when vertical, else center
+      if (b.y >= a.y) { sy1 = a.y + nH(e[0]); sy2 = b.y; }
+      else { sy1 = a.y; sy2 = b.y + nH(e[1]); }
+      const path = `M ${sx1} ${sy1} C ${sx1} ${sy1 + (sy2>sy1?dy:-dy)}, ${sx2} ${sy2 - (sy2>sy1?dy:-dy)}, ${sx2} ${sy2}`;
+      let stroke = 'rgba(255,255,255,0.13)', sw = 1.5;
+      if(core) stroke = 'rgba(200,250,0,0.5)';
+      if(golden){ if(core){ stroke = '#C8FA00'; sw = 2.6; } else stroke = 'rgba(255,255,255,0.05)'; }
+      if(sel){ const touch = e[0]===sel || e[1]===sel; if(touch){ stroke = '#ffffff'; sw = 2.6; } else stroke = core && !golden ? 'rgba(200,250,0,0.16)' : 'rgba(255,255,255,0.05)'; }
+      if(filter){ const inF = (byId[e[0]].cluster===filter || byId[e[1]].cluster===filter || isHub(e[0]) ); if(!inF) stroke = 'rgba(255,255,255,0.04)'; }
+      return h('path',{ key:i, d:path, fill:'none', stroke, strokeWidth:sw, strokeDasharray: soft ? '5 5' : null, strokeLinecap:'round' });
+    });
+    const svg = h('svg',{ width:BW, height:BH, style:{ position:'absolute', top:0, left:0, pointerEvents:'none' } }, edgeEls);
+
+    // ---- nodes ----
+    const nodeEls = N.map(n => {
+      const id=n[0], label=n[1], cluster=n[2], status=n[3], x=n[4], y=n[5];
+      const col = cfg.colors[cluster];
+      const st = cfg.status[status];
+      const selected = sel === id;
+      const op = nodeOpacity(id);
+      const hub = isHub(id);
+      const dot = status==='todo'
+        ? h('span',{ style:{ width:9,height:9,borderRadius:'50%',border:'1.5px solid #6b6b72',flex:'none' } })
+        : h('span',{ style:{ width:9,height:9,borderRadius:'50%',background:st.c,flex:'none' } });
+      return h('div',{ key:id, onClick:()=>this.select(id),
+        style:{ position:'absolute', left:x, top:y, width:nW(id), minHeight:nH(id),
+          background: hub ? '#161a0a' : '#15151a',
+          border:'1px solid '+(selected?'#C8FA00':(hub?'#3a4416':'#26262c')),
+          borderLeft:'3px solid '+col,
+          borderRadius:10, padding: hub?'0 16px':'8px 11px', cursor:'pointer',
+          display:'flex', alignItems:'center', gap:9, opacity:op,
+          boxShadow: selected?'0 0 0 3px rgba(200,250,0,.2), 0 10px 24px rgba(0,0,0,.4)':'0 2px 8px rgba(0,0,0,.3)',
+          transition:'opacity .18s, box-shadow .18s, border-color .18s' } },
+        dot,
+        h('span',{ style:{ fontFamily:hub?"'Saira Condensed'":"'Hanken Grotesk'", fontWeight: hub?800:600,
+          fontSize: hub?16:12.5, lineHeight:1.12, letterSpacing: hub?'.5px':'0',
+          textTransform: hub?'uppercase':'none', color:'#eef0ef' } }, label)
+      );
+    });
+
+    const board = h('div',{ style:{ position:'relative', width:BW, height:BH, margin:'0 auto',
+      backgroundImage:'radial-gradient(circle, #1a1a1f 1px, transparent 1px)', backgroundSize:'30px 30px' } },
+      // cluster band labels
+      ...[['Auth & onboarding',60,'#9b9ba0'],['Discover',262,'#1466FF'],['Run together · handshake & messages',598,'#FF3B30'],['Reward loop',764,'#16C172']].map((b,i)=>
+        h('div',{ key:'band'+i, style:{ position:'absolute', left:-0, top:b[1]-22, fontFamily:"'Saira Condensed'", fontWeight:800, fontSize:11, letterSpacing:'2px', textTransform:'uppercase', color:b[2], opacity:.7 } }, b[0])
+      ),
+      svg, ...nodeEls
+    );
+
+    // ---- chips ----
+    const chipKeys = [['all','All'],['entry','Auth'],['create','Create'],['discover','Discover'],['coordinate','Run together'],['reward','Reward'],['profile','Profile']];
+    const chips = chipKeys.map(([k,l]) => {
+      const active = (k==='all' && !filter) || filter===k;
+      const col = k==='all' ? '#C8FA00' : (cfg.colors[k]||'#C8FA00');
+      const dark = (col==='#C8FA00' || col==='#FFB020' || col==='#16C172');
+      return {
+        label: l,
+        onClick: () => this.setState({ filter: k==='all' ? null : k }),
+        style: `padding:8px 14px;border-radius:999px;font-family:'Saira Condensed';font-weight:800;font-size:13px;letter-spacing:.5px;text-transform:uppercase;cursor:pointer;white-space:nowrap;border:1.5px solid ${active?col:'#2a2a30'};background:${active?col:'transparent'};color:${active?(dark?'#0B0B0C':'#fff'):'#9b9ba0'}`
+      };
+    });
+
+    // ---- golden button ----
+    const golden2 = this.state.golden;
+    const goldenBtnStyle = `display:inline-flex;align-items:center;gap:8px;padding:9px 16px;border-radius:999px;font-family:'Saira Condensed';font-weight:800;font-size:14px;letter-spacing:.5px;text-transform:uppercase;cursor:pointer;border:1.5px solid #C8FA00;background:${golden2?'#C8FA00':'transparent'};color:${golden2?'#0B0B0C':'#C8FA00'}`;
+    const goldenLabel = golden2 ? '● Tracing core loop' : '▷ Trace core loop';
+
+    // ---- selected detail ----
+    let selVal = null;
+    if(sel){
+      const n = byId[sel], st = cfg.status[n.status], col = cfg.colors[n.cluster];
+      const dark = (col==='#C8FA00' || col==='#FFB020' || col==='#16C172');
+      const links = E.filter(e=>e[0]===sel||e[1]===sel).map(e=>{ const other = e[0]===sel?e[1]:e[0]; return { id:other, label: byId[other].label, color: cfg.colors[byId[other].cluster], onClick:()=>this.select(other) }; });
+      // dedupe
+      const seen = new Set(); const ul = links.filter(l=>{ if(seen.has(l.id))return false; seen.add(l.id); return true; });
+      selVal = {
+        title: n.label, does: cfg.does[sel]||'',
+        statusColor: st.c, statusLabel: st.l,
+        clusterLabel: cfg.labels[n.cluster], 
+        clusterStyle: `font-family:'Saira Condensed';font-weight:800;font-size:12px;letter-spacing:1px;text-transform:uppercase;padding:5px 11px 3px;border-radius:6px;background:${col};color:${dark?'#0B0B0C':'#fff'}`,
+        links: ul
+      };
+    }
+
+    return {
+      board, chips,
+      goldenBtnStyle, goldenLabel, toggleGolden: () => this.setState({ golden: !this.state.golden }),
+      selOpen: !!sel, sel: selVal, closeSel: () => this.setState({ sel: null })
+    };
+  }
+}
+</script>
+</body>
+</html>

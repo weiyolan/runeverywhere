@@ -1,0 +1,18 @@
+<!-- @dsCard group="Spacing" viewport="700x170" name="Radius & elevation" subtitle="Tight squared radii, a few capsules; crisp contrasty shadows." -->
+<!DOCTYPE html><html><head><meta charset="utf-8"><link rel="stylesheet" href="../styles.css">
+<style>
+  body{margin:0;font-family:var(--font-body);background:var(--paper-2);padding:22px;display:flex;gap:18px;flex-wrap:wrap;align-items:center}
+  .box{width:96px;height:72px;background:var(--paper);border:1.5px solid var(--ink-900);display:flex;align-items:flex-end;padding:8px}
+  .lab{font-family:var(--font-display);font-weight:800;text-transform:uppercase;font-size:11px;letter-spacing:.04em}
+  .sh{width:96px;height:72px;background:var(--paper);border-radius:var(--r-md);display:flex;align-items:flex-end;padding:8px}
+</style></head>
+<body>
+  <div class="box" style="border-radius:var(--r-xs)"><span class="lab">xs 4</span></div>
+  <div class="box" style="border-radius:var(--r-sm)"><span class="lab">sm 8</span></div>
+  <div class="box" style="border-radius:var(--r-md)"><span class="lab">md 12</span></div>
+  <div class="box" style="border-radius:var(--r-lg)"><span class="lab">lg 18</span></div>
+  <div class="box" style="border-radius:var(--r-pill);width:72px;justify-content:center;align-items:center"><span class="lab">pill</span></div>
+  <div class="sh" style="box-shadow:var(--shadow-sm)"><span class="lab">sm</span></div>
+  <div class="sh" style="box-shadow:var(--shadow-md)"><span class="lab">md</span></div>
+  <div class="sh" style="box-shadow:var(--shadow-lg)"><span class="lab">lg</span></div>
+</body></html>

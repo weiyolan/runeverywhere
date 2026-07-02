@@ -1,0 +1,35 @@
+/* Run Everywhere — Spacing, radius, sizing
+   8px base grid with a couple of half-steps for dense mobile UI. */
+
+:root {
+  /* ---- Spacing scale ---- */
+  --sp-1:  4px;
+  --sp-2:  8px;
+  --sp-3:  12px;
+  --sp-4:  16px;
+  --sp-5:  20px;
+  --sp-6:  24px;
+  --sp-8:  32px;
+  --sp-10: 40px;
+  --sp-12: 48px;
+  --sp-16: 64px;
+
+  /* ---- Radius — athletic, mostly tight/squared with a few capsules ---- */
+  --r-xs:  4px;
+  --r-sm:  8px;
+  --r-md:  12px;   /* cards, sheets */
+  --r-lg:  18px;   /* large surfaces */
+  --r-pill: 999px; /* chips, buttons, avatars */
+
+  /* ---- Control sizing (44px min hit target) ---- */
+  --control-h:    52px;  /* primary buttons / inputs */
+  --control-h-sm: 40px;
+  --control-h-xs: 32px;  /* chips */
+  --tabbar-h:     64px;
+  --touch-min:    44px;
+
+  /* ---- Layout ---- */
+  --screen-w:     390px; /* iPhone design width */
+  --gutter:       20px;  /* screen side padding */
+  --maxline:      62ch;
+}

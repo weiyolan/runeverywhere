@@ -1,0 +1,36 @@
+<!-- @dsCard group="Brand" viewport="700x230" name="Wordmark & logo" subtitle="Condensed black caps, italic forward-lean, Volt slash motif." -->
+<!DOCTYPE html><html><head><meta charset="utf-8"><link rel="stylesheet" href="../styles.css">
+<style>
+  body{margin:0;font-family:var(--font-body);background:var(--paper);padding:0}
+  .wrap{display:flex;flex-direction:column}
+  .band{display:flex;align-items:center;gap:18px;padding:22px 26px}
+  .dark{background:var(--ink-900)}
+  /* wordmark */
+  .mark{font-family:var(--font-display);font-weight:900;text-transform:uppercase;font-style:italic;letter-spacing:-0.01em;line-height:1;display:flex;align-items:center;gap:2px}
+  .mark .run{font-size:34px}
+  .mark .slash{color:var(--volt);font-size:34px;font-style:italic;margin:0 4px;transform:skewX(-4deg)}
+  .mark .ev{font-size:34px}
+  .onlight .run,.onlight .ev{color:var(--ink-900)}
+  .ondark .run,.ondark .ev{color:#fff}
+  /* monogram */
+  .mono{width:60px;height:60px;background:var(--volt);border-radius:var(--r-md);display:flex;align-items:center;justify-content:center;font-family:var(--font-display);font-weight:900;font-style:italic;font-size:30px;color:var(--volt-ink)}
+  .mono.dark{background:var(--ink-900);color:var(--volt)}
+  .note{font-size:11px;color:var(--ink-400);margin-left:auto}
+</style></head>
+<body>
+  <div class="wrap">
+    <div class="band">
+      <div class="mark onlight"><span class="run">RUN</span><span class="slash">/</span><span class="ev">EVERYWHERE</span></div>
+      <span class="note">on paper</span>
+    </div>
+    <div class="band dark">
+      <div class="mark ondark"><span class="run">RUN</span><span class="slash">/</span><span class="ev">EVERYWHERE</span></div>
+      <span class="note" style="color:var(--ink-400)">on ink · volt slash</span>
+    </div>
+    <div class="band" style="gap:14px">
+      <div class="mono">R/</div>
+      <div class="mono dark">R/</div>
+      <span class="note">monogram — app icon / avatar fallback</span>
+    </div>
+  </div>
+</body></html>

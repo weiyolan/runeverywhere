@@ -1,0 +1,592 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Saira+Condensed:wght@500;600;700;800;900&family=Hanken+Grotesk:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  *{box-sizing:border-box}
+  html,body{margin:0}
+  .re-num{font-variant-numeric:tabular-nums}
+  ::-webkit-scrollbar{width:0;height:0}
+  @keyframes rePulse{0%{transform:scale(1);opacity:.5}70%{transform:scale(2.6);opacity:0}100%{opacity:0}}
+  @keyframes rePop{0%{transform:scale(.6);opacity:0}60%{transform:scale(1.08)}100%{transform:scale(1);opacity:1}}
+  @keyframes reUp{0%{transform:translateY(16px);opacity:0}100%{transform:translateY(0);opacity:1}}
+  @keyframes reSheet{0%{transform:translateY(100%)}100%{transform:translateY(0)}}
+  @keyframes reFade{0%{opacity:0}100%{opacity:1}}
+  @keyframes reRing{from{stroke-dashoffset:339}to{stroke-dashoffset:70}}
+  @keyframes reBlink{0%,100%{opacity:1}50%{opacity:.25}}
+  textarea::placeholder{color:#B7B7BD}
+</style>
+</helmet>
+
+<div style="min-height:100vh;width:100%;background:radial-gradient(120% 90% at 50% -10%, #232329 0%, #131316 55%, #0B0B0C 100%);display:flex;align-items:center;justify-content:center;padding:40px 20px;font-family:'Hanken Grotesk',system-ui,sans-serif;-webkit-font-smoothing:antialiased">
+
+  <div style="width:390px;height:844px;position:relative;flex:none;background:#F6F6F3;border-radius:46px;overflow:hidden;box-shadow:0 40px 90px rgba(0,0,0,.55), 0 0 0 11px #1c1c20, 0 0 0 13px #2a2a30">
+    <div style="position:absolute;top:12px;left:50%;transform:translateX(-50%);width:120px;height:30px;background:#0B0B0C;border-radius:18px;z-index:90"></div>
+
+    <!-- ============ LIVE RUN (GPS) ============ -->
+    <sc-if value="{{ isLive }}" hint-placeholder-val="{{ true }}">
+    <div style="position:absolute;inset:0;background:#e8ede9;overflow:hidden">
+      <!-- map base -->
+      <div style="position:absolute;inset:0">
+        <div style="position:absolute;inset:0;background-image:linear-gradient(#dde3dd 1px,transparent 1px),linear-gradient(90deg,#dde3dd 1px,transparent 1px);background-size:38px 38px"></div>
+        <div style="position:absolute;top:90px;left:-70px;width:300px;height:420px;background:#cfe0ee;border-radius:48% 52% 60% 40%"></div>
+        <div style="position:absolute;top:340px;right:-60px;width:280px;height:300px;background:#d4e7d6;border-radius:50%"></div>
+        <svg style="position:absolute;inset:0" width="390" height="844"><path d="M-10 200 Q150 250 200 420 T400 640" stroke="#fff" stroke-width="16" fill="none"/><path d="M60 -10 Q90 220 280 300 T360 600" stroke="#fff" stroke-width="11" fill="none"/></svg>
+      </div>
+
+      <!-- traced route (done so far, volt-green) -->
+      <svg style="position:absolute;inset:0;z-index:5" width="390" height="844" fill="none">
+        <path d="M86 612 C120 520 70 470 150 430 S250 380 232 300 200 196 296 168" stroke="#16C172" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>
+        <path d="M296 168 C340 156 356 120 330 92" stroke="#0B0B0C" stroke-width="6" stroke-linecap="round" stroke-dasharray="2 12" opacity=".28"/>
+        <circle cx="86" cy="612" r="7" fill="#fff" stroke="#16C172" stroke-width="4"/>
+      </svg>
+      <!-- co-runner dots -->
+      <div style="position:absolute;top:300px;left:222px;z-index:6;width:14px;height:14px;border-radius:50%;background:#FF3B30;border:2.5px solid #fff;box-shadow:0 2px 6px rgba(0,0,0,.3)"></div>
+      <div style="position:absolute;top:178px;left:286px;z-index:6;width:14px;height:14px;border-radius:50%;background:#1466FF;border:2.5px solid #fff;box-shadow:0 2px 6px rgba(0,0,0,.3)"></div>
+      <!-- you (leading) -->
+      <div style="position:absolute;top:152px;left:284px;width:40px;height:40px;display:flex;align-items:center;justify-content:center;z-index:8"><span style="position:absolute;width:30px;height:30px;border-radius:50%;background:#C8FA00;animation:rePulse 1.9s ease-out infinite"></span><span style="position:relative;width:20px;height:20px;border-radius:50%;background:#0B0B0C;border:3px solid #C8FA00"></span></div>
+
+      <!-- status bar -->
+      <div class="re-num" style="position:absolute;top:0;left:0;right:0;height:50px;z-index:20;display:flex;align-items:center;justify-content:space-between;padding:0 26px;color:#0B0B0C;pointer-events:none">
+        <span style="font-family:'Saira Condensed';font-weight:800;font-size:15px">7:58</span>
+        <div style="display:flex;gap:6px;align-items:center"><svg width="18" height="12" viewBox="0 0 18 12" fill="currentColor"><rect x="0" y="7" width="3" height="5" rx="1"/><rect x="5" y="4" width="3" height="8" rx="1"/><rect x="10" y="1" width="3" height="11" rx="1"/><rect x="15" y="1" width="3" height="11" rx="1" opacity="0.4"/></svg><svg width="22" height="12" viewBox="0 0 22 12" fill="none" stroke="currentColor" stroke-width="1.2"><rect x="1" y="1.5" width="17" height="9" rx="2.5"/><rect x="2.5" y="3" width="12" height="6" rx="1" fill="currentColor" stroke="none"/><rect x="19.5" y="4" width="1.5" height="4" rx="0.7" fill="currentColor" stroke="none"/></svg></div>
+      </div>
+
+      <!-- LIVE header pill + run title -->
+      <div style="position:absolute;top:58px;left:14px;right:14px;z-index:20;display:flex;align-items:center;gap:10px">
+        <div style="display:inline-flex;align-items:center;gap:7px;background:#0B0B0C;border-radius:999px;padding:8px 13px;box-shadow:0 6px 16px rgba(0,0,0,.28)">
+          <span style="width:8px;height:8px;border-radius:50%;background:#16C172;animation:reBlink 1.2s ease-in-out infinite"></span>
+          <span style="font-family:'Saira Condensed';font-weight:800;font-size:12px;letter-spacing:1.5px;text-transform:uppercase;color:#fff">Live · Recording</span>
+        </div>
+        <div style="flex:1;display:flex;align-items:center;justify-content:flex-end;gap:6px">
+          <span style="display:inline-flex;align-items:center;gap:5px;background:#fff;border-radius:999px;padding:7px 11px;box-shadow:0 4px 12px rgba(0,0,0,.14)"><span style="width:7px;height:7px;border-radius:50%;background:#16C172"></span><span class="re-num" style="font-family:'Saira Condensed';font-weight:800;font-size:12px;letter-spacing:.5px;text-transform:uppercase;color:#0B0B0C">3 running</span></span>
+        </div>
+      </div>
+
+      <!-- live console -->
+      <div style="position:absolute;left:0;right:0;bottom:0;z-index:30;background:#0B0B0C;color:#fff;border-radius:26px 26px 0 0;padding:20px 22px 30px;box-shadow:0 -18px 44px rgba(0,0,0,.4)">
+        <div style="display:flex;align-items:center;justify-content:space-between">
+          <div>
+            <div style="font-family:'Saira Condensed';font-weight:800;font-size:12px;letter-spacing:1px;text-transform:uppercase;color:#9b9ba0">{{ liveType }} · Sunset 5K</div>
+            <div style="font-size:12px;color:#74747c;font-weight:500;margin-top:2px">with João L., Sofia K. +1</div>
+          </div>
+          <span style="display:inline-flex;align-items:center;gap:6px;background:#15151a;border:1px solid #26262c;border-radius:999px;padding:6px 11px"><span style="width:7px;height:7px;border-radius:50%;background:#C8FA00"></span><span class="re-num" style="font-family:'Saira Condensed';font-weight:800;font-size:11px;letter-spacing:.5px;text-transform:uppercase;color:#C8FA00">+{{ livePts }} pts</span></span>
+        </div>
+
+        <!-- hero time -->
+        <div style="text-align:center;margin:14px 0 6px">
+          <div style="font-family:'Saira Condensed';font-weight:700;font-size:11px;letter-spacing:3px;text-transform:uppercase;color:#74747c">Elapsed</div>
+          <div class="re-num" style="font-family:'Saira Condensed';font-weight:900;font-size:80px;line-height:.86;letter-spacing:-1px;margin-top:4px">{{ liveTime }}</div>
+        </div>
+
+        <!-- sub stats -->
+        <div style="display:flex;background:#15151a;border:1px solid #26262c;border-radius:16px;overflow:hidden;margin-top:8px">
+          <div style="flex:1;padding:14px 10px;text-align:center;border-right:1px solid #26262c"><div class="re-num" style="font-family:'Saira Condensed';font-weight:800;font-size:26px;line-height:1">{{ liveDist }}</div><div style="font-size:9px;letter-spacing:1.5px;text-transform:uppercase;color:#74747c;font-weight:700;margin-top:4px">KM</div></div>
+          <div style="flex:1;padding:14px 10px;text-align:center;border-right:1px solid #26262c"><div class="re-num" style="font-family:'Saira Condensed';font-weight:800;font-size:26px;line-height:1">{{ livePace }}</div><div style="font-size:9px;letter-spacing:1.5px;text-transform:uppercase;color:#74747c;font-weight:700;margin-top:4px">/KM</div></div>
+          <div style="flex:1;padding:14px 10px;text-align:center"><div class="re-num" style="font-family:'Saira Condensed';font-weight:800;font-size:26px;line-height:1">{{ liveDplus }}</div><div style="font-size:9px;letter-spacing:1.5px;text-transform:uppercase;color:#74747c;font-weight:700;margin-top:4px">D+ m</div></div>
+        </div>
+
+        <!-- controls -->
+        <div style="display:flex;gap:11px;margin-top:16px">
+          <button onClick="{{ togglePause }}" style="flex:1;display:flex;align-items:center;justify-content:center;gap:8px;font-family:'Saira Condensed';font-weight:800;font-size:16px;letter-spacing:.5px;text-transform:uppercase;color:#fff;background:transparent;border:2px solid #2e2e34;border-radius:14px;padding:15px 0;cursor:pointer" style-active="transform:scale(.98)">{{ pauseLabel }}</button>
+          <button onClick="{{ finishRun }}" style="flex:1.3;display:flex;align-items:center;justify-content:center;gap:8px;font-family:'Saira Condensed';font-weight:800;font-size:16px;letter-spacing:.5px;text-transform:uppercase;color:#0B0B0C;background:#C8FA00;border:none;border-radius:14px;padding:15px 0;cursor:pointer;box-shadow:0 8px 22px rgba(200,250,0,.3)" style-active="transform:scale(.98)"><svg width="16" height="16" viewBox="0 0 24 24" fill="none"><rect x="6" y="6" width="12" height="12" rx="2" fill="#0B0B0C"/></svg>Finish run</button>
+        </div>
+      </div>
+    </div>
+    </sc-if>
+
+    <!-- ============ POST-RUN RECAP ============ -->
+    <sc-if value="{{ isRecap }}" hint-placeholder-val="{{ false }}">
+    <div style="position:absolute;inset:0;background:#0B0B0C;color:#fff;display:flex;flex-direction:column;overflow:hidden">
+      <!-- confetti -->
+      <div style="position:absolute;top:120px;left:40px;width:7px;height:7px;background:#1466FF;border-radius:2px;transform:rotate(20deg)"></div>
+      <div style="position:absolute;top:150px;right:50px;width:8px;height:8px;background:#C8FA00;border-radius:50%"></div>
+      <div style="position:absolute;top:200px;right:96px;width:6px;height:6px;background:#FF3B30;border-radius:2px;transform:rotate(-15deg)"></div>
+      <div style="position:absolute;top:104px;left:120px;width:6px;height:6px;background:#16C172;border-radius:50%"></div>
+
+      <div class="re-num" style="position:relative;z-index:2;height:50px;display:flex;align-items:center;justify-content:space-between;padding:0 26px;font-size:15px;font-weight:800;font-family:'Saira Condensed'">8:32<span></span></div>
+
+      <div style="position:relative;z-index:2;flex:1;overflow-y:auto;padding:6px 22px 24px">
+        <div style="text-align:center;margin-top:10px">
+          <div style="font-family:'Saira Condensed';font-weight:800;font-size:13px;letter-spacing:2px;text-transform:uppercase;color:#16C172">Run complete</div>
+          <h1 style="font-family:'Saira Condensed';font-weight:900;font-size:54px;line-height:.86;letter-spacing:-1px;text-transform:uppercase;margin:8px 0 0">Nice run.</h1>
+          <p style="font-size:14px;color:#9b9ba0;font-weight:500;margin:10px 0 0">Sunset 5K · Belém · with 3 runners</p>
+        </div>
+
+        <!-- points ring -->
+        <div style="display:flex;justify-content:center;margin:22px 0 6px">
+          <div style="position:relative;width:148px;height:148px;animation:rePop .5s cubic-bezier(.2,.9,.3,1.2)">
+            <svg width="148" height="148" viewBox="0 0 120 120" style="transform:rotate(-90deg)">
+              <circle cx="60" cy="60" r="54" fill="none" stroke="#26262c" stroke-width="11"/>
+              <circle cx="60" cy="60" r="54" fill="none" stroke="#C8FA00" stroke-width="11" stroke-linecap="round" stroke-dasharray="339" stroke-dashoffset="70" style="animation:reRing 1s .25s cubic-bezier(.3,.8,.3,1) both"/>
+            </svg>
+            <div style="position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center">
+              <div class="re-num" style="font-family:'Saira Condensed';font-weight:900;font-size:42px;line-height:.9;color:#C8FA00">+{{ recapPts }}</div>
+              <div style="font-family:'Saira Condensed';font-weight:800;font-size:12px;letter-spacing:1.5px;text-transform:uppercase;color:#74747c;margin-top:2px">points</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- stat strip -->
+        <div style="display:flex;background:#15151a;border:1px solid #26262c;border-radius:16px;overflow:hidden;margin-top:12px">
+          <div style="flex:1;padding:13px 6px;text-align:center;border-right:1px solid #26262c"><div class="re-num" style="font-family:'Saira Condensed';font-weight:800;font-size:24px;line-height:1">{{ resKm }}</div><div style="font-size:9px;letter-spacing:1px;text-transform:uppercase;color:#74747c;font-weight:700;margin-top:3px">KM</div></div>
+          <div style="flex:1;padding:13px 6px;text-align:center;border-right:1px solid #26262c"><div class="re-num" style="font-family:'Saira Condensed';font-weight:800;font-size:24px;line-height:1">{{ resTime }}</div><div style="font-size:9px;letter-spacing:1px;text-transform:uppercase;color:#74747c;font-weight:700;margin-top:3px">Time</div></div>
+          <div style="flex:1;padding:13px 6px;text-align:center;border-right:1px solid #26262c"><div class="re-num" style="font-family:'Saira Condensed';font-weight:800;font-size:24px;line-height:1">{{ resPace }}</div><div style="font-size:9px;letter-spacing:1px;text-transform:uppercase;color:#74747c;font-weight:700;margin-top:3px">/KM</div></div>
+          <div style="flex:1;padding:13px 6px;text-align:center"><div class="re-num" style="font-family:'Saira Condensed';font-weight:800;font-size:24px;line-height:1">{{ resDplus }}</div><div style="font-size:9px;letter-spacing:1px;text-transform:uppercase;color:#74747c;font-weight:700;margin-top:3px">D+ m</div></div>
+        </div>
+
+        <!-- points breakdown -->
+        <div style="background:#15151a;border:1px solid #26262c;border-radius:16px;padding:6px 16px;margin-top:11px">
+          <sc-for list="{{ ptsBreakdown }}" as="b" hint-placeholder-count="3">
+            <div style="display:flex;align-items:center;justify-content:space-between;padding:11px 0;border-bottom:1px solid {{ b.border }}">
+              <span style="font-size:13.5px;font-weight:600;color:#d8d8de">{{ b.label }}</span>
+              <span class="re-num" style="font-family:'Saira Condensed';font-weight:800;font-size:15px;color:{{ b.color }}">{{ b.value }}</span>
+            </div>
+          </sc-for>
+        </div>
+
+        <!-- rate the crew -->
+        <div style="display:flex;align-items:flex-end;justify-content:space-between;margin:24px 2px 12px">
+          <div>
+            <div style="font-family:'Saira Condensed';font-weight:900;font-size:22px;line-height:.95;text-transform:uppercase;letter-spacing:-.3px">Rate the crew</div>
+            <div style="font-size:12.5px;color:#74747c;font-weight:500;margin-top:3px">{{ ratedSummary }}</div>
+          </div>
+          <span style="font-family:'Saira Condensed';font-weight:800;font-size:11px;letter-spacing:1px;text-transform:uppercase;color:#C8FA00;padding-bottom:3px">+10 pts</span>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:9px">
+          <sc-for list="{{ crew }}" as="c" hint-placeholder-count="3">
+            <button onClick="{{ c.onClick }}" style="display:flex;align-items:center;gap:12px;background:#15151a;border:1px solid {{ c.border }};border-radius:14px;padding:11px 13px;cursor:pointer;text-align:left;width:100%" style-active="transform:scale(.99)">
+              <div style="width:42px;height:42px;border-radius:50%;background:{{ c.grad }};color:#fff;display:flex;align-items:center;justify-content:center;font-family:'Saira Condensed';font-weight:800;font-size:15px;flex:none">{{ c.initials }}</div>
+              <div style="flex:1;min-width:0"><div style="font-size:14.5px;font-weight:700;line-height:1.1">{{ c.name }}</div><div style="font-size:12px;color:#74747c;font-weight:500;margin-top:2px">{{ c.role }}</div></div>
+              <div style="display:flex;align-items:center;gap:8px;flex:none">{{ c.stars }}<span style="{{ c.cta }}">{{ c.ctaLabel }}</span></div>
+            </button>
+          </sc-for>
+        </div>
+      </div>
+
+      <!-- footer CTAs -->
+      <div style="position:relative;z-index:2;background:#0B0B0C;border-top:1px solid #1c1c22;padding:13px 22px 28px;display:flex;gap:11px">
+        <button onClick="{{ goBadges }}" style="flex:1;font-family:'Saira Condensed';font-weight:800;font-size:15px;letter-spacing:.5px;text-transform:uppercase;color:#fff;background:transparent;border:2px solid #2e2e34;border-radius:13px;padding:14px 0;cursor:pointer" style-active="transform:scale(.98)">Badges</button>
+        <button onClick="{{ saveRun }}" style="flex:1.4;font-family:'Saira Condensed';font-weight:800;font-size:16px;letter-spacing:.5px;text-transform:uppercase;color:#0B0B0C;background:#C8FA00;border:none;border-radius:13px;padding:14px 0;cursor:pointer;box-shadow:0 8px 22px rgba(200,250,0,.3)" style-active="transform:scale(.98)">Save run</button>
+      </div>
+    </div>
+    </sc-if>
+
+    <!-- ============ WRITE A REVIEW ============ -->
+    <sc-if value="{{ isReview }}" hint-placeholder-val="{{ false }}">
+    <div style="position:absolute;inset:0;background:#F6F6F3;display:flex;flex-direction:column">
+      <div style="background:#fff;border-bottom:1px solid #EDEDE8;padding:0 14px 14px;flex:none">
+        <div class="re-num" style="height:50px;display:flex;align-items:center;justify-content:space-between;padding:0 12px;font-size:15px;font-weight:800;font-family:'Saira Condensed'">8:32<span></span></div>
+        <div style="display:flex;align-items:center;gap:9px">
+          <button onClick="{{ backToRecap }}" style="width:38px;height:38px;border-radius:11px;border:none;background:transparent;display:flex;align-items:center;justify-content:center;cursor:pointer;flex:none" style-active="transform:scale(.94)"><svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M15 5l-7 7 7 7" stroke="#0B0B0C" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+          <div style="flex:1"><div style="font-family:'Saira Condensed';font-weight:900;font-size:22px;line-height:.95;text-transform:uppercase;letter-spacing:-.3px">Rate runner</div><div style="font-size:12px;color:#74746e;font-weight:500;margin-top:1px">Sunset 5K · Fri 13 Jun</div></div>
+        </div>
+      </div>
+
+      <div style="flex:1;overflow-y:auto;padding:22px 18px 24px">
+        <!-- runner header -->
+        <div style="display:flex;flex-direction:column;align-items:center;text-align:center">
+          <div style="width:78px;height:78px;border-radius:50%;background:{{ rv.grad }};color:#fff;display:flex;align-items:center;justify-content:center;font-family:'Saira Condensed';font-weight:800;font-size:30px">{{ rv.initials }}</div>
+          <div style="font-family:'Saira Condensed';font-weight:900;font-size:26px;text-transform:uppercase;line-height:1;margin-top:13px">{{ rv.name }}</div>
+          <div style="font-size:13px;color:#74746e;font-weight:500;margin-top:4px">{{ rv.role }}</div>
+        </div>
+
+        <!-- stars -->
+        <div style="display:flex;align-items:center;justify-content:center;gap:8px;margin:24px 0 8px">
+          <sc-for list="{{ rvStars }}" as="st" hint-placeholder-count="5">
+            <button onClick="{{ st.onClick }}" style="background:transparent;border:none;cursor:pointer;padding:2px" style-active="transform:scale(.9)"><svg width="40" height="40" viewBox="0 0 24 24" fill="{{ st.fill }}"><path d="M12 2l2.9 6.3 6.8.7-5.1 4.6 1.4 6.7L12 17.8 6 20.3l1.4-6.7L2.3 9l6.8-.7L12 2Z" stroke="{{ st.stroke }}" stroke-width="1.6" stroke-linejoin="round"/></svg></button>
+          </sc-for>
+        </div>
+        <div style="text-align:center;font-family:'Saira Condensed';font-weight:800;font-size:15px;letter-spacing:.5px;text-transform:uppercase;color:{{ rvRatingColor }};min-height:20px">{{ rvRatingLabel }}</div>
+
+        <!-- quick tags -->
+        <div style="font-family:'Saira Condensed';font-weight:800;font-size:12px;letter-spacing:1.5px;text-transform:uppercase;color:#74746e;margin:26px 0 11px">What stood out</div>
+        <div style="display:flex;gap:8px;flex-wrap:wrap">
+          <sc-for list="{{ rvTags }}" as="t" hint-placeholder-count="6">
+            <button onClick="{{ t.onClick }}" style="{{ t.style }}">{{ t.label }}</button>
+          </sc-for>
+        </div>
+
+        <!-- note -->
+        <div style="font-family:'Saira Condensed';font-weight:800;font-size:12px;letter-spacing:1.5px;text-transform:uppercase;color:#74746e;margin:24px 0 11px">Add a note <span style="font-weight:600;text-transform:none;letter-spacing:0;color:#a3a39d">· optional</span></div>
+        <textarea value="{{ rvNote }}" onChange="{{ onRvNote }}" maxlength="200" placeholder="Say something the next runner should know — pace, vibe, local knowledge." style="width:100%;height:92px;resize:none;border:1.5px solid #DEDEE2;border-radius:12px;padding:13px 14px;font-family:'Hanken Grotesk';font-size:14.5px;font-weight:500;line-height:1.45;color:#0B0B0C;outline:none" style-focus="border-color:#0B0B0C"></textarea>
+      </div>
+
+      <div style="background:#fff;border-top:1px solid #EDEDE8;padding:13px 18px 26px">
+        <button onClick="{{ submitReview }}" style="width:100%;font-family:'Saira Condensed';font-weight:800;font-size:17px;letter-spacing:.5px;text-transform:uppercase;color:{{ submitTextColor }};background:{{ submitBg }};border:none;border-radius:12px;padding:15px 0;cursor:{{ submitCursor }};opacity:{{ submitOpacity }}" style-active="transform:scale(.98)">{{ submitLabel }}</button>
+      </div>
+    </div>
+    </sc-if>
+
+    <!-- ============ COMPLETED RUN DETAIL ============ -->
+    <sc-if value="{{ isCompleted }}" hint-placeholder-val="{{ false }}">
+    <div style="position:absolute;inset:0;background:#F6F6F3;display:flex;flex-direction:column">
+      <div style="flex:1;overflow-y:auto">
+        <!-- map header -->
+        <div style="height:206px;position:relative;background:{{ compHeaderBg }}">
+          <div style="position:absolute;inset:0;background-image:linear-gradient(#ffffff66 1px,transparent 1px),linear-gradient(90deg,#ffffff66 1px,transparent 1px);background-size:30px 30px"></div>
+          {{ compRoute }}
+          <div class="re-num" style="position:absolute;top:0;left:0;right:0;height:50px;display:flex;align-items:center;justify-content:space-between;padding:0 26px;font-size:15px;font-weight:800;font-family:'Saira Condensed';color:#0B0B0C">8:32<span></span></div>
+          <button onClick="{{ compBack }}" style="position:absolute;top:56px;left:14px;width:38px;height:38px;border-radius:11px;background:#fff;box-shadow:0 4px 12px rgba(0,0,0,.16);border:none;display:flex;align-items:center;justify-content:center;cursor:pointer" style-active="transform:scale(.94)"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M15 5l-7 7 7 7" stroke="#0B0B0C" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+          <div style="position:absolute;top:56px;right:14px;width:38px;height:38px;border-radius:11px;background:#fff;box-shadow:0 4px 12px rgba(0,0,0,.16);display:flex;align-items:center;justify-content:center;cursor:pointer"><svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M18 8l-6 6m0 0V9m0 5h5" stroke="#0B0B0C" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M4 14v4a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-4" stroke="#0B0B0C" stroke-width="2" stroke-linecap="round"/></svg></div>
+          <div style="position:absolute;left:14px;bottom:12px;display:inline-flex;align-items:center;gap:6px;background:{{ compPillBg }};padding:6px 12px;border-radius:999px;box-shadow:0 6px 14px rgba(11,11,12,.22)"><svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M5 12l4 4L19 6" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg><span style="font-family:'Saira Condensed';font-weight:800;font-size:12px;letter-spacing:.5px;text-transform:uppercase;color:#fff">Completed</span></div>
+        </div>
+
+        <div style="padding:16px 18px 0">
+          <div style="display:flex;align-items:center;gap:8px"><span style="font-family:'Saira Condensed';font-weight:800;font-size:13px;letter-spacing:1px;text-transform:uppercase;background:{{ compTagBg }};color:{{ compTagOn }};padding:6px 11px 4px;border-radius:6px">{{ compTag }}</span><span class="re-num" style="font-family:'Saira Condensed';font-weight:800;font-size:11px;letter-spacing:.5px;text-transform:uppercase;color:#74746e">{{ compDate }}</span></div>
+          <h1 style="font-family:'Saira Condensed';font-weight:900;font-size:34px;line-height:.92;text-transform:uppercase;letter-spacing:-.5px;margin:11px 0 3px">{{ compTitle }}</h1>
+          <div style="font-size:13px;color:#74746e;font-weight:500">{{ compArea }}</div>
+          <p style="font-size:14.5px;line-height:1.5;color:#3a3a36;margin:13px 0 0;font-weight:500">{{ compBlurb }}</p>
+
+          <!-- your result -->
+          <div style="font-family:'Saira Condensed';font-weight:800;font-size:12px;letter-spacing:1.5px;text-transform:uppercase;color:#74746e;margin:20px 0 9px">Your result</div>
+          <div style="display:flex;border:1px solid #E4E4DE;border-radius:14px;overflow:hidden;background:#fff">
+            <div style="flex:1;padding:13px 8px;text-align:center;border-right:1px solid #EDEDE8"><div class="re-num" style="font-family:'Saira Condensed';font-weight:800;font-size:23px;line-height:1">{{ compKm }}</div><div style="font-size:9px;letter-spacing:1px;text-transform:uppercase;color:#74746e;font-weight:700;margin-top:3px">KM</div></div>
+            <div style="flex:1;padding:13px 8px;text-align:center;border-right:1px solid #EDEDE8"><div class="re-num" style="font-family:'Saira Condensed';font-weight:800;font-size:23px;line-height:1">{{ compTime }}</div><div style="font-size:9px;letter-spacing:1px;text-transform:uppercase;color:#74746e;font-weight:700;margin-top:3px">Time</div></div>
+            <div style="flex:1;padding:13px 8px;text-align:center;border-right:1px solid #EDEDE8"><div class="re-num" style="font-family:'Saira Condensed';font-weight:800;font-size:23px;line-height:1">{{ compPace }}</div><div style="font-size:9px;letter-spacing:1px;text-transform:uppercase;color:#74746e;font-weight:700;margin-top:3px">/KM</div></div>
+            <div style="flex:1;padding:13px 8px;text-align:center"><div class="re-num" style="font-family:'Saira Condensed';font-weight:800;font-size:23px;line-height:1">{{ compDplus }}</div><div style="font-size:9px;letter-spacing:1px;text-transform:uppercase;color:#74746e;font-weight:700;margin-top:3px">D+ m</div></div>
+          </div>
+
+          <!-- points earned -->
+          <div style="display:flex;align-items:center;gap:13px;background:#0B0B0C;color:#fff;border-radius:14px;padding:15px 16px;margin-top:12px">
+            <div style="width:46px;height:46px;border-radius:12px;background:#C8FA00;display:flex;align-items:center;justify-content:center;flex:none"><svg width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M13 2L4 14h6l-1 8 9-12h-6l1-8Z" stroke="#0B0B0C" stroke-width="2" stroke-linejoin="round"/></svg></div>
+            <div style="flex:1"><div class="re-num" style="font-family:'Saira Condensed';font-weight:900;font-size:22px;line-height:.9">+{{ compPts }} <span style="font-size:13px;color:#9b9ba0;font-weight:700">pts earned</span></div><div style="font-size:12px;color:#9b9ba0;font-weight:500;margin-top:3px">Finishing · distance goal · on time · reviews</div></div>
+          </div>
+
+          <!-- crew you rated -->
+          <div style="font-family:'Saira Condensed';font-weight:800;font-size:12px;letter-spacing:1.5px;text-transform:uppercase;color:#74746e;margin:22px 0 9px">Ran with · {{ compCrewCount }}</div>
+          <div style="display:flex;flex-direction:column;gap:9px">
+            <sc-for list="{{ compCrew }}" as="c" hint-placeholder-count="3">
+              <div style="display:flex;align-items:center;gap:12px;background:#fff;border:1px solid #E4E4DE;border-radius:14px;padding:11px 13px">
+                <div style="width:40px;height:40px;border-radius:50%;background:{{ c.grad }};color:#fff;display:flex;align-items:center;justify-content:center;font-family:'Saira Condensed';font-weight:800;font-size:14px;flex:none">{{ c.initials }}</div>
+                <div style="flex:1;min-width:0"><div style="font-size:14px;font-weight:700;line-height:1.1">{{ c.name }}</div><div style="font-size:12px;color:#74746e;font-weight:500;margin-top:2px">{{ c.role }}</div></div>
+                <div style="display:flex;align-items:center;gap:7px;flex:none">{{ c.stars }}<span style="{{ c.cta }}">{{ c.ctaLabel }}</span></div>
+              </div>
+            </sc-for>
+          </div>
+        </div>
+      </div>
+
+      <div style="background:#fff;border-top:1px solid #EDEDE8;padding:13px 18px 26px;display:flex;gap:11px">
+        <button onClick="{{ goBadges }}" style="flex:1;font-family:'Saira Condensed';font-weight:800;font-size:15px;letter-spacing:.5px;text-transform:uppercase;color:#0B0B0C;background:#fff;border:2px solid #0B0B0C;border-radius:12px;padding:14px 0;cursor:pointer" style-active="transform:scale(.98)">View badges</button>
+        <button onClick="{{ toMyRuns }}" style="flex:1.2;font-family:'Saira Condensed';font-weight:800;font-size:15px;letter-spacing:.5px;text-transform:uppercase;color:#fff;background:#0B0B0C;border:none;border-radius:12px;padding:14px 0;cursor:pointer" style-active="transform:scale(.98)">Done</button>
+      </div>
+    </div>
+    </sc-if>
+
+    <!-- ============ BADGES / LEADERBOARD ============ -->
+    <sc-if value="{{ isBadges }}" hint-placeholder-val="{{ false }}">
+    <div style="position:absolute;inset:0;background:#F6F6F3;display:flex;flex-direction:column">
+      <!-- ink header -->
+      <div style="background:#0B0B0C;color:#fff;flex:none;padding:0 18px 22px;border-radius:0 0 22px 22px">
+        <div class="re-num" style="height:50px;display:flex;align-items:center;justify-content:space-between;font-size:15px;font-weight:800;font-family:'Saira Condensed'">8:33<span></span></div>
+        <div style="display:flex;align-items:center;gap:9px;margin-bottom:18px">
+          <button onClick="{{ backBadges }}" style="width:36px;height:36px;border-radius:10px;border:none;background:#15151a;display:flex;align-items:center;justify-content:center;cursor:pointer;flex:none" style-active="transform:scale(.94)"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M15 5l-7 7 7 7" stroke="#fff" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+          <h1 style="font-family:'Saira Condensed';font-weight:900;font-size:26px;text-transform:uppercase;letter-spacing:-.3px;margin:0">Rewards</h1>
+        </div>
+        <!-- level card -->
+        <div style="display:flex;align-items:center;gap:14px">
+          <div style="position:relative;width:64px;height:64px;flex:none">
+            <svg width="64" height="64" viewBox="0 0 64 64" style="transform:rotate(-90deg)"><circle cx="32" cy="32" r="28" fill="none" stroke="#1c1c22" stroke-width="6"/><circle cx="32" cy="32" r="28" fill="none" stroke="#C8FA00" stroke-width="6" stroke-linecap="round" stroke-dasharray="176" stroke-dashoffset="62"/></svg>
+            <div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-family:'Saira Condensed';font-weight:900;font-size:22px;color:#C8FA00">{{ level }}</div>
+          </div>
+          <div style="flex:1">
+            <div style="font-family:'Saira Condensed';font-weight:900;font-size:24px;text-transform:uppercase;line-height:.95">{{ levelName }}</div>
+            <div class="re-num" style="font-size:12.5px;color:#9b9ba0;font-weight:600;margin-top:3px">{{ totalPts }} pts · {{ toNext }} to {{ nextName }}</div>
+          </div>
+        </div>
+      </div>
+
+      <div style="flex:1;overflow-y:auto;padding:18px 16px 110px">
+        <!-- badges grid -->
+        <div style="display:flex;align-items:center;justify-content:space-between;margin:0 2px 13px">
+          <span style="font-family:'Saira Condensed';font-weight:800;font-size:12px;letter-spacing:1.5px;text-transform:uppercase;color:#74746e">Badges</span>
+          <span class="re-num" style="font-family:'Saira Condensed';font-weight:800;font-size:12px;color:#74746e">{{ earnedCount }} / {{ badgeTotal }} earned</span>
+        </div>
+        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:26px">
+          <sc-for list="{{ badges }}" as="b" hint-placeholder-count="6">
+            <div style="{{ b.cardStyle }}">
+              <div style="{{ b.iconWrap }}">{{ b.icon }}</div>
+              <div style="font-family:'Saira Condensed';font-weight:800;font-size:13px;text-transform:uppercase;line-height:1;margin-top:10px;color:{{ b.nameColor }}">{{ b.name }}</div>
+              <div style="font-size:10.5px;color:#a3a39d;font-weight:500;margin-top:4px;line-height:1.3">{{ b.desc }}</div>
+            </div>
+          </sc-for>
+        </div>
+
+        <!-- leaderboard -->
+        <div style="display:flex;align-items:center;justify-content:space-between;margin:0 2px 13px">
+          <span style="font-family:'Saira Condensed';font-weight:800;font-size:12px;letter-spacing:1.5px;text-transform:uppercase;color:#74746e">Leaderboard</span>
+          <span style="font-family:'Saira Condensed';font-weight:800;font-size:11px;letter-spacing:.5px;text-transform:uppercase;color:#0B0B0C;background:#fff;border:1px solid #E4E4DE;padding:5px 10px 3px;border-radius:999px">This week · Lisbon</span>
+        </div>
+        <div style="background:#fff;border:1px solid #E4E4DE;border-radius:16px;overflow:hidden">
+          <sc-for list="{{ leaderboard }}" as="r" hint-placeholder-count="5">
+            <div style="{{ r.rowStyle }}">
+              <div style="{{ r.rankStyle }}">{{ r.rank }}</div>
+              <div style="width:38px;height:38px;border-radius:50%;background:{{ r.grad }};color:#fff;display:flex;align-items:center;justify-content:center;font-family:'Saira Condensed';font-weight:800;font-size:13px;flex:none">{{ r.initials }}</div>
+              <div style="flex:1;min-width:0"><div style="font-size:14px;font-weight:{{ r.weight }};line-height:1.1;color:#0B0B0C">{{ r.name }}</div><div class="re-num" style="font-size:11.5px;color:#74746e;font-weight:500;margin-top:1px">{{ r.runs }} runs this week</div></div>
+              <div class="re-num" style="font-family:'Saira Condensed';font-weight:800;font-size:17px;color:{{ r.ptsColor }};flex:none">{{ r.pts }}</div>
+            </div>
+          </sc-for>
+        </div>
+      </div>
+
+      {{ tabBar }}
+    </div>
+    </sc-if>
+
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:390,&quot;height&quot;:844}}">
+class Component extends DCLogic {
+  state = this.boot({ screen:'live', running:true, elapsed:1718, reviewTarget:null, ratings:{}, tags:{}, notes:{}, draftStars:0, draftTags:[], draftNote:'', pastRun:2, fromPast:false });
+
+  boot(def){ try{ const p=new URLSearchParams(window.location.search); const s=p.get('s'); const run=p.get('run'); if(s && ['live','recap','review','completed','badges'].includes(s)){ def.screen=s; if(s==='badges') def.badgesEntry=true; } if(run!=null && run!==''){ const n=parseInt(run,10); if(!isNaN(n)){ def.pastRun=n; if(s==='completed') def.fromPast=true; } } }catch(e){} return def; }
+
+  componentDidMount(){ this.timer = setInterval(()=>{ if(this.state.screen==='live' && this.state.running){ this.setState(s=>({ elapsed: s.elapsed+1 })); } }, 1000); }
+  componentWillUnmount(){ clearInterval(this.timer); }
+
+  toMain(s){ window.location.href='Run%20Everywhere%20-%20Main%20Flow.dc.html'+(s?'?s='+s:''); }
+  toDiscover(s){ window.location.href='Run%20Everywhere%20-%20Discover%20Flow.dc.html'+(s?'?s='+s:''); }
+  toProfile(s){ window.location.href='Run%20Everywhere%20-%20Profile%20Flow.dc.html'+(s?'?s='+s:''); }
+
+  pastRunData(){
+    return {
+      2:{ type:'Social', color:'#16C172', tagOn:'#06210f', date:'Fri 13 Jun · 19:30', title:'Sunset 5K', area:'Belém · Lisbon',
+          blurb:'“Relaxed riverside 5K to watch the sunset. All paces welcome, we regroup at every corner. Pastéis after.”',
+          res:{ km:'5.0', time:'31:15', pace:'6:15', dplus:'42' }, pts:90, gave:5,
+          crew:[ {n:'João L.',i:'JL',c:'#16C172',role:'Host · Sunset 5K'}, {n:'Marco R.',i:'MR',c:'#1466FF',role:'Ran the full 5K'}, {n:'Sofia K.',i:'SK',c:'#FF3B30',role:'First run together'} ] },
+      1:{ type:'Challenge', color:'#FF3B30', tagOn:'#fff', date:'Sun 8 Jun · 07:00', title:'Monsanto Hills', area:'Monsanto · Lisbon',
+          blurb:'“Lung-busting hill repeats up Monsanto. Bring your A-game — we push hard and regroup at the summit.”',
+          res:{ km:'12.0', time:'57:08', pace:'4:46', dplus:'318' }, pts:180, gave:5,
+          crew:[ {n:'Sofia K.',i:'SK',c:'#FF3B30',role:'Host · Monsanto Hills'}, {n:'Alex R.',i:'AR',c:'#7C5CFC',role:'First run together'} ] },
+      0:{ type:'Discover', color:'#1466FF', tagOn:'#fff', date:'Sat 31 May · 08:00', title:'Old Town Loop', area:'Alfama · Lisbon',
+          blurb:'“Easy social run through the old town — we stop at the best miradouros for photos. Coffee after by the river.”',
+          res:{ km:'7.5', time:'41:18', pace:'5:30', dplus:'96' }, pts:120, gave:5,
+          crew:[ {n:'Marco R.',i:'MR',c:'#1466FF',role:'Ran together'}, {n:'Sofia K.',i:'SK',c:'#FF3B30',role:'Ran the full loop'}, {n:'João L.',i:'JL',c:'#16C172',role:'Good vibes'} ] },
+    };
+  }
+
+  fmtTime(sec){ const m=Math.floor(sec/60), s=sec%60; return m+':'+String(s).padStart(2,'0'); }
+
+  completedVals(){
+    const h = React.createElement;
+    const pd = this.pastRunData();
+    const cr = pd[this.state.pastRun] != null ? pd[this.state.pastRun] : pd[2];
+    const headerBgs = { Discover:'linear-gradient(135deg,#dde7f5,#eaf1ff)', Challenge:'linear-gradient(135deg,#f7e0de,#ffeceb)', Social:'linear-gradient(135deg,#d6f1e3,#e3f8ee)' };
+    const routeCfg = {
+      Discover:{ d:'M40 172 C90 150 70 78 132 70 S232 112 262 48', s:[40,172], e:[262,48] },
+      Challenge:{ d:'M30 176 L88 70 L150 168 L212 60 L268 150', s:[30,176], e:[268,150] },
+      Social:{ d:'M44 168 C80 92 60 70 130 64 S232 96 232 48', s:[44,168], e:[232,48] },
+    };
+    const rc = routeCfg[cr.type] || routeCfg.Social;
+    const compRoute = h('svg',{ style:{ position:'absolute', inset:0 }, width:'100%', height:206, viewBox:'0 0 300 206', preserveAspectRatio:'none' },
+      h('path',{ d:rc.d, stroke:cr.color, strokeWidth:5, fill:'none', strokeLinecap:'round', strokeLinejoin:'round' }),
+      h('circle',{ cx:rc.s[0], cy:rc.s[1], r:7, fill:'#fff', stroke:cr.color, strokeWidth:4 }),
+      h('circle',{ cx:rc.e[0], cy:rc.e[1], r:7, fill:cr.color }) );
+    const compCrew = cr.crew.map(c => ({
+      initials:c.i, name:c.n, role:c.role, grad:this.grad(c.c),
+      stars: this.starsNode(Math.round(cr.gave), 13, '#FFB020'),
+      ctaLabel:'', cta:'display:none' }));
+    return {
+      compHeaderBg: headerBgs[cr.type] || headerBgs.Social, compRoute, compPillBg: cr.color,
+      compTag: cr.type, compTagBg: cr.color, compTagOn: cr.tagOn,
+      compDate: cr.date, compTitle: cr.title, compArea: cr.area, compBlurb: cr.blurb,
+      compKm: cr.res.km, compTime: cr.res.time, compPace: cr.res.pace, compDplus: cr.res.dplus,
+      compPts: cr.pts, compCrew, compCrewCount: cr.crew.length,
+    };
+  }
+  grad(c){ return ({ '#1466FF':'linear-gradient(135deg,#1466FF,#0B3FB0)','#FF3B30':'linear-gradient(135deg,#FF3B30,#B61C13)','#16C172':'linear-gradient(135deg,#16C172,#0A7A47)','#7C5CFC':'linear-gradient(135deg,#7C5CFC,#4B30C0)','#FFB020':'linear-gradient(135deg,#FFB020,#C77A00)' })[c]||c; }
+
+  crewData(){
+    return [
+      { id:'jl', name:'João L.', initials:'JL', color:'#16C172', role:'Host · Sunset 5K' },
+      { id:'sk', name:'Sofia K.', initials:'SK', color:'#FF3B30', role:'Ran the full 5K' },
+      { id:'mr', name:'Marco R.', initials:'MR', color:'#1466FF', role:'First run together' },
+    ];
+  }
+
+  starsNode(n, size, gold){
+    const h = React.createElement;
+    const arr = [1,2,3,4,5].map(i => h('svg',{ key:i, width:size, height:size, viewBox:'0 0 24 24', fill: i<=n ? (gold||'#FFB020') : '#E2E2DC' },
+      h('path',{ d:'M12 2l2.9 6.3 6.8.7-5.1 4.6 1.4 6.7L12 17.8 6 20.3l1.4-6.7L2.3 9l6.8-.7L12 2Z' })));
+    return h('div',{ style:{ display:'flex', gap:'1px' } }, arr);
+  }
+
+  renderVals(){
+    const s = this.state, h = React.createElement;
+
+    // ---------- LIVE ----------
+    const paceSecPerKm = 367; // 6:07 /km
+    const distKm = (s.elapsed / paceSecPerKm);
+
+    // ---------- final result (frozen) ----------
+    const recapPts = 90;
+    const res = { km:'5.2', time:'31:48', pace:'6:07', dplus:'48' };
+
+    // ---------- crew + ratings ----------
+    const crewRaw = this.crewData();
+    const ratedCount = crewRaw.filter(c => (s.ratings[c.id]||0) > 0).length;
+
+    const crew = crewRaw.map(c => {
+      const r = s.ratings[c.id]||0, rated = r>0;
+      return { initials:c.initials, name:c.name, role:c.role, grad:this.grad(c.color),
+        border: rated ? '#2e3a22' : '#26262c',
+        stars: rated ? this.starsNode(r, 13) : null,
+        ctaLabel: rated ? '' : 'Rate',
+        cta: rated ? 'display:none' : "font-family:'Saira Condensed';font-weight:800;font-size:12px;letter-spacing:.5px;text-transform:uppercase;color:#0B0B0C;background:#C8FA00;padding:7px 12px 5px;border-radius:8px",
+        onClick: () => this.setState({ reviewTarget:c.id, screen:'review', draftStars:s.ratings[c.id]||0, draftTags:(s.tags[c.id]||[]).slice(), draftNote:s.notes[c.id]||'' }) };
+    });
+
+    const crewDone = crewRaw.map(c => {
+      const r = s.ratings[c.id]||0, rated = r>0;
+      return { initials:c.initials, name:c.name, role:c.role, grad:this.grad(c.color),
+        stars: rated ? this.starsNode(r, 13) : null,
+        ctaLabel: rated ? '' : 'Not rated',
+        cta: rated ? 'display:none' : "font-size:11px;font-weight:700;color:#a3a39d" };
+    });
+
+    const ratedSummary = ratedCount===0 ? 'Tap a runner to leave a rating' : (ratedCount===crewRaw.length ? 'All rated — nice. Thank you!' : ratedCount+' of '+crewRaw.length+' rated');
+
+    const ptsBreakdown = [
+      { label:'Finished the run', value:'+50', color:'#fff', border:'#26262c' },
+      { label:'Hit the 5K distance', value:'+20', color:'#fff', border:'#26262c' },
+      { label:'On time at the start', value:'+10', color:'#fff', border:'#26262c' },
+      { label: ratedCount>0 ? 'Rated the crew' : 'Rate the crew', value: ratedCount>0 ? '+10' : '+10', color: ratedCount>0 ? '#16C172' : '#74747c', border:'transparent' },
+    ];
+
+    // ---------- REVIEW ----------
+    const target = crewRaw.find(c => c.id===s.reviewTarget) || crewRaw[0];
+    const rv = { initials:target.initials, name:target.name, role:target.role, grad:this.grad(target.color) };
+    const rvStars = [1,2,3,4,5].map(i => ({
+      fill: i <= s.draftStars ? '#FFB020' : '#fff',
+      stroke: i <= s.draftStars ? '#FFB020' : '#D6D6CE',
+      onClick: () => this.setState({ draftStars:i }) }));
+    const ratingLabels = { 0:'', 1:'Rough run', 2:'Okay', 3:'Good', 4:'Great', 5:'Outstanding' };
+    const rvRatingLabel = ratingLabels[s.draftStars] || '';
+    const rvRatingColor = s.draftStars>=4 ? '#0A7A47' : (s.draftStars>0 ? '#0B0B0C' : '#a3a39d');
+
+    const tagOpts = ['Great pace','Welcoming','On time','Knows the city','Strong runner','Good vibes'];
+    const rvTags = tagOpts.map(t => {
+      const on = s.draftTags.includes(t);
+      return { label:t, onClick:()=>this.setState({ draftTags: on ? s.draftTags.filter(x=>x!==t) : s.draftTags.concat([t]) }),
+        style:`font-family:'Hanken Grotesk';font-weight:600;font-size:13px;border:1.5px solid ${on?'#0B0B0C':'#E4E4DE'};background:${on?'#0B0B0C':'#fff'};color:${on?'#fff':'#3a3a36'};padding:9px 13px;border-radius:999px;cursor:pointer;white-space:nowrap` };
+    });
+    const canSubmit = s.draftStars>0;
+
+    const submitReview = () => {
+      if(!canSubmit) return;
+      const id = s.reviewTarget;
+      this.setState({
+        ratings: Object.assign({}, s.ratings, { [id]:s.draftStars }),
+        tags: Object.assign({}, s.tags, { [id]:s.draftTags.slice() }),
+        notes: Object.assign({}, s.notes, { [id]:s.draftNote }),
+        screen:'recap' });
+    };
+
+    // ---------- BADGES ----------
+    const ic = (path, color, fill) => h('svg',{ width:26, height:26, viewBox:'0 0 24 24', fill: fill||'none' }, h('path',{ d:path, stroke:color, strokeWidth:2, strokeLinecap:'round', strokeLinejoin:'round' }));
+    const badgeRaw = [
+      { name:'Early Bird', desc:'5 dawn runs', earned:true, color:'#FFB020', icon:'M12 3v2M5 7l1.4 1.4M3 14h2M21 14h-2M17.6 8.4 19 7M8 18h8M7 14a5 5 0 0 1 10 0' },
+      { name:'City Explorer', desc:'Ran 5 cities', earned:true, color:'#1466FF', icon:'M12 21s7-6.5 7-12a7 7 0 1 0-14 0c0 5.5 7 12 7 12Z M12 9.5a2 2 0 1 0 0-.01' },
+      { name:'Sunset Club', desc:'Dusk finishers', earned:true, color:'#FF3B30', icon:'M3 18h18M12 4v6M9 8l3 3 3-3M5 14a7 7 0 0 1 14 0' },
+      { name:'100K Club', desc:'100 km logged', earned:true, color:'#16C172', icon:'M4 12a8 8 0 1 1 16 0 M8 12l3 3 5-6' },
+      { name:'Hill Crusher', desc:'1,000 m D+', earned:false, color:'#7C5CFC', icon:'M3 19l6-9 4 5 3-4 5 8z' },
+      { name:'Streak x10', desc:'10 in a row', earned:false, color:'#FFB020', icon:'M13 2L4 14h6l-1 8 9-12h-6l1-8Z' },
+    ];
+    const badges = badgeRaw.map(b => ({
+      name:b.name, desc:b.desc,
+      cardStyle: `background:${b.earned?'#fff':'#F0F0EC'};border:1px solid ${b.earned?'#E4E4DE':'#E8E8E2'};border-radius:14px;padding:14px 11px;text-align:center;${b.earned?'box-shadow:0 3px 10px rgba(11,11,12,.05)':'opacity:.7'}`,
+      iconWrap: `width:46px;height:46px;border-radius:13px;margin:0 auto;display:flex;align-items:center;justify-content:center;background:${b.earned?b.color:'#DEDED8'}`,
+      icon: ic(b.icon, b.earned ? (b.color==='#FFB020'||b.color==='#16C172'?'#0B0B0C':'#fff') : '#a3a39d'),
+      nameColor: b.earned ? '#0B0B0C' : '#a3a39d',
+    }));
+    const earnedCount = badgeRaw.filter(b=>b.earned).length;
+
+    const lbRaw = [
+      { rank:1, name:'Sofia K.', initials:'SK', color:'#FF3B30', pts:'1,480', runs:6 },
+      { rank:2, name:'João L.', initials:'JL', color:'#16C172', pts:'1,360', runs:5 },
+      { rank:3, name:'You', initials:'YO', color:'#0B0B0C', pts:'1,240', runs:4, you:true },
+      { rank:4, name:'Marco R.', initials:'MR', color:'#1466FF', pts:'1,120', runs:4 },
+      { rank:5, name:'Rita F.', initials:'RF', color:'#7C5CFC', pts:'980', runs:3 },
+    ];
+    const leaderboard = lbRaw.map((r,i)=>({
+      rank:r.rank, name:r.name, initials:r.initials, grad: r.you ? '#C8FA00' : this.grad(r.color), pts:r.pts, runs:r.runs,
+      weight: r.you ? 800 : 600,
+      ptsColor: r.you ? '#0B0B0C' : '#0B0B0C',
+      rowStyle: `display:flex;align-items:center;gap:11px;padding:12px 14px;${i<lbRaw.length-1?'border-bottom:1px solid #EDEDE8;':''}${r.you?'background:#F4FBCB;':''}`,
+      rankStyle: `width:22px;text-align:center;font-family:'Saira Condensed';font-weight:800;font-size:15px;color:${r.rank<=3?'#0B0B0C':'#a3a39d'};flex:none`,
+    }));
+    // 'You' avatar uses volt bg -> ink text
+    leaderboard.forEach(r=>{ if(r.initials==='YO'){ r.grad='#C8FA00'; } });
+
+    // ---------- tab bar (badges screen) ----------
+    const tab = (active, label, icon, onClick) => h('div',{ onClick, style:{ display:'flex',flexDirection:'column',alignItems:'center',gap:'4px',color:active?'#0B0B0C':'#a3a39d',cursor:'pointer' } },
+      icon, h('span',{ style:{ fontSize:'10px', fontWeight:active?700:600, letterSpacing:'.3px' } }, label));
+    const gc = on => on?'#0B0B0C':'#a3a39d';
+    const tabBar = h('div',{ style:{ position:'absolute',left:0,right:0,bottom:0,height:'80px',background:'#fff',borderTop:'1px solid #EDEDE8',display:'flex',alignItems:'center',justifyContent:'space-around',paddingBottom:'12px',zIndex:40 } },
+      tab(false,'Explore', h('svg',{width:23,height:23,viewBox:'0 0 24 24',fill:'none'},h('path',{d:'M12 21s7-6.5 7-12a7 7 0 1 0-14 0c0 5.5 7 12 7 12Z',stroke:gc(false),strokeWidth:2,strokeLinejoin:'round'}),h('circle',{cx:12,cy:9,r:2.3,fill:gc(false)})), ()=>this.toDiscover('map')),
+      tab(false,'My Runs', h('svg',{width:23,height:23,viewBox:'0 0 24 24',fill:'none'},h('path',{d:'M4 7h16M4 12h16M4 17h10',stroke:gc(false),strokeWidth:2,strokeLinecap:'round'})), ()=>this.toMain('myRuns')),
+      h('div',{ onClick:()=>this.toDiscover('map'), style:{display:'flex',flexDirection:'column',alignItems:'center',marginTop:'-22px',cursor:'pointer'} }, h('div',{style:{width:'52px',height:'52px',borderRadius:'16px',background:'#C8FA00',display:'flex',alignItems:'center',justifyContent:'center',boxShadow:'0 6px 16px rgba(200,250,0,.5)'}}, h('svg',{width:26,height:26,viewBox:'0 0 24 24',fill:'none'},h('path',{d:'M12 5v14M5 12h14',stroke:'#0B0B0C',strokeWidth:2.6,strokeLinecap:'round'})))),
+      tab(false,'Messages', h('svg',{width:23,height:23,viewBox:'0 0 24 24',fill:'none'},h('path',{d:'M21 11.5a8 8 0 0 1-11.5 7.2L4 20l1.3-5.4A8 8 0 1 1 21 11.5Z',stroke:gc(false),strokeWidth:2,strokeLinejoin:'round'})), ()=>this.toMain('msgList')),
+      tab(true,'Profile', h('svg',{width:23,height:23,viewBox:'0 0 24 24',fill:'none'},h('circle',{cx:12,cy:8,r:3.4,stroke:gc(true),strokeWidth:2}),h('path',{d:'M5 20c0-3.6 3.1-6 7-6s7 2.4 7 6',stroke:gc(true),strokeWidth:2,strokeLinecap:'round'})), ()=>this.toProfile('myProfile')),
+      h('div',{style:{position:'absolute',bottom:'7px',left:'50%',transform:'translateX(-50%)',width:'134px',height:'5px',borderRadius:'3px',background:'rgba(0,0,0,.28)'}}));
+
+    return {
+      // live
+      isLive: s.screen==='live',
+      liveType:'Social', livePts: recapPts,
+      liveTime: this.fmtTime(s.elapsed),
+      liveDist: distKm.toFixed(2),
+      livePace: s.running ? '6:07' : '—:—',
+      liveDplus: Math.round(distKm*9.2),
+      pauseLabel: s.running ? '❚❚ Pause' : '▶ Resume',
+      togglePause: () => this.setState({ running: !s.running }),
+      finishRun: () => this.setState({ screen:'recap' }),
+
+      // recap
+      isRecap: s.screen==='recap',
+      recapPts, resKm:res.km, resTime:res.time, resPace:res.pace, resDplus:res.dplus,
+      ptsBreakdown, crew, ratedSummary,
+      goBadges: () => this.setState({ screen:'badges', badgesEntry:false }),
+      backBadges: () => { if(this.state.badgesEntry){ try{ if(window.history.length>1){ window.history.back(); return; } }catch(e){} this.toProfile('myProfile'); } else { this.setState({ screen:'recap' }); } },
+      saveRun: () => this.setState({ screen:'completed' }),
+
+      // review
+      isReview: s.screen==='review',
+      rv, rvStars, rvRatingLabel, rvRatingColor, rvTags,
+      rvNote: s.draftNote, onRvNote: (e)=>this.setState({ draftNote:e.target.value.slice(0,200) }),
+      backToRecap: () => this.setState({ screen:'recap' }),
+      submitReview,
+      submitLabel: canSubmit ? 'Submit rating' : 'Tap a star to rate',
+      submitBg: canSubmit ? '#0B0B0C' : '#E4E4DE',
+      submitTextColor: canSubmit ? '#fff' : '#a3a39d',
+      submitCursor: canSubmit ? 'pointer' : 'not-allowed',
+      submitOpacity: 1,
+
+      // completed (data-driven by which past run was opened)
+      isCompleted: s.screen==='completed',
+      ...this.completedVals(),
+      compBack: () => { if(this.state.fromPast){ this.toMain('myRuns'); } else { this.setState({ screen:'recap' }); } },
+      toMyRuns: () => this.toMain('myRuns'),
+
+      // badges
+      isBadges: s.screen==='badges',
+      level:4, levelName:'Pacer', nextName:'Tempo', totalPts:'1,240', toNext:'260 pts',
+      badges, earnedCount, badgeTotal: badgeRaw.length,
+      leaderboard, tabBar,
+    };
+  }
+}
+</script>
+</body>
+</html>

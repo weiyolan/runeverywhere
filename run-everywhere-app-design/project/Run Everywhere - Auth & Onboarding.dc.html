@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Saira+Condensed:wght@500;600;700;800;900&family=Saira:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script src="./image-slot.js"></script>
+<style>
+  *{box-sizing:border-box}
+  html,body{margin:0}
+  input::placeholder,textarea::placeholder{color:#B7B7BD}
+  ::-webkit-scrollbar{width:0;height:0}
+  @keyframes rePop{0%{transform:scale(.6);opacity:0}60%{transform:scale(1.08)}100%{transform:scale(1);opacity:1}}
+</style>
+</helmet>
+
+<div style="min-height:100vh;width:100%;background:radial-gradient(120% 90% at 50% -10%, #232329 0%, #131316 55%, #0B0B0C 100%);display:flex;align-items:center;justify-content:center;padding:40px 20px;font-family:'Saira',system-ui,sans-serif;-webkit-font-smoothing:antialiased">
+
+  <div style="width:390px;height:844px;position:relative;flex:none;background:#F5F5F3;border-radius:46px;overflow:hidden;box-shadow:0 40px 90px rgba(0,0,0,.55), 0 0 0 11px #1c1c20, 0 0 0 13px #2a2a30">
+    <!-- notch -->
+    <div style="position:absolute;top:12px;left:50%;transform:translateX(-50%);width:120px;height:30px;background:#0B0B0C;border-radius:18px;z-index:60"></div>
+
+    <!-- ============ SPLASH ============ -->
+    <sc-if value="{{ isSplash }}" hint-placeholder-val="{{ true }}">
+    <div style="position:absolute;inset:0;background:#0B0B0C">
+      <image-slot id="reSplashPhoto" shape="rect" fit="cover" placeholder="Drop a hero running photo" style="position:absolute;inset:0;width:100%;height:100%;display:block"></image-slot>
+      <div style="position:absolute;inset:0;background:linear-gradient(180deg, rgba(11,11,12,.55) 0%, rgba(11,11,12,0) 26%, rgba(11,11,12,.35) 58%, rgba(11,11,12,.94) 100%)"></div>
+      <!-- status bar -->
+      <div style="position:absolute;top:0;left:0;right:0;height:50px;z-index:50;display:flex;align-items:center;justify-content:space-between;padding:0 26px;color:#fff;pointer-events:none">
+        <span style="font-family:'Saira Condensed';font-weight:800;font-size:15px">7:24</span>
+        <div style="display:flex;gap:6px;align-items:center"><svg width="18" height="12" viewBox="0 0 18 12" fill="currentColor"><rect x="0" y="7" width="3" height="5" rx="1"/><rect x="5" y="4" width="3" height="8" rx="1"/><rect x="10" y="1" width="3" height="11" rx="1"/><rect x="15" y="1" width="3" height="11" rx="1" opacity="0.4"/></svg><svg width="22" height="12" viewBox="0 0 22 12" fill="none" stroke="currentColor" stroke-width="1.2"><rect x="1" y="1.5" width="17" height="9" rx="2.5"/><rect x="2.5" y="3" width="12" height="6" rx="1" fill="currentColor" stroke="none"/><rect x="19.5" y="4" width="1.5" height="4" rx="0.7" fill="currentColor" stroke="none"/></svg></div>
+      </div>
+      <!-- content -->
+      <div style="position:absolute;inset:0;z-index:30;display:flex;flex-direction:column;justify-content:space-between;padding:64px 28px 40px">
+        <div style="display:flex;align-items:center;gap:11px;color:#fff">
+          <span style="width:34px;height:34px;color:#CCFF00;display:flex"><svg viewBox="0 0 193 193" width="34" height="34" fill="none"><circle cx="96.5" cy="96.5" r="92" stroke="currentColor" stroke-width="9"/><path fill="currentColor" d="M110.903 64.9169H153.184L150.377 77.9544H122.944L120.319 90.4486H143.859L141.323 102.49H117.784L114.796 116.161H143.044L140.328 129.199H97.2315L110.903 64.9169ZM38.7001 129.199L52.3719 64.9169H79.9853C82.5208 64.9169 84.7544 65.43 86.6855 66.456C88.6773 67.4821 90.337 68.8402 91.6649 70.5302C93.0533 72.2203 94.1095 74.1518 94.8339 76.3247C95.5582 78.4976 95.9206 80.7309 95.9206 83.0245C95.9206 85.2577 95.5582 87.4608 94.8339 89.6338C94.1698 91.8067 93.2039 93.889 91.9363 95.8808C90.7291 97.8123 89.2506 99.5928 87.5005 101.223C85.8106 102.852 83.9392 104.21 81.8866 105.297L90.1254 129.199H73.3762L66.3145 108.466H57.8947L53.5486 129.199H38.7001ZM73.014 95.5187C73.9196 95.5187 74.8249 95.2471 75.7303 94.7039C76.6356 94.1003 77.4506 93.3156 78.1747 92.3499C78.8991 91.3238 79.4725 90.1468 79.895 88.8189C80.3779 87.491 80.6192 86.0726 80.6192 84.5636C80.6192 82.5718 80.1967 80.9723 79.3518 79.7651C78.5068 78.558 77.4807 77.9544 76.2734 77.9544H64.4132L60.701 95.5187H73.014Z"/></svg></span>
+          <span style="font-family:'Saira Condensed';font-weight:800;font-size:18px;letter-spacing:2px;text-transform:uppercase">Run Everywhere</span>
+        </div>
+        <div>
+          <div style="display:inline-flex;align-items:center;gap:7px;padding:6px 12px;border-radius:999px;background:rgba(204,255,0,.16);border:1px solid rgba(204,255,0,.4);margin-bottom:18px">
+            <span style="width:7px;height:7px;border-radius:50%;background:#CCFF00"></span>
+            <span style="font-family:'Saira Condensed';font-weight:700;font-size:12px;letter-spacing:1.5px;text-transform:uppercase;color:#CCFF00">Social running</span>
+          </div>
+          <h1 style="font-family:'Saira Condensed';font-weight:900;font-size:52px;line-height:.92;letter-spacing:-1px;text-transform:uppercase;color:#fff;margin:0">Run with<br>anyone,<br>anywhere</h1>
+          <p style="font-size:16px;line-height:1.45;color:rgba(255,255,255,.82);font-weight:500;margin:16px 0 0;max-width:300px">Drop a pin, find runners near you, and explore every city on foot.</p>
+          <div style="display:flex;flex-direction:column;gap:12px;margin-top:30px">
+            <button onClick="{{ goReg1 }}" style="width:100%;height:54px;border:none;border-radius:8px;background:#CCFF00;color:#0B0B0C;font-family:'Saira Condensed';font-weight:800;font-size:17px;text-transform:uppercase;letter-spacing:.04em;cursor:pointer;box-shadow:0 8px 22px rgba(178,224,0,.45)" style-active="transform:scale(.97)">Get started</button>
+            <button onClick="{{ goLogin }}" style="width:100%;height:54px;border:2px solid rgba(255,255,255,.55);border-radius:8px;background:transparent;color:#fff;font-family:'Saira Condensed';font-weight:800;font-size:17px;text-transform:uppercase;letter-spacing:.04em;cursor:pointer" style-active="transform:scale(.97)">Log in</button>
+          </div>
+        </div>
+      </div>
+      <div style="position:absolute;bottom:9px;left:50%;transform:translateX(-50%);width:134px;height:5px;border-radius:3px;background:rgba(255,255,255,.6);z-index:70"></div>
+    </div>
+    </sc-if>
+
+    <!-- ============ LOGIN ============ -->
+    <sc-if value="{{ isLogin }}" hint-placeholder-val="{{ false }}">
+    <div style="position:absolute;inset:0;background:#F5F5F3;display:flex;flex-direction:column">
+      <div style="position:absolute;top:0;left:0;right:0;height:50px;z-index:50;display:flex;align-items:center;justify-content:space-between;padding:0 26px;color:#0B0B0C;pointer-events:none">
+        <span style="font-family:'Saira Condensed';font-weight:800;font-size:15px">7:24</span>
+        <div style="display:flex;gap:6px;align-items:center"><svg width="18" height="12" viewBox="0 0 18 12" fill="currentColor"><rect x="0" y="7" width="3" height="5" rx="1"/><rect x="5" y="4" width="3" height="8" rx="1"/><rect x="10" y="1" width="3" height="11" rx="1"/><rect x="15" y="1" width="3" height="11" rx="1" opacity="0.4"/></svg><svg width="22" height="12" viewBox="0 0 22 12" fill="none" stroke="currentColor" stroke-width="1.2"><rect x="1" y="1.5" width="17" height="9" rx="2.5"/><rect x="2.5" y="3" width="12" height="6" rx="1" fill="currentColor" stroke="none"/><rect x="19.5" y="4" width="1.5" height="4" rx="0.7" fill="currentColor" stroke="none"/></svg></div>
+      </div>
+      <div style="padding:62px 24px 0">
+        <button onClick="{{ goSplash }}" style="width:40px;height:40px;border-radius:999px;border:1.5px solid #DEDEE2;background:#fff;color:#0B0B0C;display:flex;align-items:center;justify-content:center;cursor:pointer" style-active="transform:scale(.94)"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg></button>
+      </div>
+      <div style="flex:1;overflow-y:auto;padding:22px 24px 0">
+        <h1 style="font-family:'Saira Condensed';font-weight:900;font-size:38px;line-height:.95;letter-spacing:-.5px;text-transform:uppercase;color:#0B0B0C;margin:0">Welcome back</h1>
+        <p style="font-size:15px;color:#6B6B73;font-weight:500;margin:8px 0 0">Log in to keep running with your people.</p>
+
+        <div style="margin-top:26px">
+          <span style="font-family:'Saira Condensed';font-weight:800;font-size:12px;text-transform:uppercase;letter-spacing:.08em;color:#6B6B73;margin-bottom:8px;display:block">Email</span>
+          <div style="display:flex;align-items:center;gap:10px;background:#fff;border:1.5px solid #DEDEE2;border-radius:8px;padding:0 14px;height:52px">
+            <input value="{{ loginEmail }}" onChange="{{ onLoginEmail }}" type="email" placeholder="you@email.com" style="border:none;outline:none;background:transparent;width:100%;font-family:'Saira';font-size:16px;font-weight:500;color:#0B0B0C"/>
+          </div>
+        </div>
+        <div style="margin-top:16px">
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">
+            <span style="font-family:'Saira Condensed';font-weight:800;font-size:12px;text-transform:uppercase;letter-spacing:.08em;color:#6B6B73">Password</span>
+            <span style="font-family:'Saira Condensed';font-weight:700;font-size:12px;text-transform:uppercase;letter-spacing:.04em;color:#1463FF;cursor:pointer">Forgot?</span>
+          </div>
+          <div style="display:flex;align-items:center;gap:10px;background:#fff;border:1.5px solid #DEDEE2;border-radius:8px;padding:0 14px;height:52px">
+            <input value="{{ loginPw }}" onChange="{{ onLoginPw }}" type="{{ loginPwType }}" placeholder="••••••••" style="border:none;outline:none;background:transparent;width:100%;font-family:'Saira';font-size:16px;font-weight:500;color:#0B0B0C"/>
+            <button onClick="{{ toggleLoginPw }}" style="border:none;background:transparent;color:#8E8E96;cursor:pointer;display:flex;padding:0"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></svg></button>
+          </div>
+        </div>
+
+        <button onClick="{{ goSuccess }}" style="width:100%;height:52px;margin-top:24px;border:none;border-radius:8px;background:#CCFF00;color:#0B0B0C;font-family:'Saira Condensed';font-weight:800;font-size:16px;text-transform:uppercase;letter-spacing:.04em;cursor:pointer;box-shadow:0 6px 18px rgba(178,224,0,.45)" style-active="transform:scale(.97)">Log in</button>
+
+        <div style="display:flex;align-items:center;gap:14px;margin:24px 0">
+          <span style="flex:1;height:1px;background:#DEDEE2"></span>
+          <span style="font-family:'Saira Condensed';font-weight:700;font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:#8E8E96">Or</span>
+          <span style="flex:1;height:1px;background:#DEDEE2"></span>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:12px">
+          <button onClick="{{ goSuccess }}" style="width:100%;height:50px;border:none;border-radius:8px;background:#0B0B0C;color:#fff;display:flex;align-items:center;justify-content:center;gap:10px;font-family:'Saira Condensed';font-weight:800;font-size:15px;text-transform:uppercase;letter-spacing:.04em;cursor:pointer" style-active="transform:scale(.97)"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M16.3 12.9c0-2.3 1.9-3.4 2-3.5-1.1-1.6-2.8-1.8-3.4-1.8-1.4-.1-2.8.8-3.5.8-.7 0-1.8-.8-3-.8-1.5 0-2.9.9-3.7 2.3-1.6 2.7-.4 6.8 1.1 9 .7 1.1 1.6 2.3 2.7 2.3 1.1 0 1.5-.7 2.8-.7 1.3 0 1.6.7 2.8.7 1.2 0 1.9-1.1 2.6-2.2.8-1.2 1.2-2.4 1.2-2.5-.1 0-2.3-.9-2.4-3.6zM14.1 6.3c.6-.7 1-1.7.9-2.7-.9 0-1.9.6-2.5 1.3-.6.6-1.1 1.6-.9 2.6 1 .1 1.9-.5 2.5-1.2z"/></svg>Continue with Apple</button>
+          <button onClick="{{ goSuccess }}" style="width:100%;height:50px;border:1.5px solid #DEDEE2;border-radius:8px;background:#fff;color:#0B0B0C;display:flex;align-items:center;justify-content:center;gap:10px;font-family:'Saira Condensed';font-weight:800;font-size:15px;text-transform:uppercase;letter-spacing:.04em;cursor:pointer" style-active="transform:scale(.97)"><svg width="18" height="18" viewBox="0 0 24 24"><path fill="#4285F4" d="M23.5 12.3c0-.8-.1-1.5-.2-2.3H12v4.5h6.5c-.3 1.5-1.1 2.7-2.4 3.6v3h3.9c2.3-2.1 3.5-5.2 3.5-8.8z"/><path fill="#34A853" d="M12 24c3.2 0 5.9-1.1 7.9-2.9l-3.9-3c-1.1.7-2.4 1.2-4 1.2-3.1 0-5.7-2.1-6.6-4.9H1.4v3.1C3.4 21.3 7.4 24 12 24z"/><path fill="#FBBC05" d="M5.4 14.4c-.2-.7-.4-1.5-.4-2.4s.1-1.6.4-2.4V6.5H1.4C.5 8.2 0 10 0 12s.5 3.8 1.4 5.5l4-3.1z"/><path fill="#EA4335" d="M12 4.8c1.8 0 3.3.6 4.6 1.8l3.4-3.4C17.9 1.2 15.2 0 12 0 7.4 0 3.4 2.7 1.4 6.5l4 3.1C6.3 6.8 8.9 4.8 12 4.8z"/></svg>Continue with Google</button>
+        </div>
+      </div>
+      <div style="padding:16px 24px 30px;text-align:center">
+        <span style="font-size:14px;color:#6B6B73;font-weight:500">New here? </span>
+        <span onClick="{{ goReg1 }}" style="font-family:'Saira Condensed';font-weight:800;font-size:14px;text-transform:uppercase;letter-spacing:.04em;color:#0B0B0C;cursor:pointer;border-bottom:2px solid #CCFF00;padding-bottom:1px">Create account</span>
+      </div>
+      <div style="position:absolute;bottom:9px;left:50%;transform:translateX(-50%);width:134px;height:5px;border-radius:3px;background:rgba(0,0,0,.32)"></div>
+    </div>
+    </sc-if>
+
+    <!-- ============ REGISTER 1 ============ -->
+    <sc-if value="{{ isReg1 }}" hint-placeholder-val="{{ false }}">
+    <div style="position:absolute;inset:0;background:#F5F5F3;display:flex;flex-direction:column">
+      <div style="position:absolute;top:0;left:0;right:0;height:50px;z-index:50;display:flex;align-items:center;justify-content:space-between;padding:0 26px;color:#0B0B0C;pointer-events:none"><span style="font-family:'Saira Condensed';font-weight:800;font-size:15px">7:24</span><div style="display:flex;gap:6px;align-items:center"><svg width="18" height="12" viewBox="0 0 18 12" fill="currentColor"><rect x="0" y="7" width="3" height="5" rx="1"/><rect x="5" y="4" width="3" height="8" rx="1"/><rect x="10" y="1" width="3" height="11" rx="1"/><rect x="15" y="1" width="3" height="11" rx="1" opacity="0.4"/></svg><svg width="22" height="12" viewBox="0 0 22 12" fill="none" stroke="currentColor" stroke-width="1.2"><rect x="1" y="1.5" width="17" height="9" rx="2.5"/><rect x="2.5" y="3" width="12" height="6" rx="1" fill="currentColor" stroke="none"/><rect x="19.5" y="4" width="1.5" height="4" rx="0.7" fill="currentColor" stroke="none"/></svg></div></div>
+      <!-- progress -->
+      <div style="display:flex;align-items:center;gap:14px;padding:62px 24px 0">
+        <button onClick="{{ goSplash }}" style="width:40px;height:40px;flex:none;border-radius:999px;border:1.5px solid #DEDEE2;background:#fff;color:#0B0B0C;display:flex;align-items:center;justify-content:center;cursor:pointer" style-active="transform:scale(.94)"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg></button>
+        <div style="flex:1;height:5px;background:#E4E4E0;border-radius:999px;overflow:hidden"><div style="width:25%;height:100%;background:#CCFF00;border-radius:999px"></div></div>
+        <span style="font-family:'Saira Condensed';font-weight:800;font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:#8E8E96;white-space:nowrap">Step 1 / 4</span>
+      </div>
+      <div style="flex:1;overflow-y:auto;padding:22px 24px 0">
+        <h1 style="font-family:'Saira Condensed';font-weight:900;font-size:36px;line-height:.95;letter-spacing:-.5px;text-transform:uppercase;color:#0B0B0C;margin:0">Create account</h1>
+        <p style="font-size:15px;color:#6B6B73;font-weight:500;margin:8px 0 0">Start with the basics.</p>
+        <div style="margin-top:24px">
+          <span style="font-family:'Saira Condensed';font-weight:800;font-size:12px;text-transform:uppercase;letter-spacing:.08em;color:#6B6B73;margin-bottom:8px;display:block">Full name</span>
+          <div style="display:flex;align-items:center;background:#fff;border:1.5px solid #DEDEE2;border-radius:8px;padding:0 14px;height:52px"><input value="{{ rName }}" onChange="{{ onRName }}" placeholder="Maya Okafor" style="border:none;outline:none;background:transparent;width:100%;font-family:'Saira';font-size:16px;font-weight:500;color:#0B0B0C"/></div>
+        </div>
+        <div style="margin-top:16px">
+          <span style="font-family:'Saira Condensed';font-weight:800;font-size:12px;text-transform:uppercase;letter-spacing:.08em;color:#6B6B73;margin-bottom:8px;display:block">Email</span>
+          <div style="display:flex;align-items:center;background:#fff;border:1.5px solid #DEDEE2;border-radius:8px;padding:0 14px;height:52px"><input value="{{ rEmail }}" onChange="{{ onREmail }}" type="email" placeholder="you@email.com" style="border:none;outline:none;background:transparent;width:100%;font-family:'Saira';font-size:16px;font-weight:500;color:#0B0B0C"/></div>
+        </div>
+        <div style="margin-top:16px">
+          <span style="font-family:'Saira Condensed';font-weight:800;font-size:12px;text-transform:uppercase;letter-spacing:.08em;color:#6B6B73;margin-bottom:8px;display:block">Password</span>
+          <div style="display:flex;align-items:center;gap:10px;background:#fff;border:1.5px solid #DEDEE2;border-radius:8px;padding:0 14px;height:52px"><input value="{{ rPw }}" onChange="{{ onRPw }}" type="{{ regPwType }}" placeholder="At least 8 characters" style="border:none;outline:none;background:transparent;width:100%;font-family:'Saira';font-size:16px;font-weight:500;color:#0B0B0C"/><button onClick="{{ toggleRegPw }}" style="border:none;background:transparent;color:#8E8E96;cursor:pointer;display:flex;padding:0"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></svg></button></div>
+          <span style="display:block;margin-top:8px;font-size:12px;font-weight:500;color:#8E8E96">Use 8+ characters with a number.</span>
+        </div>
+        <div onClick="{{ toggleAgree }}" style="display:flex;align-items:flex-start;gap:11px;margin-top:22px;cursor:pointer">
+          <span style="{{ agreeBoxStyle }}"><sc-if value="{{ agree }}" hint-placeholder-val="{{ false }}"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#CCFF00" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></sc-if></span>
+          <span style="font-size:13.5px;line-height:1.45;color:#6B6B73;font-weight:500">I agree to the <strong style="color:#0B0B0C">Terms of Service</strong> and <strong style="color:#0B0B0C">Privacy Policy</strong>.</span>
+        </div>
+      </div>
+      <div style="padding:14px 24px 28px;border-top:1px solid #E4E4E0;background:#F5F5F3">
+        <button onClick="{{ goReg2 }}" style="width:100%;height:54px;border:none;border-radius:8px;background:#CCFF00;color:#0B0B0C;font-family:'Saira Condensed';font-weight:800;font-size:17px;text-transform:uppercase;letter-spacing:.04em;cursor:pointer;box-shadow:0 6px 18px rgba(178,224,0,.45)" style-active="transform:scale(.97)">Continue</button>
+      </div>
+      <div style="position:absolute;bottom:9px;left:50%;transform:translateX(-50%);width:134px;height:5px;border-radius:3px;background:rgba(0,0,0,.32)"></div>
+    </div>
+    </sc-if>
+
+    <!-- ============ REGISTER 2 ============ -->
+    <sc-if value="{{ isReg2 }}" hint-placeholder-val="{{ false }}">
+    <div style="position:absolute;inset:0;background:#F5F5F3;display:flex;flex-direction:column">
+      <div style="position:absolute;top:0;left:0;right:0;height:50px;z-index:50;display:flex;align-items:center;justify-content:space-between;padding:0 26px;color:#0B0B0C;pointer-events:none"><span style="font-family:'Saira Condensed';font-weight:800;font-size:15px">7:24</span><div style="display:flex;gap:6px;align-items:center"><svg width="18" height="12" viewBox="0 0 18 12" fill="currentColor"><rect x="0" y="7" width="3" height="5" rx="1"/><rect x="5" y="4" width="3" height="8" rx="1"/><rect x="10" y="1" width="3" height="11" rx="1"/><rect x="15" y="1" width="3" height="11" rx="1" opacity="0.4"/></svg><svg width="22" height="12" viewBox="0 0 22 12" fill="none" stroke="currentColor" stroke-width="1.2"><rect x="1" y="1.5" width="17" height="9" rx="2.5"/><rect x="2.5" y="3" width="12" height="6" rx="1" fill="currentColor" stroke="none"/><rect x="19.5" y="4" width="1.5" height="4" rx="0.7" fill="currentColor" stroke="none"/></svg></div></div>
+      <div style="display:flex;align-items:center;gap:14px;padding:62px 24px 0">
+        <button onClick="{{ goReg1 }}" style="width:40px;height:40px;flex:none;border-radius:999px;border:1.5px solid #DEDEE2;background:#fff;color:#0B0B0C;display:flex;align-items:center;justify-content:center;cursor:pointer" style-active="transform:scale(.94)"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg></button>
+        <div style="flex:1;height:5px;background:#E4E4E0;border-radius:999px;overflow:hidden"><div style="width:50%;height:100%;background:#CCFF00;border-radius:999px"></div></div>
+        <span style="font-family:'Saira Condensed';font-weight:800;font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:#8E8E96;white-space:nowrap">Step 2 / 4</span>
+      </div>
+      <div style="flex:1;overflow-y:auto;padding:22px 24px 0">
+        <h1 style="font-family:'Saira Condensed';font-weight:900;font-size:36px;line-height:.95;letter-spacing:-.5px;text-transform:uppercase;color:#0B0B0C;margin:0">Add your profile</h1>
+        <p style="font-size:15px;color:#6B6B73;font-weight:500;margin:8px 0 0">A photo and your home city help runners recognize you.</p>
+        <div style="display:flex;flex-direction:column;align-items:center;margin-top:28px">
+          <div style="position:relative;width:124px;height:124px">
+            <image-slot id="reAvatar" shape="circle" fit="cover" placeholder="Add photo" style="width:124px;height:124px;display:block;border:3px solid #0B0B0C;border-radius:999px;overflow:hidden;background:#ECECEE"></image-slot>
+            <span style="position:absolute;right:2px;bottom:2px;width:38px;height:38px;border-radius:999px;background:#CCFF00;border:3px solid #F5F5F3;display:flex;align-items:center;justify-content:center;color:#0B0B0C"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M14.5 4h-5L8 6H4a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-4l-1.5-2Z"/><circle cx="12" cy="13" r="3.5"/></svg></span>
+          </div>
+          <span style="font-family:'Saira';font-size:13px;color:#8E8E96;font-weight:500;margin-top:12px">Tap to add a profile photo</span>
+        </div>
+        <div style="margin-top:26px">
+          <span style="font-family:'Saira Condensed';font-weight:800;font-size:12px;text-transform:uppercase;letter-spacing:.08em;color:#6B6B73;margin-bottom:8px;display:block">Home city</span>
+          <div style="display:flex;align-items:center;gap:10px;background:#fff;border:1.5px solid #DEDEE2;border-radius:8px;padding:0 14px;height:52px"><span style="color:#8E8E96;display:flex"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s7-6.5 7-12a7 7 0 1 0-14 0c0 5.5 7 12 7 12Z"/><circle cx="12" cy="9" r="2.4"/></svg></span><input value="{{ city }}" onChange="{{ onCity }}" placeholder="e.g. Lisbon" style="border:none;outline:none;background:transparent;width:100%;font-family:'Saira';font-size:16px;font-weight:500;color:#0B0B0C"/></div>
+          <button style="margin-top:12px;display:inline-flex;align-items:center;gap:8px;height:40px;padding:0 16px;border-radius:8px;border:2px solid #DEDEE2;background:transparent;color:#0B0B0C;font-family:'Saira Condensed';font-weight:800;font-size:13px;text-transform:uppercase;letter-spacing:.04em;cursor:pointer" style-active="transform:scale(.97)"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3"/></svg>Use current location</button>
+        </div>
+      </div>
+      <div style="padding:14px 24px 28px;border-top:1px solid #E4E4E0;background:#F5F5F3">
+        <button onClick="{{ goOnboard }}" style="width:100%;height:54px;border:none;border-radius:8px;background:#CCFF00;color:#0B0B0C;font-family:'Saira Condensed';font-weight:800;font-size:17px;text-transform:uppercase;letter-spacing:.04em;cursor:pointer;box-shadow:0 6px 18px rgba(178,224,0,.45)" style-active="transform:scale(.97)">Continue</button>
+      </div>
+      <div style="position:absolute;bottom:9px;left:50%;transform:translateX(-50%);width:134px;height:5px;border-radius:3px;background:rgba(0,0,0,.32)"></div>
+    </div>
+    </sc-if>
+
+    <!-- ============ ONBOARDING PREFS ============ -->
+    <sc-if value="{{ isOnboard }}" hint-placeholder-val="{{ false }}">
+    <div style="position:absolute;inset:0;background:#F5F5F3;display:flex;flex-direction:column">
+      <div style="position:absolute;top:0;left:0;right:0;height:50px;z-index:50;display:flex;align-items:center;justify-content:space-between;padding:0 26px;color:#0B0B0C;pointer-events:none"><span style="font-family:'Saira Condensed';font-weight:800;font-size:15px">7:24</span><div style="display:flex;gap:6px;align-items:center"><svg width="18" height="12" viewBox="0 0 18 12" fill="currentColor"><rect x="0" y="7" width="3" height="5" rx="1"/><rect x="5" y="4" width="3" height="8" rx="1"/><rect x="10" y="1" width="3" height="11" rx="1"/><rect x="15" y="1" width="3" height="11" rx="1" opacity="0.4"/></svg><svg width="22" height="12" viewBox="0 0 22 12" fill="none" stroke="currentColor" stroke-width="1.2"><rect x="1" y="1.5" width="17" height="9" rx="2.5"/><rect x="2.5" y="3" width="12" height="6" rx="1" fill="currentColor" stroke="none"/><rect x="19.5" y="4" width="1.5" height="4" rx="0.7" fill="currentColor" stroke="none"/></svg></div></div>
+      <div style="display:flex;align-items:center;gap:14px;padding:62px 24px 0">
+        <button onClick="{{ goReg2 }}" style="width:40px;height:40px;flex:none;border-radius:999px;border:1.5px solid #DEDEE2;background:#fff;color:#0B0B0C;display:flex;align-items:center;justify-content:center;cursor:pointer" style-active="transform:scale(.94)"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg></button>
+        <div style="flex:1;height:5px;background:#E4E4E0;border-radius:999px;overflow:hidden"><div style="width:75%;height:100%;background:#CCFF00;border-radius:999px"></div></div>
+        <span style="font-family:'Saira Condensed';font-weight:800;font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:#8E8E96;white-space:nowrap">Step 3 / 4</span>
+      </div>
+      <div style="flex:1;overflow-y:auto;padding:22px 24px 4px">
+        <h1 style="font-family:'Saira Condensed';font-weight:900;font-size:36px;line-height:.95;letter-spacing:-.5px;text-transform:uppercase;color:#0B0B0C;margin:0">How do you run?</h1>
+        <p style="font-size:15px;color:#6B6B73;font-weight:500;margin:8px 0 0">We use this to match you with the right runs.</p>
+
+        <div style="font-family:'Saira Condensed';font-weight:800;font-size:13px;letter-spacing:.08em;text-transform:uppercase;color:#0B0B0C;margin:28px 0 12px">Usual pace</div>
+        <div style="display:flex;background:#fff;border:1.5px solid #DEDEE2;border-radius:10px;overflow:hidden">
+          <sc-for list="{{ paceOpts }}" as="p" hint-placeholder-count="3">
+            <button onClick="{{ p.onClick }}" style="{{ p.style }}">{{ p.label }}</button>
+          </sc-for>
+        </div>
+        <div style="display:flex;align-items:center;gap:7px;margin-top:10px"><span style="width:7px;height:7px;border-radius:50%;background:#CCFF00"></span><span style="font-size:13.5px;color:#6B6B73;font-weight:500">{{ paceDesc }}</span></div>
+
+        <div style="font-family:'Saira Condensed';font-weight:800;font-size:13px;letter-spacing:.08em;text-transform:uppercase;color:#0B0B0C;margin:28px 0 12px">Usual distance <span style="color:#8E8E96;font-weight:700">· pick any</span></div>
+        <div style="display:flex;flex-wrap:wrap;gap:10px">
+          <sc-for list="{{ distChips }}" as="c" hint-placeholder-count="5">
+            <button onClick="{{ c.onClick }}" style="{{ c.style }}">{{ c.label }}</button>
+          </sc-for>
+        </div>
+
+        <div style="font-family:'Saira Condensed';font-weight:800;font-size:13px;letter-spacing:.08em;text-transform:uppercase;color:#0B0B0C;margin:28px 0 12px">Languages <span style="color:#8E8E96;font-weight:700">· pick any</span></div>
+        <div style="display:flex;flex-wrap:wrap;gap:10px">
+          <sc-for list="{{ langChips }}" as="l" hint-placeholder-count="6">
+            <button onClick="{{ l.onClick }}" style="{{ l.style }}">{{ l.label }}</button>
+          </sc-for>
+        </div>
+      </div>
+      <div style="padding:14px 24px 28px;border-top:1px solid #E4E4E0;background:#F5F5F3">
+        <button onClick="{{ goPerms }}" style="width:100%;height:54px;border:none;border-radius:8px;background:#CCFF00;color:#0B0B0C;font-family:'Saira Condensed';font-weight:800;font-size:17px;text-transform:uppercase;letter-spacing:.04em;cursor:pointer;box-shadow:0 6px 18px rgba(178,224,0,.45)" style-active="transform:scale(.97)">Continue</button>
+      </div>
+      <div style="position:absolute;bottom:9px;left:50%;transform:translateX(-50%);width:134px;height:5px;border-radius:3px;background:rgba(0,0,0,.32)"></div>
+    </div>
+    </sc-if>
+
+    <!-- ============ PERMISSIONS + CONNECT ============ -->
+    <sc-if value="{{ isPerms }}" hint-placeholder-val="{{ false }}">
+    <div style="position:absolute;inset:0;background:#F5F5F3;display:flex;flex-direction:column">
+      <div style="position:absolute;top:0;left:0;right:0;height:50px;z-index:50;display:flex;align-items:center;justify-content:space-between;padding:0 26px;color:#0B0B0C;pointer-events:none"><span style="font-family:'Saira Condensed';font-weight:800;font-size:15px">7:24</span><div style="display:flex;gap:6px;align-items:center"><svg width="18" height="12" viewBox="0 0 18 12" fill="currentColor"><rect x="0" y="7" width="3" height="5" rx="1"/><rect x="5" y="4" width="3" height="8" rx="1"/><rect x="10" y="1" width="3" height="11" rx="1"/><rect x="15" y="1" width="3" height="11" rx="1" opacity="0.4"/></svg><svg width="22" height="12" viewBox="0 0 22 12" fill="none" stroke="currentColor" stroke-width="1.2"><rect x="1" y="1.5" width="17" height="9" rx="2.5"/><rect x="2.5" y="3" width="12" height="6" rx="1" fill="currentColor" stroke="none"/><rect x="19.5" y="4" width="1.5" height="4" rx="0.7" fill="currentColor" stroke="none"/></svg></div></div>
+      <div style="display:flex;align-items:center;gap:14px;padding:62px 24px 0">
+        <button onClick="{{ goOnboard }}" style="width:40px;height:40px;flex:none;border-radius:999px;border:1.5px solid #DEDEE2;background:#fff;color:#0B0B0C;display:flex;align-items:center;justify-content:center;cursor:pointer" style-active="transform:scale(.94)"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg></button>
+        <div style="flex:1;height:5px;background:#E4E4E0;border-radius:999px;overflow:hidden"><div style="width:100%;height:100%;background:#CCFF00;border-radius:999px"></div></div>
+        <span style="font-family:'Saira Condensed';font-weight:800;font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:#8E8E96;white-space:nowrap">Step 4 / 4</span>
+      </div>
+      <div style="flex:1;overflow-y:auto;padding:22px 24px 4px">
+        <h1 style="font-family:'Saira Condensed';font-weight:900;font-size:36px;line-height:.95;letter-spacing:-.5px;text-transform:uppercase;color:#0B0B0C;margin:0">Almost there</h1>
+        <p style="font-size:15px;color:#6B6B73;font-weight:500;margin:8px 0 0">Turn on location and connect your apps.</p>
+
+        <!-- location card -->
+        <div style="margin-top:24px;background:#0B0B0C;border-radius:16px;padding:22px;color:#fff">
+          <div style="display:flex;align-items:center;gap:14px">
+            <span style="width:48px;height:48px;flex:none;border-radius:12px;background:rgba(204,255,0,.16);display:flex;align-items:center;justify-content:center;color:#CCFF00"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s7-6.5 7-12a7 7 0 1 0-14 0c0 5.5 7 12 7 12Z"/><circle cx="12" cy="9" r="2.4"/></svg></span>
+            <div style="flex:1"><div style="font-family:'Saira Condensed';font-weight:800;font-size:19px;text-transform:uppercase;letter-spacing:.02em">Location access</div><div style="font-size:13.5px;color:rgba(255,255,255,.7);font-weight:500;margin-top:2px">Required to see runs near you.</div></div>
+          </div>
+          <p style="font-size:13.5px;line-height:1.5;color:rgba(255,255,255,.7);font-weight:500;margin:14px 0 16px">Run Everywhere uses your location to show runs nearby and share your start point with people you run with.</p>
+          <button onClick="{{ toggleLoc }}" style="{{ locBtnStyle }}"><sc-if value="{{ locEnabled }}" hint-placeholder-val="{{ false }}"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></sc-if>{{ locBtnLabel }}</button>
+        </div>
+
+        <div style="font-family:'Saira Condensed';font-weight:800;font-size:13px;letter-spacing:.08em;text-transform:uppercase;color:#0B0B0C;margin:26px 0 12px">Connect your apps <span style="color:#8E8E96;font-weight:700">· optional</span></div>
+        <div style="display:flex;flex-direction:column;gap:10px">
+          <!-- strava -->
+          <div style="display:flex;align-items:center;gap:13px;background:#fff;border:1px solid #DEDEE2;border-radius:12px;padding:14px">
+            <span style="width:44px;height:44px;flex:none;border-radius:10px;background:#FC4C02;display:flex;align-items:center;justify-content:center;color:#fff"><svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><path d="M13.8 2 6.4 16h4.2l3.2-6.3 3.2 6.3h4.2L13.8 2z" opacity=".55"/><path d="m13.8 16-2.1 4.1L9.6 16H6.4l5.3 6 5.3-6h-3.2z"/></svg></span>
+            <div style="flex:1;min-width:0"><div style="font-family:'Saira Condensed';font-weight:800;font-size:16px;text-transform:uppercase;color:#0B0B0C">Strava</div><div style="font-size:12.5px;color:#8E8E96;font-weight:500">Import runs, pace &amp; segments</div></div>
+            <button onClick="{{ toggleStrava }}" style="{{ stravaBtnStyle }}"><sc-if value="{{ strava }}" hint-placeholder-val="{{ false }}"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></sc-if>{{ stravaBtnLabel }}</button>
+          </div>
+          <!-- apple health -->
+          <div style="display:flex;align-items:center;gap:13px;background:#fff;border:1px solid #DEDEE2;border-radius:12px;padding:14px">
+            <span style="width:44px;height:44px;flex:none;border-radius:10px;background:#FF2D55;display:flex;align-items:center;justify-content:center;color:#fff"><svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><path d="M12 21s-7.5-4.8-7.5-10A4.5 4.5 0 0 1 12 8a4.5 4.5 0 0 1 7.5 3c0 5.2-7.5 10-7.5 10z"/></svg></span>
+            <div style="flex:1;min-width:0"><div style="font-family:'Saira Condensed';font-weight:800;font-size:16px;text-transform:uppercase;color:#0B0B0C">Apple Health</div><div style="font-size:12.5px;color:#8E8E96;font-weight:500">Sync activity &amp; heart rate</div></div>
+            <button onClick="{{ toggleHealth }}" style="{{ healthBtnStyle }}"><sc-if value="{{ health }}" hint-placeholder-val="{{ false }}"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></sc-if>{{ healthBtnLabel }}</button>
+          </div>
+          <!-- garmin -->
+          <div style="display:flex;align-items:center;gap:13px;background:#fff;border:1px solid #DEDEE2;border-radius:12px;padding:14px">
+            <span style="width:44px;height:44px;flex:none;border-radius:10px;background:#007CC3;display:flex;align-items:center;justify-content:center;color:#fff"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><rect x="7" y="6" width="10" height="12" rx="5"/><path d="M12 3v3M12 18v3" stroke-linecap="round"/></svg></span>
+            <div style="flex:1;min-width:0"><div style="font-family:'Saira Condensed';font-weight:800;font-size:16px;text-transform:uppercase;color:#0B0B0C">Garmin</div><div style="font-size:12.5px;color:#8E8E96;font-weight:500">Connect your watch</div></div>
+            <button onClick="{{ toggleGarmin }}" style="{{ garminBtnStyle }}"><sc-if value="{{ garmin }}" hint-placeholder-val="{{ false }}"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></sc-if>{{ garminBtnLabel }}</button>
+          </div>
+        </div>
+        <p style="font-size:12.5px;color:#8E8E96;font-weight:500;text-align:center;margin:18px 0 0">You can change any of this later in Settings.</p>
+      </div>
+      <div style="padding:14px 24px 28px;border-top:1px solid #E4E4E0;background:#F5F5F3">
+        <button onClick="{{ goSuccess }}" style="width:100%;height:54px;border:none;border-radius:8px;background:#CCFF00;color:#0B0B0C;font-family:'Saira Condensed';font-weight:800;font-size:17px;text-transform:uppercase;letter-spacing:.04em;cursor:pointer;box-shadow:0 6px 18px rgba(178,224,0,.45)" style-active="transform:scale(.97)">Finish</button>
+      </div>
+      <div style="position:absolute;bottom:9px;left:50%;transform:translateX(-50%);width:134px;height:5px;border-radius:3px;background:rgba(0,0,0,.32)"></div>
+    </div>
+    </sc-if>
+
+    <!-- ============ SUCCESS ============ -->
+    <sc-if value="{{ isSuccess }}" hint-placeholder-val="{{ false }}">
+    <div style="position:absolute;inset:0;background:#0B0B0C;display:flex;flex-direction:column;overflow:hidden">
+      <div style="position:absolute;top:0;left:0;right:0;height:50px;z-index:50;display:flex;align-items:center;justify-content:space-between;padding:0 26px;color:#fff;pointer-events:none"><span style="font-family:'Saira Condensed';font-weight:800;font-size:15px">7:24</span><div style="display:flex;gap:6px;align-items:center"><svg width="18" height="12" viewBox="0 0 18 12" fill="currentColor"><rect x="0" y="7" width="3" height="5" rx="1"/><rect x="5" y="4" width="3" height="8" rx="1"/><rect x="10" y="1" width="3" height="11" rx="1"/><rect x="15" y="1" width="3" height="11" rx="1" opacity="0.4"/></svg><svg width="22" height="12" viewBox="0 0 22 12" fill="none" stroke="currentColor" stroke-width="1.2"><rect x="1" y="1.5" width="17" height="9" rx="2.5"/><rect x="2.5" y="3" width="12" height="6" rx="1" fill="currentColor" stroke="none"/><rect x="19.5" y="4" width="1.5" height="4" rx="0.7" fill="currentColor" stroke="none"/></svg></div></div>
+      <div style="position:absolute;top:-80px;left:50%;transform:translateX(-50%);width:340px;height:340px;border-radius:50%;background:radial-gradient(circle, rgba(204,255,0,.22) 0%, rgba(204,255,0,0) 70%)"></div>
+      <div style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:40px 32px;position:relative">
+        <div style="width:108px;height:108px;border-radius:999px;background:#CCFF00;display:flex;align-items:center;justify-content:center;box-shadow:0 12px 40px rgba(178,224,0,.5);animation:rePop .5s cubic-bezier(.34,1.56,.64,1) both"><svg width="56" height="56" viewBox="0 0 24 24" fill="none" stroke="#0B0B0C" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div>
+        <h1 style="font-family:'Saira Condensed';font-weight:900;font-size:46px;line-height:.92;letter-spacing:-.5px;text-transform:uppercase;color:#fff;margin:30px 0 0;text-align:center">You're in</h1>
+        <p style="font-size:16px;line-height:1.5;color:rgba(255,255,255,.8);font-weight:500;margin:14px 0 0;text-align:center;max-width:280px">{{ successLine }}</p>
+      </div>
+      <div style="padding:20px 28px 40px">
+        <button onClick="{{ goExplore }}" style="width:100%;height:54px;border:none;border-radius:8px;background:#CCFF00;color:#0B0B0C;font-family:'Saira Condensed';font-weight:800;font-size:17px;text-transform:uppercase;letter-spacing:.04em;cursor:pointer;box-shadow:0 8px 22px rgba(178,224,0,.45)" style-active="transform:scale(.97)">Start exploring</button>
+      </div>
+      <div style="position:absolute;bottom:9px;left:50%;transform:translateX(-50%);width:134px;height:5px;border-radius:3px;background:rgba(255,255,255,.5)"></div>
+    </div>
+    </sc-if>
+
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+class Component extends DCLogic {
+  state = {
+    screen: 'splash',
+    loginEmail: '', loginPw: '', loginPwHidden: true,
+    rName: '', rEmail: '', rPw: '', regPwHidden: true, agree: false,
+    city: '',
+    pace: 'moderate',
+    distances: ['d10'],
+    languages: ['en'],
+    locEnabled: false,
+    strava: false, health: false, garmin: false,
+  };
+
+  go(s) { this.setState({ screen: s }); }
+  toMain(s) { window.location.href = 'Run%20Everywhere%20-%20Main%20Flow.dc.html' + (s ? '?s=' + s : ''); }
+  set(k) { return (e) => this.setState({ [k]: e.target.value }); }
+  toggleArr(key, val) {
+    const arr = this.state[key];
+    const has = arr.includes(val);
+    this.setState({ [key]: has ? arr.filter(x => x !== val) : [...arr, val] });
+  }
+
+  chipStyle(sel) {
+    return `display:inline-flex;align-items:center;justify-content:center;height:42px;padding:0 18px;border-radius:999px;font-family:'Saira Condensed';font-weight:800;font-size:14px;text-transform:uppercase;letter-spacing:.04em;cursor:pointer;white-space:nowrap;transition:all .12s ease;border:1.5px solid ${sel ? '#0B0B0C' : '#DEDEE2'};background:${sel ? '#0B0B0C' : '#fff'};color:${sel ? '#fff' : '#0B0B0C'}`;
+  }
+  segStyle(sel) {
+    return `flex:1;height:48px;border:none;background:${sel ? '#0B0B0C' : 'transparent'};color:${sel ? '#fff' : '#6B6B73'};font-family:'Saira Condensed';font-weight:800;font-size:14px;text-transform:uppercase;letter-spacing:.04em;cursor:pointer;transition:all .12s ease`;
+  }
+  connBtn(conn) {
+    return `display:inline-flex;align-items:center;gap:5px;flex:none;height:38px;padding:0 15px;border-radius:8px;font-family:'Saira Condensed';font-weight:800;font-size:13px;text-transform:uppercase;letter-spacing:.04em;cursor:pointer;transition:all .12s ease;border:2px solid ${conn ? '#00C271' : '#DEDEE2'};background:${conn ? '#E9FBF1' : 'transparent'};color:${conn ? '#00874E' : '#0B0B0C'}`;
+  }
+
+  renderVals() {
+    const s = this.state;
+    const screen = s.screen;
+
+    const paceData = [['easy', 'Easy'], ['moderate', 'Moderate'], ['fast', 'Fast']];
+    const paceDescMap = {
+      easy: '6:00 /km and up — relaxed, conversational.',
+      moderate: '5:00–6:00 /km — a steady, sustainable effort.',
+      fast: 'Sub 5:00 /km — quick, competitive sessions.',
+    };
+    const paceOpts = paceData.map(([id, label]) => ({
+      label, onClick: () => this.setState({ pace: id }), style: this.segStyle(s.pace === id),
+    }));
+
+    const distData = [['d5', '5K'], ['d10', '10K'], ['d15', '15K'], ['half', 'Half'], ['full', 'Marathon'], ['trail', 'Trail']];
+    const distChips = distData.map(([id, label]) => ({
+      label, onClick: () => this.toggleArr('distances', id), style: this.chipStyle(s.distances.includes(id)),
+    }));
+
+    const langData = [['en', 'English'], ['pt', 'Português'], ['es', 'Español'], ['fr', 'Français'], ['de', 'Deutsch'], ['it', 'Italiano']];
+    const langChips = langData.map(([id, label]) => ({
+      label, onClick: () => this.toggleArr('languages', id), style: this.chipStyle(s.languages.includes(id)),
+    }));
+
+    const locBtnStyle = `display:inline-flex;align-items:center;justify-content:center;gap:8px;width:100%;height:50px;border-radius:8px;font-family:'Saira Condensed';font-weight:800;font-size:15px;text-transform:uppercase;letter-spacing:.04em;cursor:pointer;transition:all .12s ease;border:2px solid ${s.locEnabled ? '#00C271' : '#CCFF00'};background:${s.locEnabled ? 'rgba(0,194,113,.16)' : '#CCFF00'};color:${s.locEnabled ? '#7CF2C0' : '#0B0B0C'};box-shadow:${s.locEnabled ? 'none' : '0 6px 18px rgba(178,224,0,.45)'}`;
+
+    const city = (s.city || '').trim();
+    const successLine = city
+      ? `${city} is full of runners. Let’s find your first one.`
+      : 'There are runners near you right now. Let’s find your first run.';
+
+    return {
+      isSplash: screen === 'splash',
+      isLogin: screen === 'login',
+      isReg1: screen === 'register1',
+      isReg2: screen === 'register2',
+      isOnboard: screen === 'onboard',
+      isPerms: screen === 'permissions',
+      isSuccess: screen === 'success',
+
+      goSplash: () => this.go('splash'),
+      goLogin: () => this.go('login'),
+      goReg1: () => this.go('register1'),
+      goReg2: () => this.go('register2'),
+      goOnboard: () => this.go('onboard'),
+      goPerms: () => this.go('permissions'),
+      goSuccess: () => this.go('success'),
+      goExplore: () => this.toMain('explore'),
+
+      loginEmail: s.loginEmail, onLoginEmail: this.set('loginEmail'),
+      loginPw: s.loginPw, onLoginPw: this.set('loginPw'),
+      loginPwType: s.loginPwHidden ? 'password' : 'text',
+      toggleLoginPw: () => this.setState({ loginPwHidden: !s.loginPwHidden }),
+
+      rName: s.rName, onRName: this.set('rName'),
+      rEmail: s.rEmail, onREmail: this.set('rEmail'),
+      rPw: s.rPw, onRPw: this.set('rPw'),
+      regPwType: s.regPwHidden ? 'password' : 'text',
+      toggleRegPw: () => this.setState({ regPwHidden: !s.regPwHidden }),
+      agree: s.agree,
+      toggleAgree: () => this.setState({ agree: !s.agree }),
+      agreeBoxStyle: `width:22px;height:22px;flex:none;border-radius:6px;display:flex;align-items:center;justify-content:center;transition:all .12s ease;border:2px solid ${s.agree ? '#0B0B0C' : '#B7B7BD'};background:${s.agree ? '#0B0B0C' : 'transparent'}`,
+
+      city: s.city, onCity: this.set('city'),
+
+      paceOpts, paceDesc: paceDescMap[s.pace], distChips, langChips,
+
+      locEnabled: s.locEnabled,
+      toggleLoc: () => this.setState({ locEnabled: !s.locEnabled }),
+      locBtnLabel: s.locEnabled ? 'Location enabled' : 'Enable location',
+      locBtnStyle,
+
+      strava: s.strava, toggleStrava: () => this.setState({ strava: !s.strava }),
+      stravaBtnLabel: s.strava ? 'Connected' : 'Connect', stravaBtnStyle: this.connBtn(s.strava),
+      health: s.health, toggleHealth: () => this.setState({ health: !s.health }),
+      healthBtnLabel: s.health ? 'Connected' : 'Connect', healthBtnStyle: this.connBtn(s.health),
+      garmin: s.garmin, toggleGarmin: () => this.setState({ garmin: !s.garmin }),
+      garminBtnLabel: s.garmin ? 'Connected' : 'Connect', garminBtnStyle: this.connBtn(s.garmin),
+
+      successLine,
+    };
+  }
+}
+</script>
+</body>
+</html>

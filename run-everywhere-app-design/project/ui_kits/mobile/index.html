@@ -1,0 +1,100 @@
+<!-- @dsCard group="Mobile App" viewport="900x720" subtitle="Run Everywhere — interactive click-through (Explore · Runs · Run detail · Profile)" -->
+<!-- @startingPoint section="Mobile App" subtitle="Run Everywhere mobile app shell + core screens" viewport="900x844" -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Run Everywhere — Mobile UI Kit</title>
+<link rel="stylesheet" href="../../styles.css">
+<style>
+  html,body{margin:0;background:#1b1b1d;font-family:var(--font-body);min-height:100vh}
+  .stage{min-height:100vh;display:flex;align-items:center;justify-content:center;gap:48px;padding:40px;box-sizing:border-box;flex-wrap:wrap}
+  .loading{color:#9a9aa2;font-family:var(--font-display);font-weight:800;text-transform:uppercase;letter-spacing:.1em;font-size:14px}
+</style>
+</head>
+<body>
+  <div class="stage"><div id="root" style="display:contents"><div class="loading">Loading…</div></div></div>
+
+  <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+  <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+  <script crossorigin src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+  <script>
+  (async function(){
+    // Locate the design-system runtime namespace (official compiled bundle OR local fallback).
+    function findNS(){
+      for (const k in window){
+        let v;
+        try { v = window[k]; } catch(_) { continue; }
+        try {
+          if (v && typeof v === 'object' && v.TabBar && v.PhoneFrame && v.ExploreScreen && v.RunDetailScreen) return v;
+        } catch(_) { /* cross-origin frame, skip */ }
+      }
+      return null;
+    }
+    // 1) Try the auto-generated DS bundle (present when the design-system compiler has run).
+    function tryOfficial(){
+      return new Promise((resolve) => {
+        const s = document.createElement('script');
+        s.src = '../../_ds_bundle.js';
+        s.onload = () => resolve(true);
+        s.onerror = () => resolve(false);
+        document.head.appendChild(s);
+      });
+    }
+    // 2) Fallback: the committed app bundle (works offline / before the compiler runs).
+    async function loadFallback(){
+      const code = await (await fetch('app_bundle.txt')).text();
+      const out = Babel.transform(code, { presets: [['react', { runtime: 'classic' }]] }).code;
+      (0, eval)(out);
+    }
+
+    await tryOfficial();
+    if (!findNS()) { try { await loadFallback(); } catch(e){ console.error('fallback failed', e); } }
+
+    const DS = findNS();
+    if (!DS){ document.getElementById('root').innerHTML = '<div class="loading">Components unavailable</div>'; return; }
+
+    const { PhoneFrame, TabBar, ExploreScreen, RunsScreen, RunDetailScreen, ProfileScreen } = DS;
+    const e = React.createElement;
+
+    const ic = (children) => e('svg', { width:24, height:24, viewBox:'0 0 24 24', fill:'none', stroke:'currentColor', strokeWidth:2.2, strokeLinecap:'round', strokeLinejoin:'round' }, children);
+    const navItems = [
+      { id:'explore',  label:'Explore', icon: ic([e('circle',{key:1,cx:12,cy:12,r:9}), e('polygon',{key:2,points:'16 8 13 13 8 16 11 11'})]) },
+      { id:'runs',     label:'Runs',    icon: ic([e('circle',{key:1,cx:6,cy:19,r:2.4}), e('circle',{key:2,cx:18,cy:6,r:2.4}), e('path',{key:3,d:'M8.2 18h6.3a3 3 0 0 0 0-6h-5a3 3 0 0 1 0-6H16'})]) },
+      { id:'messages', label:'Chat',    icon: ic(e('path',{d:'M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z'})) },
+      { id:'profile',  label:'You',     icon: ic([e('circle',{key:1,cx:12,cy:8,r:4}), e('path',{key:2,d:'M4 21a8 8 0 0 1 16 0'})]) },
+    ];
+
+    function ComingSoon({ label, sub }){
+      return e('div', { style:{flex:1,display:'flex',flexDirection:'column',alignItems:'center',justifyContent:'center',gap:10,background:'var(--paper-2)'} },
+        e('div', { style:{width:64,height:64,borderRadius:18,background:'var(--ink-900)',display:'flex',alignItems:'center',justifyContent:'center',color:'var(--volt)'} },
+          ic(e('path',{d:'M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z'}))),
+        e('div', { style:{fontFamily:'var(--font-display)',fontWeight:900,fontSize:24,textTransform:'uppercase',color:'var(--ink-900)'} }, label),
+        e('div', { style:{fontSize:13,color:'var(--ink-400)',fontWeight:500} }, sub)
+      );
+    }
+
+    function App(){
+      const [tab, setTab] = React.useState('explore');
+      const [detail, setDetail] = React.useState(false);
+      const openRun = () => setDetail(true);
+      let screen;
+      if (detail) screen = e(RunDetailScreen, { onBack: () => setDetail(false) });
+      else if (tab === 'explore') screen = e(ExploreScreen, { onOpenRun: openRun });
+      else if (tab === 'runs') screen = e(RunsScreen, { onOpenRun: openRun });
+      else if (tab === 'profile') screen = e(ProfileScreen, { self: true });
+      else screen = e(ComingSoon, { label:'Messages', sub:'Group chat & DMs — next up' });
+
+      return e(PhoneFrame, { dark: tab === 'profile' && !detail },
+        e('div', { style:{flex:1,display:'flex',flexDirection:'column',overflow:'hidden'} }, screen),
+        !detail && e(TabBar, { value:tab, onChange:setTab, onCreate:() => alert('Create run flow'), items:navItems })
+      );
+    }
+
+    ReactDOM.createRoot(document.getElementById('root')).render(e(App));
+  })();
+  </script>
+</body>
+</html>

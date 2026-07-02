@@ -1,0 +1,573 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Saira+Condensed:wght@500;600;700;800;900&family=Hanken+Grotesk:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  *{box-sizing:border-box}
+  html,body{margin:0}
+  .re-num{font-variant-numeric:tabular-nums}
+  ::-webkit-scrollbar{width:0;height:0}
+  @keyframes reSheet{0%{transform:translateY(100%)}100%{transform:translateY(0)}}
+  @keyframes reFade{0%{opacity:0}100%{opacity:1}}
+  @keyframes reUp{0%{transform:translateY(14px);opacity:0}100%{transform:translateY(0);opacity:1}}
+  input::placeholder,textarea::placeholder{color:#B7B7BD}
+  input,textarea{font-family:'Hanken Grotesk',sans-serif}
+</style>
+</helmet>
+
+<div style="min-height:100vh;width:100%;background:radial-gradient(120% 90% at 50% -10%, #232329 0%, #131316 55%, #0B0B0C 100%);display:flex;align-items:center;justify-content:center;padding:40px 20px;font-family:'Hanken Grotesk',system-ui,sans-serif;-webkit-font-smoothing:antialiased">
+
+  <div style="width:390px;height:844px;position:relative;flex:none;background:#F6F6F3;border-radius:46px;overflow:hidden;box-shadow:0 40px 90px rgba(0,0,0,.55), 0 0 0 11px #1c1c20, 0 0 0 13px #2a2a30">
+    <div style="position:absolute;top:12px;left:50%;transform:translateX(-50%);width:120px;height:30px;background:#0B0B0C;border-radius:18px;z-index:90"></div>
+
+    <!-- ============ MY PROFILE ============ -->
+    <sc-if value="{{ isMyProfile }}" hint-placeholder-val="{{ true }}">
+    <div style="position:absolute;inset:0;display:flex;flex-direction:column;background:#F6F6F3">
+      <!-- dark header -->
+      <div style="background:#0B0B0C;color:#fff;padding:0 18px 22px;position:relative;flex:none">
+        <div class="re-num" style="height:50px;display:flex;align-items:center;justify-content:space-between;font-family:'Saira Condensed';font-weight:800;font-size:15px;color:#fff">9:41<span style="display:flex;gap:6px;align-items:center;color:#fff"><svg width="18" height="12" viewBox="0 0 18 12" fill="currentColor"><rect x="0" y="7" width="3" height="5" rx="1"/><rect x="5" y="4" width="3" height="8" rx="1"/><rect x="10" y="1" width="3" height="11" rx="1"/><rect x="15" y="1" width="3" height="11" rx="1" opacity="0.4"/></svg><svg width="22" height="12" viewBox="0 0 22 12" fill="none" stroke="currentColor" stroke-width="1.2"><rect x="1" y="1.5" width="17" height="9" rx="2.5"/><rect x="2.5" y="3" width="12" height="6" rx="1" fill="currentColor" stroke="none"/><rect x="19.5" y="4" width="1.5" height="4" rx="0.7" fill="currentColor" stroke="none"/></svg></span></div>
+        <!-- top actions -->
+        <div style="position:absolute;top:50px;right:18px;display:flex;gap:9px">
+          <button onClick="{{ enterEdit }}" style="width:36px;height:36px;border-radius:10px;background:#1A1A1C;border:none;display:flex;align-items:center;justify-content:center;cursor:pointer"><svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M4 20h4L18.5 9.5l-4-4L4 16v4Z" stroke="#fff" stroke-width="1.8" stroke-linejoin="round"/><path d="M13.5 6.5l4 4" stroke="#fff" stroke-width="1.8"/></svg></button>
+          <button onClick="{{ goSettings }}" style="width:36px;height:36px;border-radius:10px;background:#1A1A1C;border:none;display:flex;align-items:center;justify-content:center;cursor:pointer"><svg width="18" height="18" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="3" stroke="#fff" stroke-width="2"/><path d="M19 12a7 7 0 0 0-.1-1.2l2-1.6-2-3.4-2.4 1a7 7 0 0 0-2-1.2L16 3H8l-.5 2.6a7 7 0 0 0-2 1.2l-2.4-1-2 3.4 2 1.6A7 7 0 0 0 3 12c0 .4 0 .8.1 1.2l-2 1.6 2 3.4 2.4-1c.6.5 1.3.9 2 1.2L8 21h8l.5-2.6c.7-.3 1.4-.7 2-1.2l2.4 1 2-3.4-2-1.6c.1-.4.1-.8.1-1.2Z" stroke="#fff" stroke-width="1.5" stroke-linejoin="round"/></svg></button>
+        </div>
+        <!-- identity -->
+        <div style="display:flex;align-items:center;gap:15px;margin-top:18px">
+          <div style="position:relative;flex:none">
+            <div style="width:76px;height:76px;border-radius:50%;background:linear-gradient(135deg,#7C5CFC,#4B30C0);color:#fff;display:flex;align-items:center;justify-content:center;font-family:'Saira Condensed';font-weight:800;font-size:30px">ML</div>
+            <div style="position:absolute;bottom:0;right:0;width:23px;height:23px;border-radius:50%;background:#C8FA00;border:3px solid #0B0B0C;display:flex;align-items:center;justify-content:center"><svg width="11" height="11" viewBox="0 0 24 24" fill="none"><path d="M5 12l4 4L19 6" stroke="#0B0B0C" stroke-width="3.6" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+          </div>
+          <div style="flex:1;min-width:0">
+            <div style="font-family:'Saira Condensed';font-weight:800;font-size:27px;line-height:1;text-transform:uppercase">{{ name }}</div>
+            <div style="display:flex;align-items:center;gap:5px;font-size:12.5px;color:#9b9ba0;margin-top:5px;font-weight:500"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M12 21s7-6.5 7-12a7 7 0 1 0-14 0c0 5.5 7 12 7 12Z" stroke="#9b9ba0" stroke-width="2"/><circle cx="12" cy="9" r="2.1" fill="#9b9ba0"/></svg>{{ city }}</div>
+            <div style="display:flex;align-items:center;gap:10px;margin-top:8px">
+              <span style="display:inline-flex;align-items:center;gap:4px"><svg width="13" height="13" viewBox="0 0 24 24" fill="#FFB020"><path d="M12 2l2.9 6.3 6.8.7-5.1 4.6 1.4 6.7L12 17.8 6 20.3l1.4-6.7L2.3 9l6.8-.7L12 2Z"/></svg><span class="re-num" style="font-size:12.5px;font-weight:700">4.8</span><span class="re-num" style="font-size:12px;color:#9b9ba0">· 19 reviews</span></span>
+            </div>
+          </div>
+        </div>
+        <!-- stats -->
+        <div style="display:flex;margin-top:20px">
+          <div style="flex:1;border-right:1px solid #26262c"><div class="re-num" style="font-family:'Saira Condensed';font-weight:800;font-size:30px;line-height:.9">412</div><div style="font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:#74747c;font-weight:600;margin-top:3px">KM</div></div>
+          <div style="flex:1;border-right:1px solid #26262c;padding-left:16px"><div class="re-num" style="font-family:'Saira Condensed';font-weight:800;font-size:30px;line-height:.9">28</div><div style="font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:#74747c;font-weight:600;margin-top:3px">Runs</div></div>
+          <div style="flex:1;padding-left:16px"><div class="re-num" style="font-family:'Saira Condensed';font-weight:800;font-size:30px;line-height:.9;color:#C8FA00">5.2k</div><div style="font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:#74747c;font-weight:600;margin-top:3px">D+</div></div>
+        </div>
+      </div>
+
+      <!-- body -->
+      <div style="flex:1;overflow-y:auto;padding:16px 16px 100px">
+        <!-- level card -->
+        <div style="background:#0B0B0C;color:#fff;border-radius:16px;padding:16px 17px;display:flex;align-items:center;gap:14px">
+          <div style="position:relative;width:60px;height:60px;flex:none">
+            <svg width="60" height="60" viewBox="0 0 60 60" style="transform:rotate(-90deg)"><circle cx="30" cy="30" r="26" fill="none" stroke="#1c1c22" stroke-width="6"/><circle cx="30" cy="30" r="26" fill="none" stroke="#C8FA00" stroke-width="6" stroke-linecap="round" stroke-dasharray="163" stroke-dashoffset="34"/></svg>
+            <div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-family:'Saira Condensed';font-weight:900;font-size:22px;color:#C8FA00">4</div>
+          </div>
+          <div style="flex:1">
+            <div style="font-family:'Saira Condensed';font-weight:900;font-size:22px;text-transform:uppercase;line-height:.95">Pacer</div>
+            <div class="re-num" style="font-size:12px;color:#9b9ba0;font-weight:600;margin-top:3px">1,240 pts · 260 to Tempo</div>
+          </div>
+          <button onClick="{{ goBadges }}" style="font-family:'Saira Condensed';font-weight:800;font-size:11px;letter-spacing:.5px;text-transform:uppercase;color:#0B0B0C;background:#C8FA00;border:none;padding:9px 12px 7px;border-radius:9px;cursor:pointer">Badges</button>
+        </div>
+
+        <!-- running style -->
+        <div style="background:#fff;border:1px solid #E8E8E2;border-radius:16px;padding:16px 17px;margin-top:13px">
+          <div style="font-family:'Saira Condensed';font-weight:800;font-size:12px;letter-spacing:1.5px;text-transform:uppercase;color:#74746e;margin-bottom:13px">Running style</div>
+          <div style="display:flex;flex-direction:column;gap:13px">
+            <div style="display:flex;align-items:center;gap:10px"><span style="font-size:12px;color:#a3a39d;font-weight:600;width:78px;flex:none">Usual pace</span><span class="re-num" style="font-family:'Saira Condensed';font-weight:800;font-size:16px">{{ paceFull }}</span></div>
+            <div style="display:flex;align-items:center;gap:10px"><span style="font-size:12px;color:#a3a39d;font-weight:600;width:78px;flex:none">Distance</span><span class="re-num" style="font-family:'Saira Condensed';font-weight:800;font-size:16px">{{ dist }}</span></div>
+            <div style="display:flex;align-items:flex-start;gap:10px"><span style="font-size:12px;color:#a3a39d;font-weight:600;width:78px;flex:none;padding-top:4px">Likes</span><div style="display:flex;gap:6px;flex-wrap:wrap">{{ typeTags }}</div></div>
+            <div style="display:flex;align-items:center;gap:10px"><span style="font-size:12px;color:#a3a39d;font-weight:600;width:78px;flex:none">Speaks</span><span style="font-size:14px;font-weight:700">{{ langsText }}</span></div>
+          </div>
+          <div style="border-top:1px solid #EDEDE8;margin-top:14px;padding-top:13px;font-size:13.5px;line-height:1.5;color:#3a3a36">{{ bio }}</div>
+        </div>
+
+        <!-- badges row -->
+        <div style="display:flex;align-items:center;justify-content:space-between;margin:20px 2px 12px">
+          <span style="font-family:'Saira Condensed';font-weight:800;font-size:12px;letter-spacing:1.5px;text-transform:uppercase;color:#74746e">Badges</span>
+          <span class="re-num" style="font-family:'Saira Condensed';font-weight:800;font-size:12px;color:#74746e">3 / 6 earned</span>
+        </div>
+        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px">
+          <sc-for list="{{ myBadges }}" as="b" hint-placeholder-count="6">
+            <div style="{{ b.cardStyle }}">
+              <div style="{{ b.iconWrap }}">{{ b.icon }}</div>
+              <div style="font-family:'Saira Condensed';font-weight:800;font-size:12.5px;text-transform:uppercase;line-height:1;margin-top:9px;color:{{ b.nameColor }}">{{ b.name }}</div>
+            </div>
+          </sc-for>
+        </div>
+
+        <!-- reviews -->
+        <div style="display:flex;align-items:center;justify-content:space-between;margin:22px 2px 12px">
+          <span style="font-family:'Saira Condensed';font-weight:800;font-size:12px;letter-spacing:1.5px;text-transform:uppercase;color:#74746e">Other runners say</span>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:10px">
+          <sc-for list="{{ myReviews }}" as="r" hint-placeholder-count="3">
+            <div style="background:#fff;border:1px solid #E8E8E2;border-radius:13px;padding:13px 14px">
+              <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:7px">
+                <div style="display:flex;gap:2px">{{ r.stars }}</div>
+                <span style="font-size:11px;color:#a3a39d;font-weight:600">{{ r.run }}</span>
+              </div>
+              <div style="font-size:13.5px;line-height:1.5;color:#3a3a36">{{ r.text }}</div>
+              <div style="font-size:11.5px;color:#74746e;margin-top:8px;font-weight:600">— {{ r.author }}</div>
+            </div>
+          </sc-for>
+        </div>
+      </div>
+
+      {{ tabBar }}
+    </div>
+    </sc-if>
+
+    <!-- ============ EDIT PROFILE ============ -->
+    <sc-if value="{{ isEdit }}" hint-placeholder-val="{{ false }}">
+    <div style="position:absolute;inset:0;display:flex;flex-direction:column;background:#F6F6F3">
+      <div style="background:#fff;border-bottom:1px solid #EDEDE8;flex:none">
+        <div class="re-num" style="height:50px;display:flex;align-items:center;justify-content:space-between;padding:0 22px;font-family:'Saira Condensed';font-weight:800;font-size:15px;color:#0B0B0C">9:41<span style="display:flex;gap:6px;align-items:center;color:#0B0B0C"><svg width="18" height="12" viewBox="0 0 18 12" fill="currentColor"><rect x="0" y="7" width="3" height="5" rx="1"/><rect x="5" y="4" width="3" height="8" rx="1"/><rect x="10" y="1" width="3" height="11" rx="1"/><rect x="15" y="1" width="3" height="11" rx="1" opacity="0.4"/></svg><svg width="22" height="12" viewBox="0 0 22 12" fill="none" stroke="currentColor" stroke-width="1.2"><rect x="1" y="1.5" width="17" height="9" rx="2.5"/><rect x="2.5" y="3" width="12" height="6" rx="1" fill="currentColor" stroke="none"/><rect x="19.5" y="4" width="1.5" height="4" rx="0.7" fill="currentColor" stroke="none"/></svg></span></div>
+        <div style="display:flex;align-items:center;justify-content:space-between;padding:6px 16px 14px">
+          <button onClick="{{ goMyProfile }}" style="font-family:'Hanken Grotesk';font-weight:600;font-size:15px;color:#74746e;background:none;border:none;cursor:pointer;padding:0">Cancel</button>
+          <span style="font-family:'Saira Condensed';font-weight:800;font-size:18px;letter-spacing:.5px;text-transform:uppercase">Edit profile</span>
+          <button onClick="{{ saveEdit }}" style="font-family:'Saira Condensed';font-weight:800;font-size:14px;letter-spacing:.5px;text-transform:uppercase;color:#0B0B0C;background:#C8FA00;border:none;padding:8px 14px 6px;border-radius:9px;cursor:pointer">Save</button>
+        </div>
+      </div>
+
+      <div style="flex:1;overflow-y:auto;padding:20px 16px 40px">
+        <!-- photo -->
+        <div style="display:flex;flex-direction:column;align-items:center;gap:10px;margin-bottom:22px">
+          <div style="position:relative">
+            <div style="width:88px;height:88px;border-radius:50%;background:linear-gradient(135deg,#7C5CFC,#4B30C0);color:#fff;display:flex;align-items:center;justify-content:center;font-family:'Saira Condensed';font-weight:800;font-size:34px">ML</div>
+            <div style="position:absolute;bottom:-2px;right:-2px;width:30px;height:30px;border-radius:50%;background:#0B0B0C;border:3px solid #F6F6F3;display:flex;align-items:center;justify-content:center;cursor:pointer"><svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M3 8a2 2 0 0 1 2-2h2l1.5-2h7L17 6h2a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8Z" stroke="#fff" stroke-width="2" stroke-linejoin="round"/><circle cx="12" cy="12.5" r="3" stroke="#fff" stroke-width="2"/></svg></div>
+          </div>
+          <button style="font-family:'Hanken Grotesk';font-weight:700;font-size:13.5px;color:#1466FF;background:none;border:none;cursor:pointer">Change photo</button>
+        </div>
+
+        <label style="font-size:11.5px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;color:#74746e;display:block;margin-bottom:7px">Name</label>
+        <input value="{{ dName }}" onInput="{{ onName }}" style="width:100%;border:1.5px solid #E4E4DE;border-radius:10px;padding:13px 15px;font-size:15px;font-weight:600;color:#0B0B0C;background:#fff;outline:none" style-focus="border-color:#0B0B0C">
+
+        <label style="font-size:11.5px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;color:#74746e;display:block;margin:18px 0 7px">Bio</label>
+        <textarea value="{{ dBio }}" onInput="{{ onBio }}" rows="3" style="width:100%;border:1.5px solid #E4E4DE;border-radius:10px;padding:13px 15px;font-size:14.5px;font-weight:500;line-height:1.45;color:#0B0B0C;background:#fff;outline:none;resize:none" style-focus="border-color:#0B0B0C"></textarea>
+        <div class="re-num" style="text-align:right;font-size:11px;color:#a3a39d;font-weight:600;margin-top:5px">{{ bioCount }}/160</div>
+
+        <label style="font-size:11.5px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;color:#74746e;display:block;margin:12px 0 7px">Home city</label>
+        <input value="{{ dCity }}" onInput="{{ onCity }}" style="width:100%;border:1.5px solid #E4E4DE;border-radius:10px;padding:13px 15px;font-size:15px;font-weight:600;color:#0B0B0C;background:#fff;outline:none" style-focus="border-color:#0B0B0C">
+
+        <label style="font-size:11.5px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;color:#74746e;display:block;margin:18px 0 9px">Usual pace</label>
+        <div style="display:flex;gap:7px;flex-wrap:wrap">
+          <sc-for list="{{ paceChips }}" as="c" hint-placeholder-count="4"><button onClick="{{ c.onClick }}" style="{{ c.style }}">{{ c.label }}</button></sc-for>
+        </div>
+
+        <label style="font-size:11.5px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;color:#74746e;display:block;margin:18px 0 9px">Usual distance</label>
+        <div style="display:flex;gap:7px;flex-wrap:wrap">
+          <sc-for list="{{ distChips }}" as="c" hint-placeholder-count="4"><button onClick="{{ c.onClick }}" style="{{ c.style }}">{{ c.label }}</button></sc-for>
+        </div>
+
+        <label style="font-size:11.5px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;color:#74746e;display:block;margin:18px 0 9px">Run types you like</label>
+        <div style="display:flex;gap:7px;flex-wrap:wrap">
+          <sc-for list="{{ typeChips }}" as="c" hint-placeholder-count="3"><button onClick="{{ c.onClick }}" style="{{ c.style }}">{{ c.label }}</button></sc-for>
+        </div>
+
+        <label style="font-size:11.5px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;color:#74746e;display:block;margin:18px 0 9px">Languages</label>
+        <div style="display:flex;gap:7px;flex-wrap:wrap">
+          <sc-for list="{{ langChips }}" as="c" hint-placeholder-count="6"><button onClick="{{ c.onClick }}" style="{{ c.style }}">{{ c.label }}</button></sc-for>
+        </div>
+      </div>
+    </div>
+    </sc-if>
+
+    <!-- ============ SETTINGS ============ -->
+    <sc-if value="{{ isSettings }}" hint-placeholder-val="{{ false }}">
+    <div style="position:absolute;inset:0;display:flex;flex-direction:column;background:#F6F6F3">
+      <div style="background:#fff;border-bottom:1px solid #EDEDE8;flex:none">
+        <div class="re-num" style="height:50px;display:flex;align-items:center;justify-content:space-between;padding:0 22px;font-family:'Saira Condensed';font-weight:800;font-size:15px;color:#0B0B0C">9:41<span style="display:flex;gap:6px;align-items:center;color:#0B0B0C"><svg width="18" height="12" viewBox="0 0 18 12" fill="currentColor"><rect x="0" y="7" width="3" height="5" rx="1"/><rect x="5" y="4" width="3" height="8" rx="1"/><rect x="10" y="1" width="3" height="11" rx="1"/><rect x="15" y="1" width="3" height="11" rx="1" opacity="0.4"/></svg><svg width="22" height="12" viewBox="0 0 22 12" fill="none" stroke="currentColor" stroke-width="1.2"><rect x="1" y="1.5" width="17" height="9" rx="2.5"/><rect x="2.5" y="3" width="12" height="6" rx="1" fill="currentColor" stroke="none"/><rect x="19.5" y="4" width="1.5" height="4" rx="0.7" fill="currentColor" stroke="none"/></svg></span></div>
+        <div style="display:flex;align-items:center;gap:12px;padding:6px 16px 14px">
+          <button onClick="{{ goMyProfile }}" style="width:34px;height:34px;border-radius:10px;border:1px solid #E4E4DE;background:#fff;display:flex;align-items:center;justify-content:center;cursor:pointer;flex:none"><svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M15 5l-7 7 7 7" stroke="#0B0B0C" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+          <span style="font-family:'Saira Condensed';font-weight:900;font-size:26px;text-transform:uppercase;letter-spacing:-.5px">Settings</span>
+        </div>
+      </div>
+
+      <div style="flex:1;overflow-y:auto;padding:18px 16px 40px">
+        <!-- account -->
+        <div style="font-family:'Saira Condensed';font-weight:800;font-size:11.5px;letter-spacing:1.5px;text-transform:uppercase;color:#74746e;margin:0 2px 9px">Account</div>
+        <div style="background:#fff;border:1px solid #E8E8E2;border-radius:14px;overflow:hidden;margin-bottom:20px">
+          <div onClick="{{ enterEdit }}" style="display:flex;align-items:center;gap:13px;padding:14px 15px;cursor:pointer;border-bottom:1px solid #EDEDE8"><div style="width:34px;height:34px;border-radius:9px;background:#EFEFEA;display:flex;align-items:center;justify-content:center;flex:none"><svg width="18" height="18" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="8" r="3.4" stroke="#0B0B0C" stroke-width="2"/><path d="M5 20c0-3.6 3.1-6 7-6s7 2.4 7 6" stroke="#0B0B0C" stroke-width="2" stroke-linecap="round"/></svg></div><span style="flex:1;font-size:15px;font-weight:600">Edit profile</span><svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M9 6l6 6-6 6" stroke="#c2c2bb" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+          <div style="display:flex;align-items:center;gap:13px;padding:14px 15px"><div style="width:34px;height:34px;border-radius:9px;background:#EFEFEA;display:flex;align-items:center;justify-content:center;flex:none"><svg width="18" height="18" viewBox="0 0 24 24" fill="none"><rect x="3" y="5" width="18" height="14" rx="2.5" stroke="#0B0B0C" stroke-width="2"/><path d="M4 7l8 6 8-6" stroke="#0B0B0C" stroke-width="2" stroke-linecap="round"/></svg></div><div style="flex:1"><div style="font-size:15px;font-weight:600;line-height:1.1">Email</div><div style="font-size:12.5px;color:#a3a39d;margin-top:2px">maya.lawson@email.com</div></div></div>
+        </div>
+
+        <!-- connected apps -->
+        <div style="font-family:'Saira Condensed';font-weight:800;font-size:11.5px;letter-spacing:1.5px;text-transform:uppercase;color:#74746e;margin:0 2px 9px">Connected apps</div>
+        <div style="background:#fff;border:1px solid #E8E8E2;border-radius:14px;overflow:hidden;margin-bottom:20px">
+          <sc-for list="{{ appRows }}" as="a" hint-placeholder-count="3">
+            <div style="{{ a.rowStyle }}"><div style="width:34px;height:34px;border-radius:9px;background:{{ a.iconBg }};display:flex;align-items:center;justify-content:center;flex:none;color:#fff;font-family:'Saira Condensed';font-weight:800;font-size:15px">{{ a.glyph }}</div><div style="flex:1"><div style="font-size:15px;font-weight:600;line-height:1.1">{{ a.name }}</div><div style="font-size:12.5px;color:{{ a.subColor }};margin-top:2px;font-weight:{{ a.subWeight }}">{{ a.sub }}</div></div><button onClick="{{ a.onClick }}" style="{{ a.btnStyle }}">{{ a.btnLabel }}</button></div>
+          </sc-for>
+        </div>
+
+        <!-- preferences -->
+        <div style="font-family:'Saira Condensed';font-weight:800;font-size:11.5px;letter-spacing:1.5px;text-transform:uppercase;color:#74746e;margin:0 2px 9px">Preferences</div>
+        <div style="background:#fff;border:1px solid #E8E8E2;border-radius:14px;overflow:hidden;margin-bottom:20px">
+          <div style="display:flex;align-items:center;gap:13px;padding:13px 15px;border-bottom:1px solid #EDEDE8"><span style="flex:1;font-size:15px;font-weight:600">Units</span>
+            <div style="display:flex;gap:3px;background:#EDEDE8;border-radius:9px;padding:3px">
+              <button onClick="{{ setKm }}" style="{{ kmSeg }}">KM</button>
+              <button onClick="{{ setMi }}" style="{{ miSeg }}">MI</button>
+            </div>
+          </div>
+          <sc-for list="{{ notifRows }}" as="n" hint-placeholder-count="5">
+            <div style="{{ n.rowStyle }}"><div style="flex:1"><div style="font-size:15px;font-weight:600;line-height:1.1">{{ n.label }}</div><div style="font-size:12px;color:#a3a39d;margin-top:2px">{{ n.sub }}</div></div><div onClick="{{ n.onClick }}" style="{{ n.track }}"><div style="{{ n.knob }}"></div></div></div>
+          </sc-for>
+        </div>
+
+        <!-- safety + privacy -->
+        <div style="font-family:'Saira Condensed';font-weight:800;font-size:11.5px;letter-spacing:1.5px;text-transform:uppercase;color:#74746e;margin:0 2px 9px">Safety &amp; privacy</div>
+        <div style="background:#fff;border:1px solid #E8E8E2;border-radius:14px;overflow:hidden;margin-bottom:20px">
+          <div onClick="{{ goSafety }}" style="display:flex;align-items:center;gap:13px;padding:14px 15px;cursor:pointer;border-bottom:1px solid #EDEDE8"><div style="width:34px;height:34px;border-radius:9px;background:#E3F8EE;display:flex;align-items:center;justify-content:center;flex:none"><svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M12 3l7 3v5c0 4.5-3 8-7 10-4-2-7-5.5-7-10V6l7-3Z" stroke="#0A7A47" stroke-width="2" stroke-linejoin="round"/><path d="M9 12l2 2 4-4" stroke="#0A7A47" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div style="flex:1"><div style="font-size:15px;font-weight:600;line-height:1.1">Safety &amp; live location</div><div style="font-size:12.5px;color:#a3a39d;margin-top:2px">Trusted contacts, share runs</div></div><svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M9 6l6 6-6 6" stroke="#c2c2bb" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+          <div style="display:flex;align-items:center;gap:13px;padding:14px 15px;border-bottom:1px solid #EDEDE8"><div style="width:34px;height:34px;border-radius:9px;background:#EFEFEA;display:flex;align-items:center;justify-content:center;flex:none"><svg width="18" height="18" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke="#0B0B0C" stroke-width="2"/><path d="M12 8v5M12 16h.01" stroke="#0B0B0C" stroke-width="2" stroke-linecap="round"/></svg></div><div style="flex:1"><div style="font-size:15px;font-weight:600;line-height:1.1">Profile visibility</div><div style="font-size:12.5px;color:#a3a39d;margin-top:2px">Everyone</div></div><svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M9 6l6 6-6 6" stroke="#c2c2bb" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+          <div style="display:flex;align-items:center;gap:13px;padding:14px 15px"><div style="width:34px;height:34px;border-radius:9px;background:#EFEFEA;display:flex;align-items:center;justify-content:center;flex:none"><svg width="18" height="18" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="8" r="3.4" stroke="#0B0B0C" stroke-width="2"/><path d="M5 20c0-3.6 3.1-6 7-6 1.2 0 2.3.2 3.3.6" stroke="#0B0B0C" stroke-width="2" stroke-linecap="round"/><path d="M16 16l5 5M21 16l-5 5" stroke="#FF3B30" stroke-width="2" stroke-linecap="round"/></svg></div><span style="flex:1;font-size:15px;font-weight:600">Blocked accounts</span><span class="re-num" style="font-size:13px;color:#a3a39d;font-weight:600;margin-right:6px">{{ blockedCount }}</span><svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M9 6l6 6-6 6" stroke="#c2c2bb" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        </div>
+
+        <button onClick="{{ goMyProfile }}" style="width:100%;display:flex;align-items:center;justify-content:center;gap:9px;background:#fff;border:1px solid #F2C9C6;color:#D7261A;border-radius:14px;padding:15px 0;font-family:'Saira Condensed';font-weight:800;font-size:16px;letter-spacing:.5px;text-transform:uppercase;cursor:pointer"><svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M15 12H4M8 8l-4 4 4 4" stroke="#D7261A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 4h6a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2h-6" stroke="#D7261A" stroke-width="2" stroke-linecap="round"/></svg>Log out</button>
+        <div style="text-align:center;font-size:11.5px;color:#b0b0a9;font-weight:600;margin-top:18px">Run Everywhere · v1.0 (218)</div>
+      </div>
+    </div>
+    </sc-if>
+
+    <!-- ============ SAFETY ============ -->
+    <sc-if value="{{ isSafety }}" hint-placeholder-val="{{ false }}">
+    <div style="position:absolute;inset:0;display:flex;flex-direction:column;background:#F6F6F3">
+      <div style="background:#fff;border-bottom:1px solid #EDEDE8;flex:none">
+        <div class="re-num" style="height:50px;display:flex;align-items:center;justify-content:space-between;padding:0 22px;font-family:'Saira Condensed';font-weight:800;font-size:15px;color:#0B0B0C">9:41<span style="display:flex;gap:6px;align-items:center;color:#0B0B0C"><svg width="18" height="12" viewBox="0 0 18 12" fill="currentColor"><rect x="0" y="7" width="3" height="5" rx="1"/><rect x="5" y="4" width="3" height="8" rx="1"/><rect x="10" y="1" width="3" height="11" rx="1"/><rect x="15" y="1" width="3" height="11" rx="1" opacity="0.4"/></svg><svg width="22" height="12" viewBox="0 0 22 12" fill="none" stroke="currentColor" stroke-width="1.2"><rect x="1" y="1.5" width="17" height="9" rx="2.5"/><rect x="2.5" y="3" width="12" height="6" rx="1" fill="currentColor" stroke="none"/><rect x="19.5" y="4" width="1.5" height="4" rx="0.7" fill="currentColor" stroke="none"/></svg></span></div>
+        <div style="display:flex;align-items:center;gap:12px;padding:6px 16px 14px">
+          <button onClick="{{ goSettings }}" style="width:34px;height:34px;border-radius:10px;border:1px solid #E4E4DE;background:#fff;display:flex;align-items:center;justify-content:center;cursor:pointer;flex:none"><svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M15 5l-7 7 7 7" stroke="#0B0B0C" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+          <span style="font-family:'Saira Condensed';font-weight:900;font-size:26px;text-transform:uppercase;letter-spacing:-.5px">Safety</span>
+        </div>
+      </div>
+
+      <div style="flex:1;overflow-y:auto;padding:16px 16px 40px">
+        <!-- intro -->
+        <div style="background:#0B0B0C;color:#fff;border-radius:16px;padding:18px 18px;display:flex;gap:13px;align-items:flex-start">
+          <div style="width:40px;height:40px;border-radius:11px;background:#16C172;display:flex;align-items:center;justify-content:center;flex:none"><svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M12 3l7 3v5c0 4.5-3 8-7 10-4-2-7-5.5-7-10V6l7-3Z" stroke="#06210f" stroke-width="2" stroke-linejoin="round"/><path d="M9 12l2 2 4-4" stroke="#06210f" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+          <div><div style="font-family:'Saira Condensed';font-weight:800;font-size:19px;line-height:1.05;text-transform:uppercase">Run safe with strangers</div><div style="font-size:13px;line-height:1.5;color:#b9b9be;margin-top:6px;font-weight:500">Share your live location with trusted contacts and set who to call if something feels off.</div></div>
+        </div>
+
+        <!-- share live location -->
+        <div style="background:#fff;border:1px solid #E8E8E2;border-radius:16px;padding:16px 17px;margin-top:13px">
+          <div style="display:flex;align-items:flex-start;gap:12px">
+            <div style="flex:1"><div style="font-size:15.5px;font-weight:700;line-height:1.15">Share live location</div><div style="font-size:13px;color:#74746e;margin-top:4px;line-height:1.45">Trusted contacts can follow your route in real time while a run is recording.</div></div>
+            <div onClick="{{ toggleShare }}" style="{{ shareTrack }}"><div style="{{ shareKnob }}"></div></div>
+          </div>
+          <div style="{{ shareNote }}"><svg width="14" height="14" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke="#0A7A47" stroke-width="2"/><path d="M12 7v5l3 2" stroke="#0A7A47" stroke-width="2" stroke-linecap="round"/></svg>Active automatically when you start a run</div>
+        </div>
+
+        <!-- emergency contact -->
+        <div style="font-family:'Saira Condensed';font-weight:800;font-size:11.5px;letter-spacing:1.5px;text-transform:uppercase;color:#74746e;margin:22px 2px 9px">Emergency contact</div>
+        <div style="background:#fff;border:1px solid #E8E8E2;border-radius:14px;padding:14px 15px;display:flex;align-items:center;gap:12px">
+          <div style="width:44px;height:44px;border-radius:50%;background:linear-gradient(135deg,#FF3B30,#B61C13);color:#fff;display:flex;align-items:center;justify-content:center;font-family:'Saira Condensed';font-weight:800;font-size:16px;flex:none">DC</div>
+          <div style="flex:1;min-width:0"><div style="font-size:15px;font-weight:700;line-height:1.1">Dan Carter</div><div class="re-num" style="font-size:12.5px;color:#74746e;margin-top:2px">Partner · +44 7700 900118</div></div>
+          <button style="font-family:'Hanken Grotesk';font-weight:700;font-size:13px;color:#1466FF;background:none;border:none;cursor:pointer">Edit</button>
+        </div>
+
+        <!-- trusted contacts -->
+        <div style="display:flex;align-items:center;justify-content:space-between;margin:22px 2px 9px">
+          <span style="font-family:'Saira Condensed';font-weight:800;font-size:11.5px;letter-spacing:1.5px;text-transform:uppercase;color:#74746e">Trusted contacts</span>
+          <span class="re-num" style="font-size:12px;color:#a3a39d;font-weight:600">2 of 5</span>
+        </div>
+        <div style="background:#fff;border:1px solid #E8E8E2;border-radius:14px;overflow:hidden">
+          <div style="display:flex;align-items:center;gap:12px;padding:13px 15px;border-bottom:1px solid #EDEDE8"><div style="width:38px;height:38px;border-radius:50%;background:linear-gradient(135deg,#1466FF,#0B3FB0);color:#fff;display:flex;align-items:center;justify-content:center;font-family:'Saira Condensed';font-weight:800;font-size:14px;flex:none">EM</div><div style="flex:1"><div style="font-size:14.5px;font-weight:600;line-height:1.1">Emma Lawson</div><div style="font-size:12px;color:#a3a39d;margin-top:1px">Sister</div></div><svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M6 12h12" stroke="#c2c2bb" stroke-width="2" stroke-linecap="round"/></svg></div>
+          <div style="display:flex;align-items:center;gap:12px;padding:13px 15px;border-bottom:1px solid #EDEDE8"><div style="width:38px;height:38px;border-radius:50%;background:linear-gradient(135deg,#16C172,#0A7A47);color:#fff;display:flex;align-items:center;justify-content:center;font-family:'Saira Condensed';font-weight:800;font-size:14px;flex:none">JP</div><div style="flex:1"><div style="font-size:14.5px;font-weight:600;line-height:1.1">Jordan Pratt</div><div style="font-size:12px;color:#a3a39d;margin-top:1px">Running buddy</div></div><svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M6 12h12" stroke="#c2c2bb" stroke-width="2" stroke-linecap="round"/></svg></div>
+          <div style="display:flex;align-items:center;gap:12px;padding:13px 15px;cursor:pointer"><div style="width:38px;height:38px;border-radius:50%;border:1.5px dashed #c8c8c0;display:flex;align-items:center;justify-content:center;flex:none"><svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M12 5v14M5 12h14" stroke="#74746e" stroke-width="2.2" stroke-linecap="round"/></svg></div><span style="flex:1;font-size:14.5px;font-weight:700;color:#0B0B0C">Add trusted contact</span></div>
+        </div>
+
+        <!-- share run + sos -->
+        <button style="width:100%;display:flex;align-items:center;justify-content:center;gap:9px;background:#0B0B0C;color:#fff;border:none;border-radius:14px;padding:15px 0;font-family:'Saira Condensed';font-weight:800;font-size:16px;letter-spacing:.5px;text-transform:uppercase;cursor:pointer;margin-top:18px"><svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M4 12v7a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-7" stroke="#fff" stroke-width="2" stroke-linecap="round"/><path d="M12 16V4M8 8l4-4 4 4" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>Share my next run</button>
+        <div style="display:flex;align-items:center;gap:12px;background:#FFECEA;border:1px solid #F2C9C6;border-radius:14px;padding:14px 15px;margin-top:11px"><div style="width:40px;height:40px;border-radius:11px;background:#FF3B30;display:flex;align-items:center;justify-content:center;flex:none"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M12 3l9 16H3l9-16Z" stroke="#fff" stroke-width="2" stroke-linejoin="round"/><path d="M12 10v4M12 16.5h.01" stroke="#fff" stroke-width="2" stroke-linecap="round"/></svg></div><div style="flex:1"><div style="font-size:14.5px;font-weight:700;color:#9E1B12;line-height:1.1">Emergency SOS</div><div style="font-size:12px;color:#B5483F;margin-top:2px">Hold to alert contacts + call services</div></div></div>
+      </div>
+    </div>
+    </sc-if>
+
+    <!-- ============ OTHER RUNNER PROFILE ============ -->
+    <sc-if value="{{ isOther }}" hint-placeholder-val="{{ false }}">
+    <div style="position:absolute;inset:0;display:flex;flex-direction:column;background:#F6F6F3">
+      <!-- dark header -->
+      <div style="background:#0B0B0C;color:#fff;padding:0 18px 22px;position:relative;flex:none">
+        <div class="re-num" style="height:50px;display:flex;align-items:center;justify-content:space-between;font-family:'Saira Condensed';font-weight:800;font-size:15px;color:#fff">9:41<span style="display:flex;gap:6px;align-items:center;color:#fff"><svg width="18" height="12" viewBox="0 0 18 12" fill="currentColor"><rect x="0" y="7" width="3" height="5" rx="1"/><rect x="5" y="4" width="3" height="8" rx="1"/><rect x="10" y="1" width="3" height="11" rx="1"/><rect x="15" y="1" width="3" height="11" rx="1" opacity="0.4"/></svg><svg width="22" height="12" viewBox="0 0 22 12" fill="none" stroke="currentColor" stroke-width="1.2"><rect x="1" y="1.5" width="17" height="9" rx="2.5"/><rect x="2.5" y="3" width="12" height="6" rx="1" fill="currentColor" stroke="none"/><rect x="19.5" y="4" width="1.5" height="4" rx="0.7" fill="currentColor" stroke="none"/></svg></span></div>
+        <div style="position:absolute;top:50px;left:18px"><button onClick="{{ backOther }}" style="width:36px;height:36px;border-radius:10px;background:#1A1A1C;border:none;display:flex;align-items:center;justify-content:center;cursor:pointer"><svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M15 5l-7 7 7 7" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></button></div>
+        <div style="position:absolute;top:50px;right:18px"><button onClick="{{ openReport }}" style="width:36px;height:36px;border-radius:10px;background:#1A1A1C;border:none;display:flex;align-items:center;justify-content:center;cursor:pointer"><svg width="18" height="18" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="5" r="1.7" fill="#fff"/><circle cx="12" cy="12" r="1.7" fill="#fff"/><circle cx="12" cy="19" r="1.7" fill="#fff"/></svg></button></div>
+        <div style="display:flex;align-items:center;gap:15px;margin-top:18px">
+          <div style="position:relative;flex:none">
+            <div style="width:76px;height:76px;border-radius:50%;background:linear-gradient(135deg,#1466FF,#0B3FB0);color:#fff;display:flex;align-items:center;justify-content:center;font-family:'Saira Condensed';font-weight:800;font-size:30px">MR</div>
+            <div style="position:absolute;bottom:0;right:0;width:23px;height:23px;border-radius:50%;background:#0B0B0C;border:3px solid #0B0B0C;display:flex;align-items:center;justify-content:center"><span style="width:23px;height:23px;border-radius:50%;background:#1466FF;display:flex;align-items:center;justify-content:center"><svg width="11" height="11" viewBox="0 0 24 24" fill="none"><path d="M5 12l4 4L19 6" stroke="#fff" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"/></svg></span></div>
+          </div>
+          <div style="flex:1;min-width:0">
+            <div style="font-family:'Saira Condensed';font-weight:800;font-size:27px;line-height:1;text-transform:uppercase">Marco R.</div>
+            <div style="display:flex;align-items:center;gap:5px;font-size:12.5px;color:#9b9ba0;margin-top:5px;font-weight:500"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M12 21s7-6.5 7-12a7 7 0 1 0-14 0c0 5.5 7 12 7 12Z" stroke="#9b9ba0" stroke-width="2"/><circle cx="12" cy="9" r="2.1" fill="#9b9ba0"/></svg>Lisbon · PT · EN</div>
+            <div style="display:flex;align-items:center;gap:5px;margin-top:8px"><svg width="13" height="13" viewBox="0 0 24 24" fill="#FFB020"><path d="M12 2l2.9 6.3 6.8.7-5.1 4.6 1.4 6.7L12 17.8 6 20.3l1.4-6.7L2.3 9l6.8-.7L12 2Z"/></svg><span class="re-num" style="font-size:12.5px;font-weight:700">4.9</span><span class="re-num" style="font-size:12px;color:#9b9ba0">· level 7 · 47 reviews</span></div>
+          </div>
+        </div>
+        <div style="display:flex;margin-top:20px">
+          <div style="flex:1;border-right:1px solid #26262c"><div class="re-num" style="font-family:'Saira Condensed';font-weight:800;font-size:30px;line-height:.9">842</div><div style="font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:#74747c;font-weight:600;margin-top:3px">KM</div></div>
+          <div style="flex:1;border-right:1px solid #26262c;padding-left:16px"><div class="re-num" style="font-family:'Saira Condensed';font-weight:800;font-size:30px;line-height:.9">63</div><div style="font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:#74747c;font-weight:600;margin-top:3px">Runs</div></div>
+          <div style="flex:1;padding-left:16px"><div class="re-num" style="font-family:'Saira Condensed';font-weight:800;font-size:30px;line-height:.9;color:#C8FA00">9.4k</div><div style="font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:#74747c;font-weight:600;margin-top:3px">D+</div></div>
+        </div>
+      </div>
+
+      <!-- blocked banner -->
+      <div style="{{ blockedBanner }}">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke="#9E1B12" stroke-width="2"/><path d="M6 6l12 12" stroke="#9E1B12" stroke-width="2" stroke-linecap="round"/></svg>
+        <span style="flex:1;font-size:13px;font-weight:700;color:#9E1B12">You blocked Marco R.</span>
+        <button onClick="{{ unblock }}" style="font-family:'Saira Condensed';font-weight:800;font-size:12px;letter-spacing:.5px;text-transform:uppercase;color:#9E1B12;background:none;border:none;cursor:pointer">Unblock</button>
+      </div>
+      <!-- reported toast -->
+      <div style="{{ reportedToast }}">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M5 12l4 4L19 6" stroke="#0A7A47" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        <span style="font-size:13px;font-weight:600;color:#0A7A47">Thanks — sent to our safety team.</span>
+      </div>
+
+      <div style="flex:1;overflow-y:auto;padding:16px 16px 96px">
+        <p style="font-size:14px;line-height:1.5;color:#3a3a36;margin:0">"Lisbon born and raised. I host easy social runs through the old town — we stop at the best miradouros for photos and grab coffee after by the river."</p>
+        <div style="display:flex;align-items:center;justify-content:space-between;margin:20px 2px 12px">
+          <span style="font-family:'Saira Condensed';font-weight:800;font-size:12px;letter-spacing:1.5px;text-transform:uppercase;color:#74746e">Reviews</span>
+          <span class="re-num" style="font-size:12px;color:#a3a39d;font-weight:600">4.9 average</span>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:10px">
+          <sc-for list="{{ otherReviews }}" as="r" hint-placeholder-count="3">
+            <div style="background:#fff;border:1px solid #E8E8E2;border-radius:13px;padding:13px 14px">
+              <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:7px"><div style="display:flex;gap:2px">{{ r.stars }}</div><span style="font-size:11px;color:#a3a39d;font-weight:600">{{ r.run }}</span></div>
+              <div style="font-size:13.5px;line-height:1.5;color:#3a3a36">{{ r.text }}</div>
+              <div style="font-size:11.5px;color:#74746e;margin-top:8px;font-weight:600">— {{ r.author }}</div>
+            </div>
+          </sc-for>
+        </div>
+      </div>
+
+      <!-- sticky CTA -->
+      <div style="position:absolute;left:0;right:0;bottom:0;background:#fff;border-top:1px solid #EDEDE8;padding:14px 16px 22px;display:flex;gap:10px;align-items:center;z-index:30">
+        <button onClick="{{ toggleFav }}" style="{{ favBtn }}">{{ favHeart }}</button>
+        <button onClick="{{ toMessages }}" style="flex:1;font-family:'Saira Condensed';font-weight:800;font-size:17px;letter-spacing:.5px;text-transform:uppercase;color:#fff;background:#0B0B0C;border:none;border-radius:12px;padding:15px 0;cursor:pointer">Message</button>
+      </div>
+
+      <!-- report / block sheet -->
+      <sc-if value="{{ reportOpen }}" hint-placeholder-val="{{ false }}">
+      <div style="position:absolute;inset:0;z-index:80">
+        <div onClick="{{ closeReport }}" style="position:absolute;inset:0;background:rgba(11,11,12,.5);animation:reFade .2s ease"></div>
+        <div style="position:absolute;left:0;right:0;bottom:0;background:#fff;border-radius:24px 24px 0 0;padding:10px 18px 26px;animation:reSheet .28s cubic-bezier(.2,.8,.2,1);box-shadow:0 -18px 44px rgba(0,0,0,.3)">
+          <div style="width:42px;height:5px;border-radius:3px;background:#E0E0DA;margin:0 auto 16px"></div>
+          <div style="font-family:'Saira Condensed';font-weight:900;font-size:24px;text-transform:uppercase;letter-spacing:-.5px;line-height:1">Report Marco R.</div>
+          <div style="font-size:13px;color:#74746e;margin-top:6px;font-weight:500">Reports are private. Pick what happened — our safety team reviews every one.</div>
+          <div style="display:flex;flex-direction:column;gap:8px;margin-top:18px">
+            <sc-for list="{{ reportReasons }}" as="r" hint-placeholder-count="6">
+              <button onClick="{{ r.onClick }}" style="{{ r.style }}"><span style="flex:1;text-align:left">{{ r.label }}</span><div style="{{ r.radio }}">{{ r.dot }}</div></button>
+            </sc-for>
+          </div>
+          <button onClick="{{ submitReport }}" style="{{ submitBtn }}">{{ submitLabel }}</button>
+          <div style="display:flex;align-items:center;gap:12px;margin:16px 0">
+            <div style="flex:1;height:1px;background:#EDEDE8"></div><span style="font-size:11px;color:#a3a39d;font-weight:700;letter-spacing:1px;text-transform:uppercase">or</span><div style="flex:1;height:1px;background:#EDEDE8"></div>
+          </div>
+          <button onClick="{{ block }}" style="width:100%;display:flex;align-items:center;justify-content:center;gap:9px;background:#fff;border:1.5px solid #F2C9C6;color:#D7261A;border-radius:13px;padding:14px 0;font-family:'Saira Condensed';font-weight:800;font-size:16px;letter-spacing:.5px;text-transform:uppercase;cursor:pointer"><svg width="18" height="18" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke="#D7261A" stroke-width="2"/><path d="M6 6l12 12" stroke="#D7261A" stroke-width="2" stroke-linecap="round"/></svg>Block Marco R.</button>
+        </div>
+      </div>
+      </sc-if>
+    </div>
+    </sc-if>
+
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:390,&quot;height&quot;:844},&quot;startScreen&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;myProfile&quot;,&quot;edit&quot;,&quot;settings&quot;,&quot;safety&quot;,&quot;other&quot;],&quot;default&quot;:&quot;myProfile&quot;,&quot;tsType&quot;:&quot;string&quot;}}">
+class Component extends DCLogic {
+  state = this.boot({
+    screen: 'myProfile',
+    name: 'Maya Lawson', bio: 'Marketing consultant, permanently jet-lagged. I run to learn a new city — show me the streets, I keep the pace easy and the chat going.',
+    city: 'London · visiting Lisbon', pace: 'Steady', dist: '5–10 km',
+    types: ['Discover','Social'], langs: ['EN','PT'],
+    dName: '', dBio: '', dCity: '', dPace: '', dDist: '', dTypes: [], dLangs: [],
+    units: 'km',
+    notif: { requests:true, accepts:true, messages:true, reviews:true, leaderboard:false },
+    shareLoc: true,
+    fav: false, reportOpen: false, reportReason: null, reported: false, blocked: false,
+  });
+
+  boot(def){ try{ const p=new URLSearchParams(window.location.search); const s=p.get('s'); if(s && ['myProfile','edit','settings','safety','other'].includes(s)) def.screen=s; }catch(e){} if(this.props && this.props.startScreen && this.props.startScreen!=='myProfile') def.screen=this.props.startScreen; return def; }
+
+  toMain(s){ window.location.href='Run%20Everywhere%20-%20Main%20Flow.dc.html'+(s?'?s='+s:''); }
+  toDiscover(s){ window.location.href='Run%20Everywhere%20-%20Discover%20Flow.dc.html'+(s?'?s='+s:''); }
+  toReward(s){ window.location.href='Run%20Everywhere%20-%20Reward%20Loop.dc.html'+(s?'?s='+s:''); }
+
+  go(screen){ this.setState({ screen }); }
+
+  grad(c){ return ({ '#1466FF':'linear-gradient(135deg,#1466FF,#0B3FB0)','#FF3B30':'linear-gradient(135deg,#FF3B30,#B61C13)','#16C172':'linear-gradient(135deg,#16C172,#0A7A47)','#7C5CFC':'linear-gradient(135deg,#7C5CFC,#4B30C0)','#FFB020':'linear-gradient(135deg,#FFB020,#C77A00)' })[c]||c; }
+
+  starsNode(n, size){ const h=React.createElement; return [1,2,3,4,5].map(i => h('svg',{ key:i, width:size, height:size, viewBox:'0 0 24 24', fill: i<=n?'#FFB020':'none', stroke: i<=n?'#FFB020':'#D6D6CE', strokeWidth: i<=n?0:1.6 }, h('path',{ d:'M12 2l2.9 6.3 6.8.7-5.1 4.6 1.4 6.7L12 17.8 6 20.3l1.4-6.7L2.3 9l6.8-.7L12 2Z', strokeLinejoin:'round' }))); }
+
+  chipStyle(on){ return `font-family:'Hanken Grotesk';font-weight:600;font-size:13.5px;border:1.5px solid ${on?'#0B0B0C':'#E4E4DE'};background:${on?'#0B0B0C':'#fff'};color:${on?'#fff':'#3a3a36'};padding:9px 15px;border-radius:999px;cursor:pointer;white-space:nowrap`; }
+
+  enterEdit(){ const s=this.state; this.setState({ screen:'edit', dName:s.name, dBio:s.bio, dCity:s.city, dPace:s.pace, dDist:s.dist, dTypes:s.types.slice(), dLangs:s.langs.slice() }); }
+  saveEdit(){ const s=this.state; this.setState({ screen:'myProfile', name:s.dName||s.name, bio:s.dBio, city:s.dCity||s.city, pace:s.dPace, dist:s.dDist, types:s.dTypes.slice(), langs:s.dLangs.slice() }); }
+
+  toggleArr(key, val){ const cur=this.state[key]; const next = cur.includes(val) ? cur.filter(x=>x!==val) : cur.concat([val]); this.setState({ [key]: next }); }
+
+  renderVals(){
+    const h = React.createElement, s = this.state;
+
+    // ---- tab bar ----
+    const gc = on => on?'#0B0B0C':'#a3a39d';
+    const tab = (active, label, icon, onClick) => h('div',{ onClick, style:{ display:'flex',flexDirection:'column',alignItems:'center',gap:'4px',color:active?'#0B0B0C':'#a3a39d',cursor:'pointer' } }, icon, h('span',{ style:{ fontSize:'10px', fontWeight:active?700:600, letterSpacing:'.3px' } }, label));
+    const tabBar = h('div',{ style:{ position:'absolute',left:0,right:0,bottom:0,height:'80px',background:'#fff',borderTop:'1px solid #EDEDE8',display:'flex',alignItems:'center',justifyContent:'space-around',paddingBottom:'12px',zIndex:40 } },
+      tab(false,'Explore', h('svg',{width:23,height:23,viewBox:'0 0 24 24',fill:'none'},h('path',{d:'M12 21s7-6.5 7-12a7 7 0 1 0-14 0c0 5.5 7 12 7 12Z',stroke:gc(false),strokeWidth:2,strokeLinejoin:'round'}),h('circle',{cx:12,cy:9,r:2.3,fill:gc(false)})), ()=>this.toDiscover('map')),
+      tab(false,'My Runs', h('svg',{width:23,height:23,viewBox:'0 0 24 24',fill:'none'},h('path',{d:'M4 7h16M4 12h16M4 17h10',stroke:gc(false),strokeWidth:2,strokeLinecap:'round'})), ()=>this.toMain('myRuns')),
+      h('div',{ onClick:()=>this.toDiscover('map'), style:{display:'flex',flexDirection:'column',alignItems:'center',marginTop:'-22px',cursor:'pointer'} }, h('div',{style:{width:'52px',height:'52px',borderRadius:'16px',background:'#C8FA00',display:'flex',alignItems:'center',justifyContent:'center',boxShadow:'0 6px 16px rgba(200,250,0,.5)'}}, h('svg',{width:26,height:26,viewBox:'0 0 24 24',fill:'none'},h('path',{d:'M12 5v14M5 12h14',stroke:'#0B0B0C',strokeWidth:2.6,strokeLinecap:'round'})))),
+      tab(false,'Messages', h('svg',{width:23,height:23,viewBox:'0 0 24 24',fill:'none'},h('path',{d:'M21 11.5a8 8 0 0 1-11.5 7.2L4 20l1.3-5.4A8 8 0 1 1 21 11.5Z',stroke:gc(false),strokeWidth:2,strokeLinejoin:'round'})), ()=>this.toMain('msgList')),
+      tab(true,'Profile', h('svg',{width:23,height:23,viewBox:'0 0 24 24',fill:'none'},h('circle',{cx:12,cy:8,r:3.4,stroke:gc(true),strokeWidth:2}),h('path',{d:'M5 20c0-3.6 3.1-6 7-6s7 2.4 7 6',stroke:gc(true),strokeWidth:2,strokeLinecap:'round'})), ()=>this.go('myProfile')),
+      h('div',{style:{position:'absolute',bottom:'7px',left:'50%',transform:'translateX(-50%)',width:'134px',height:'5px',borderRadius:'3px',background:'rgba(0,0,0,.28)'}}));
+
+    // ---- my profile data ----
+    const paceFullMap = { 'Easy':'Easy · 6:00+/km', 'Steady':'Steady · 5:30/km', 'Quick':'Quick · 5:00/km', 'Fast':'Fast · 4:30/km' };
+    const typeColors = { 'Discover':'#1466FF', 'Challenge':'#FF3B30', 'Social':'#16C172' };
+    const typeTextColor = { 'Discover':'#fff', 'Challenge':'#fff', 'Social':'#06210f' };
+    const typeTags = s.types.map((t,i) => h('span',{ key:i, style:{ fontFamily:"'Saira Condensed'", fontWeight:800, fontSize:'12px', letterSpacing:'1px', textTransform:'uppercase', background:typeColors[t]||'#EDEDE8', color:typeTextColor[t]||'#0B0B0C', padding:'5px 10px 3px', borderRadius:'6px' } }, t));
+
+    const ic = (path, color, fill) => h('svg',{ width:24, height:24, viewBox:'0 0 24 24', fill: fill||'none' }, h('path',{ d:path, stroke:color, strokeWidth:2, strokeLinecap:'round', strokeLinejoin:'round' }));
+    const badgeRaw = [
+      { name:'Early Bird', earned:true, color:'#FFB020', icon:'M12 3v2M5 7l1.4 1.4M3 14h2M21 14h-2M17.6 8.4 19 7M8 18h8M7 14a5 5 0 0 1 10 0' },
+      { name:'Explorer', earned:true, color:'#1466FF', icon:'M12 21s7-6.5 7-12a7 7 0 1 0-14 0c0 5.5 7 12 7 12Z' },
+      { name:'Sunset Club', earned:true, color:'#FF3B30', icon:'M3 18h18M12 4v6M9 8l3 3 3-3M5 14a7 7 0 0 1 14 0' },
+      { name:'100K Club', earned:false, color:'#16C172', icon:'M4 12a8 8 0 1 1 16 0 M8 12l3 3 5-6' },
+      { name:'Hill Crusher', earned:false, color:'#7C5CFC', icon:'M3 19l6-9 4 5 3-4 5 8z' },
+      { name:'Streak x10', earned:false, color:'#FFB020', icon:'M13 2L4 14h6l-1 8 9-12h-6l1-8Z' },
+    ];
+    const myBadges = badgeRaw.map(b => ({
+      name:b.name,
+      cardStyle:`background:${b.earned?'#fff':'#F0F0EC'};border:1px solid ${b.earned?'#E8E8E2':'#E8E8E2'};border-radius:14px;padding:14px 10px;text-align:center;${b.earned?'box-shadow:0 3px 10px rgba(11,11,12,.05)':'opacity:.65'}`,
+      iconWrap:`width:44px;height:44px;border-radius:12px;margin:0 auto;display:flex;align-items:center;justify-content:center;background:${b.earned?b.color:'#DEDED8'}`,
+      icon: ic(b.icon, b.earned ? (b.color==='#FFB020'||b.color==='#16C172'?'#0B0B0C':'#fff') : '#a3a39d'),
+      nameColor: b.earned ? '#0B0B0C' : '#a3a39d',
+    }));
+
+    const myReviews = [
+      { stars:this.starsNode(5,13), text:'Easy to run with, kept us all together and knew a great coffee spot.', author:'Marco R.', run:'Old Town Loop' },
+      { stars:this.starsNode(5,13), text:'Lovely company on the hills — never complained once, brilliant energy.', author:'Sofia K.', run:'Monsanto' },
+      { stars:this.starsNode(4,13), text:'Great chat and a comfortable pace the whole way round.', author:'João L.', run:'Sunset 5K' },
+    ];
+
+    // ---- edit chips ----
+    const paceChips = ['Easy','Steady','Quick','Fast'].map(p => ({ label:p, onClick:()=>this.setState({ dPace:p }), style:this.chipStyle(s.dPace===p) }));
+    const distChips = ['3–5 km','5–10 km','10–15 km','15 km+'].map(d => ({ label:d, onClick:()=>this.setState({ dDist:d }), style:this.chipStyle(s.dDist===d) }));
+    const typeChips = ['Discover','Challenge','Social'].map(t => ({ label:t, onClick:()=>this.toggleArr('dTypes',t), style:this.chipStyle(s.dTypes.includes(t)) }));
+    const langChips = ['EN','PT','ES','FR','DE','IT'].map(l => ({ label:l, onClick:()=>this.toggleArr('dLangs',l), style:this.chipStyle(s.dLangs.includes(l)) }));
+
+    // ---- settings: units segmented ----
+    const seg = on => `font-family:'Saira Condensed';font-weight:800;font-size:13px;letter-spacing:.5px;text-transform:uppercase;border:none;border-radius:7px;padding:7px 16px 5px;cursor:pointer;background:${on?'#0B0B0C':'transparent'};color:${on?'#fff':'#74746e'}`;
+    const kmSeg = seg(s.units==='km'), miSeg = seg(s.units==='mi');
+
+    // ---- settings: notif toggles ----
+    const trackS = on => `width:46px;height:28px;border-radius:999px;background:${on?'#0B0B0C':'#D8D8D2'};position:relative;cursor:pointer;flex:none;transition:background .15s`;
+    const knobS = on => `position:absolute;top:3px;left:${on?'21px':'3px'};width:22px;height:22px;border-radius:50%;background:#fff;box-shadow:0 1px 3px rgba(0,0,0,.25);transition:left .15s`;
+    const notifDefs = [
+      { key:'requests', label:'Join requests', sub:'Someone asks to join your run' },
+      { key:'accepts', label:'Accepts & reminders', sub:'You\u2019re in, and run-day nudges' },
+      { key:'messages', label:'New messages', sub:'Group chats and DMs' },
+      { key:'reviews', label:'Reviews', sub:'When a runner rates you' },
+      { key:'leaderboard', label:'Weekly leaderboard', sub:'Your Lisbon ranking each Monday' },
+    ];
+    const notifRows = notifDefs.map((n,i) => { const on = s.notif[n.key]; return {
+      label:n.label, sub:n.sub, track:trackS(on), knob:knobS(on),
+      rowStyle:`display:flex;align-items:center;gap:13px;padding:13px 15px;${i<notifDefs.length-1?'border-bottom:1px solid #EDEDE8':''}`,
+      onClick:()=>this.setState({ notif: Object.assign({}, s.notif, { [n.key]: !on }) }) }; });
+
+    // ---- settings: connected apps ----
+    const appDefs = [
+      { name:'Strava', glyph:'S', iconBg:'#FC4C02', connected:true },
+      { name:'Apple Health', glyph:'H', iconBg:'#0B0B0C', connected:false },
+      { name:'Garmin', glyph:'G', iconBg:'#1466FF', connected:false },
+    ];
+    const appRows = appDefs.map((a,i) => ({
+      name:a.name, glyph:a.glyph, iconBg:a.iconBg,
+      sub: a.connected ? 'Connected · syncing runs' : 'Not connected',
+      subColor: a.connected ? '#0A7A47' : '#a3a39d', subWeight: a.connected ? 700 : 500,
+      btnLabel: a.connected ? 'Manage' : 'Connect',
+      btnStyle: a.connected
+        ? "font-family:'Saira Condensed';font-weight:800;font-size:12px;letter-spacing:.5px;text-transform:uppercase;color:#0B0B0C;background:#EFEFEA;border:none;padding:8px 13px 6px;border-radius:8px;cursor:pointer"
+        : "font-family:'Saira Condensed';font-weight:800;font-size:12px;letter-spacing:.5px;text-transform:uppercase;color:#fff;background:#0B0B0C;border:none;padding:8px 13px 6px;border-radius:8px;cursor:pointer",
+      onClick:()=>{}, rowStyle:`display:flex;align-items:center;gap:13px;padding:13px 15px;${i<appDefs.length-1?'border-bottom:1px solid #EDEDE8':''}`,
+    }));
+
+    // ---- safety toggle ----
+    const shareTrack = trackS(s.shareLoc), shareKnob = knobS(s.shareLoc);
+    const shareNote = s.shareLoc
+      ? 'display:flex;align-items:center;gap:7px;margin-top:13px;background:#E3F8EE;border-radius:9px;padding:9px 12px;font-size:12.5px;font-weight:600;color:#0A7A47'
+      : 'display:none';
+
+    // ---- other profile ----
+    const otherReviews = [
+      { stars:this.starsNode(5,13), text:'Knew all the best viewpoints and waited for everyone. Brilliant host.', author:'Ana', run:'Sunset 5K' },
+      { stars:this.starsNode(5,13), text:'Super welcoming to newcomers — made my first run in Lisbon easy.', author:'Tom', run:'Old Town Loop' },
+      { stars:this.starsNode(4,13), text:'Steady pace-setter and great chat. Coffee after was a nice touch.', author:'Rita', run:'Old Town Loop' },
+    ];
+    const favHeart = h('svg',{ width:22, height:22, viewBox:'0 0 24 24', fill: s.fav?'#FF3B30':'none' }, h('path',{ d:'M12 21s-7-4.6-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 11c0 5.4-7 10-7 10Z', stroke: s.fav?'#FF3B30':'#0B0B0C', strokeWidth:2, strokeLinejoin:'round' }));
+    const favBtn = `width:52px;height:52px;border-radius:12px;border:1.5px solid ${s.fav?'#FF3B30':'#E4E4DE'};background:${s.fav?'#FFECEA':'#fff'};display:flex;align-items:center;justify-content:center;cursor:pointer;flex:none`;
+
+    const reportDefs = ['Inappropriate behaviour','Harassment or bullying','Fake or impersonation','Safety concern','Spam or scam','Something else'];
+    const reportReasons = reportDefs.map(r => { const on = s.reportReason===r; return {
+      label:r, onClick:()=>this.setState({ reportReason:r }),
+      style:`display:flex;align-items:center;width:100%;font-family:'Hanken Grotesk';font-weight:600;font-size:14.5px;color:#0B0B0C;background:${on?'#F6F6F3':'#fff'};border:1.5px solid ${on?'#0B0B0C':'#E8E8E2'};border-radius:11px;padding:13px 15px;cursor:pointer`,
+      radio:`width:20px;height:20px;border-radius:50%;border:2px solid ${on?'#0B0B0C':'#cdcdc6'};display:flex;align-items:center;justify-content:center;flex:none`,
+      dot: on ? h('div',{ style:{ width:'10px', height:'10px', borderRadius:'50%', background:'#0B0B0C' } }) : null,
+    }; });
+    const canReport = !!s.reportReason;
+    const submitBtn = `width:100%;margin-top:16px;font-family:'Saira Condensed';font-weight:800;font-size:16px;letter-spacing:.5px;text-transform:uppercase;border:none;border-radius:13px;padding:15px 0;cursor:${canReport?'pointer':'not-allowed'};background:${canReport?'#0B0B0C':'#E4E4DE'};color:${canReport?'#fff':'#a3a39d'}`;
+    const submitLabel = canReport ? 'Submit report' : 'Pick a reason';
+
+    return {
+      tabBar,
+      // my profile
+      isMyProfile: s.screen==='myProfile',
+      name: s.name, city: s.city, bio: s.bio,
+      paceFull: paceFullMap[s.pace] || s.pace, dist: s.dist,
+      typeTags, langsText: s.langs.join(' · '),
+      myBadges, myReviews,
+      enterEdit: () => this.enterEdit(),
+      goSettings: () => this.go('settings'),
+      goBadges: () => this.toReward('badges'),
+      goMyProfile: () => this.go('myProfile'),
+      backOther: () => { try{ if(window.history.length>1){ window.history.back(); return; } }catch(e){} this.go('myProfile'); },
+
+      // edit
+      isEdit: s.screen==='edit',
+      dName: s.dName, dBio: s.dBio, dCity: s.dCity, bioCount: (s.dBio||'').length,
+      onName: (e)=>this.setState({ dName:e.target.value.slice(0,40) }),
+      onBio: (e)=>this.setState({ dBio:e.target.value.slice(0,160) }),
+      onCity: (e)=>this.setState({ dCity:e.target.value.slice(0,40) }),
+      paceChips, distChips, typeChips, langChips,
+      saveEdit: () => this.saveEdit(),
+
+      // settings
+      isSettings: s.screen==='settings',
+      kmSeg, miSeg, setKm: ()=>this.setState({ units:'km' }), setMi: ()=>this.setState({ units:'mi' }),
+      notifRows, appRows, goSafety: () => this.go('safety'),
+      blockedCount: s.blocked ? 1 : 0,
+
+      // safety
+      isSafety: s.screen==='safety',
+      shareTrack, shareKnob, shareNote, toggleShare: ()=>this.setState({ shareLoc: !s.shareLoc }),
+
+      // other
+      isOther: s.screen==='other',
+      otherReviews, favHeart, favBtn, toggleFav: ()=>this.setState({ fav: !s.fav }),
+      toMessages: () => this.toMain('msgList'),
+      openReport: () => this.setState({ reportOpen:true, reportReason:null }),
+      closeReport: () => this.setState({ reportOpen:false }),
+      reportOpen: s.reportOpen, reportReasons, submitBtn, submitLabel,
+      submitReport: () => { if(!s.reportReason) return; this.setState({ reportOpen:false, reported:true }); },
+      block: () => this.setState({ reportOpen:false, blocked:true, reported:false }),
+      unblock: () => this.setState({ blocked:false }),
+      blockedBanner: s.blocked ? 'display:flex;align-items:center;gap:9px;background:#FFECEA;border-bottom:1px solid #F2C9C6;padding:11px 16px;flex:none' : 'display:none',
+      reportedToast: (s.reported && !s.blocked) ? 'display:flex;align-items:center;gap:9px;background:#E3F8EE;border-bottom:1px solid #BBE6CF;padding:11px 16px;flex:none' : 'display:none',
+    };
+  }
+}
+</script>
+</body>
+</html>

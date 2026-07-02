@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Saira+Condensed:wght@500;600;700;800;900&family=Hanken+Grotesk:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  *{box-sizing:border-box}
+  html,body{margin:0}
+  .re-num{font-variant-numeric:tabular-nums}
+  ::-webkit-scrollbar{width:0;height:0}
+  @keyframes rePulse{0%{transform:scale(1);opacity:.5}70%{transform:scale(2.6);opacity:0}100%{opacity:0}}
+  @keyframes reUp{0%{transform:translateY(14px);opacity:0}100%{transform:translateY(0);opacity:1}}
+  @keyframes reFade{0%{opacity:0}100%{opacity:1}}
+  @keyframes rePop{0%{transform:scale(.4);opacity:0}60%{transform:scale(1.08)}100%{transform:scale(1);opacity:1}}
+  @keyframes reRing{0%{transform:scale(.6);opacity:.6}100%{transform:scale(2.3);opacity:0}}
+  textarea::placeholder,input::placeholder{color:#B7B7BD}
+</style>
+</helmet>
+
+<div style="min-height:100vh;width:100%;background:radial-gradient(120% 90% at 50% -10%, #232329 0%, #131316 55%, #0B0B0C 100%);display:flex;align-items:center;justify-content:center;padding:40px 20px;font-family:'Hanken Grotesk',system-ui,sans-serif;-webkit-font-smoothing:antialiased">
+
+  <div style="width:390px;height:844px;position:relative;flex:none;background:#F6F6F3;border-radius:46px;overflow:hidden;box-shadow:0 40px 90px rgba(0,0,0,.55), 0 0 0 11px #1c1c20, 0 0 0 13px #2a2a30">
+    <div style="position:absolute;top:12px;left:50%;transform:translateX(-50%);width:120px;height:30px;background:#0B0B0C;border-radius:18px;z-index:90"></div>
+
+    <!-- ============ WIZARD (steps 1–4) ============ -->
+    <sc-if value="{{ wizardOpen }}" hint-placeholder-val="{{ true }}">
+    <div style="position:absolute;inset:0;background:#F6F6F3;display:flex;flex-direction:column">
+
+      <!-- shared header -->
+      <div style="background:#fff;border-bottom:1px solid #EDEDE8;padding:0 14px 14px;flex:none;z-index:6">
+        <div class="re-num" style="height:50px;display:flex;align-items:center;justify-content:space-between;padding:0 12px;font-size:15px;font-weight:800;font-family:'Saira Condensed'">7:24<span></span></div>
+        <div style="display:flex;align-items:center;gap:6px">
+          <button onClick="{{ back }}" style="width:38px;height:38px;border-radius:11px;border:none;background:transparent;display:flex;align-items:center;justify-content:center;cursor:pointer;flex:none" style-active="transform:scale(.94)"><svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M15 5l-7 7 7 7" stroke="#0B0B0C" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+          <div style="flex:1;text-align:center">
+            <div style="font-family:'Saira Condensed';font-weight:900;font-size:20px;line-height:1;text-transform:uppercase;letter-spacing:-.3px">New run</div>
+            <div style="font-family:'Saira Condensed';font-weight:800;font-size:11px;letter-spacing:1px;text-transform:uppercase;color:#74746e;margin-top:3px">{{ stepLabel }}</div>
+          </div>
+          <button onClick="{{ exitCreate }}" style="width:38px;height:38px;border-radius:11px;border:none;background:transparent;display:flex;align-items:center;justify-content:center;cursor:pointer;flex:none" style-active="transform:scale(.94)"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M5 5l14 14M19 5L5 19" stroke="#9b9ba0" stroke-width="2.4" stroke-linecap="round"/></svg></button>
+        </div>
+        <div style="display:flex;gap:6px;margin-top:13px;padding:0 2px">
+          <sc-for list="{{ progSegs }}" as="seg" hint-placeholder-count="4">
+            <span style="{{ seg.style }}"></span>
+          </sc-for>
+        </div>
+      </div>
+
+      <!-- scroll body -->
+      <div style="flex:1;overflow-y:auto;padding:20px 18px 24px">
+
+        <!-- ---------- STEP 1 · TYPE + START ---------- -->
+        <sc-if value="{{ isType }}" hint-placeholder-val="{{ true }}">
+        <div>
+          <div style="font-family:'Saira Condensed';font-weight:800;font-size:12px;letter-spacing:1.5px;text-transform:uppercase;color:#74746e;margin:0 2px 11px">What kind of run?</div>
+          <div style="display:flex;flex-direction:column;gap:10px">
+            <sc-for list="{{ typeOptions }}" as="t" hint-placeholder-count="3">
+              <button onClick="{{ t.onClick }}" style="{{ t.cardStyle }}" style-active="transform:scale(.99)">
+                <span style="{{ t.dotStyle }}"></span>
+                <span style="flex:1;text-align:left">
+                  <span style="display:block;font-family:'Saira Condensed';font-weight:800;font-size:18px;text-transform:uppercase;line-height:1;color:#0B0B0C">{{ t.label }}</span>
+                  <span style="display:block;font-size:12.5px;color:#74746e;font-weight:500;margin-top:3px;line-height:1.35">{{ t.desc }}</span>
+                </span>
+                <span style="{{ t.checkStyle }}"><svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M5 12l4 4L19 6" stroke="#fff" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+              </button>
+            </sc-for>
+          </div>
+
+          <div style="font-family:'Saira Condensed';font-weight:800;font-size:12px;letter-spacing:1.5px;text-transform:uppercase;color:#74746e;margin:22px 2px 11px">Drop your start point</div>
+          <div onClick="{{ moveStart }}" style="position:relative;height:230px;border-radius:16px;overflow:hidden;border:1px solid #E4E4DE;cursor:pointer;background:#e8ede9">
+            <div style="position:absolute;inset:0;background-image:linear-gradient(#dde3dd 1px,transparent 1px),linear-gradient(90deg,#dde3dd 1px,transparent 1px);background-size:34px 34px"></div>
+            <div style="position:absolute;top:-30px;left:-40px;width:200px;height:180px;background:#d4e7d6;border-radius:50%;transform:rotate(18deg)"></div>
+            <div style="position:absolute;bottom:-40px;right:-30px;width:220px;height:150px;background:#cfe0ee"></div>
+            <svg style="position:absolute;inset:0" width="354" height="230"><path d="M-10 90 Q120 120 170 200 T380 250" stroke="#fff" stroke-width="12" fill="none"/><path d="M40 -10 Q70 120 220 150 T360 300" stroke="#fff" stroke-width="9" fill="none"/></svg>
+            <!-- start pin -->
+            <div style="{{ startPinWrap }}">
+              <span style="position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:46px;height:46px;border-radius:50%;background:#C8FA00;animation:reRing 1.9s ease-out infinite"></span>
+              <span style="position:relative;width:30px;height:30px;border-radius:50%;background:#0B0B0C;border:3px solid #C8FA00;display:flex;align-items:center;justify-content:center;box-shadow:0 8px 18px rgba(0,0,0,.3)"><svg width="15" height="15" viewBox="0 0 24 24" fill="none"><path d="M12 21s7-6.5 7-12a7 7 0 1 0-14 0c0 5.5 7 12 7 12Z" stroke="#C8FA00" stroke-width="2.4" stroke-linejoin="round"/><circle cx="12" cy="9" r="2" fill="#C8FA00"/></svg></span>
+            </div>
+            <div style="position:absolute;left:12px;bottom:12px;display:inline-flex;align-items:center;gap:7px;background:#fff;padding:7px 12px;border-radius:999px;box-shadow:0 4px 12px rgba(0,0,0,.14)"><span style="width:7px;height:7px;border-radius:50%;background:#0B0B0C"></span><span style="font-family:'Saira Condensed';font-weight:800;font-size:12px;letter-spacing:.5px;text-transform:uppercase;color:#0B0B0C">{{ startArea }}, Lisbon</span></div>
+            <div style="position:absolute;right:12px;top:12px;background:rgba(11,11,12,.66);color:#fff;font-size:11px;font-weight:600;padding:5px 10px;border-radius:8px;backdrop-filter:blur(4px)">Tap map to move</div>
+          </div>
+        </div>
+        </sc-if>
+
+        <!-- ---------- STEP 2 · DETAILS + GOAL ---------- -->
+        <sc-if value="{{ isDetails }}" hint-placeholder-val="{{ false }}">
+        <div>
+          <!-- name -->
+          <div style="font-family:'Saira Condensed';font-weight:800;font-size:12px;letter-spacing:1.5px;text-transform:uppercase;color:#74746e;margin:0 2px 9px">Run name</div>
+          <input value="{{ name }}" onChange="{{ onName }}" maxlength="40" placeholder="e.g. Sunset 5K along the river" style="width:100%;border:1.5px solid #DEDEE2;border-radius:12px;padding:13px 14px;font-family:'Hanken Grotesk';font-size:15px;font-weight:600;color:#0B0B0C;outline:none;background:#fff" style-focus="border-color:#0B0B0C"/>
+
+          <!-- distance + group steppers -->
+          <div style="display:flex;gap:11px;margin-top:18px">
+            <div style="flex:1;background:#fff;border:1px solid #E4E4DE;border-radius:14px;padding:13px 13px 14px">
+              <div style="font-family:'Saira Condensed';font-weight:800;font-size:11px;letter-spacing:1px;text-transform:uppercase;color:#74746e">Distance</div>
+              <div style="display:flex;align-items:center;justify-content:space-between;margin-top:9px">
+                <button onClick="{{ kmDown }}" style="{{ stepBtn }}" style-active="transform:scale(.92)">–</button>
+                <div style="text-align:center"><span class="re-num" style="font-family:'Saira Condensed';font-weight:900;font-size:30px;line-height:.9">{{ km }}</span><span style="font-family:'Saira Condensed';font-weight:800;font-size:11px;color:#74746e;margin-left:3px">KM</span></div>
+                <button onClick="{{ kmUp }}" style="{{ stepBtn }}" style-active="transform:scale(.92)">+</button>
+              </div>
+            </div>
+            <div style="flex:1;background:#fff;border:1px solid #E4E4DE;border-radius:14px;padding:13px 13px 14px">
+              <div style="font-family:'Saira Condensed';font-weight:800;font-size:11px;letter-spacing:1px;text-transform:uppercase;color:#74746e">Max group</div>
+              <div style="display:flex;align-items:center;justify-content:space-between;margin-top:9px">
+                <button onClick="{{ capDown }}" style="{{ stepBtn }}" style-active="transform:scale(.92)">–</button>
+                <div style="text-align:center"><span class="re-num" style="font-family:'Saira Condensed';font-weight:900;font-size:30px;line-height:.9">{{ cap }}</span><span style="font-family:'Saira Condensed';font-weight:800;font-size:11px;color:#74746e;margin-left:3px">PPL</span></div>
+                <button onClick="{{ capUp }}" style="{{ stepBtn }}" style-active="transform:scale(.92)">+</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- pace -->
+          <div style="font-family:'Saira Condensed';font-weight:800;font-size:12px;letter-spacing:1.5px;text-transform:uppercase;color:#74746e;margin:20px 2px 10px">Target pace <span style="color:#a3a39d">/ km</span></div>
+          <div style="display:flex;gap:8px">
+            <sc-for list="{{ paceChips }}" as="c" hint-placeholder-count="5"><button onClick="{{ c.onClick }}" style="{{ c.style }}">{{ c.label }}</button></sc-for>
+          </div>
+
+          <!-- when -->
+          <div style="font-family:'Saira Condensed';font-weight:800;font-size:12px;letter-spacing:1.5px;text-transform:uppercase;color:#74746e;margin:20px 2px 10px">When</div>
+          <div style="display:flex;gap:8px;flex-wrap:wrap">
+            <sc-for list="{{ dayChips }}" as="c" hint-placeholder-count="4"><button onClick="{{ c.onClick }}" style="{{ c.style }}">{{ c.label }}</button></sc-for>
+          </div>
+          <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:9px">
+            <sc-for list="{{ timeChips }}" as="c" hint-placeholder-count="5"><button onClick="{{ c.onClick }}" style="{{ c.style }}">{{ c.label }}</button></sc-for>
+          </div>
+
+          <!-- route -->
+          <div style="font-family:'Saira Condensed';font-weight:800;font-size:12px;letter-spacing:1.5px;text-transform:uppercase;color:#74746e;margin:20px 2px 10px">Route</div>
+          <div style="display:flex;gap:10px">
+            <button onClick="{{ setOpen }}" style="{{ openStyle }}" style-active="transform:scale(.99)"><span style="display:flex;align-items:center;gap:8px"><svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M5 19l5-14M19 19l-5-14" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/><circle cx="5" cy="19" r="2.4" fill="currentColor"/><circle cx="19" cy="19" r="2.4" fill="currentColor"/></svg>Open route</span><span style="display:block;font-size:11.5px;font-weight:500;opacity:.7;margin-top:5px;text-align:left">Start ≠ finish</span></button>
+            <button onClick="{{ setClosed }}" style="{{ closedStyle }}" style-active="transform:scale(.99)"><span style="display:flex;align-items:center;gap:8px"><svg width="18" height="18" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="8" stroke="currentColor" stroke-width="2.2"/><circle cx="12" cy="4" r="2.4" fill="currentColor"/></svg>Closed loop</span><span style="display:block;font-size:11.5px;font-weight:500;opacity:.7;margin-top:5px;text-align:left">Back to start</span></button>
+          </div>
+
+          <!-- goal -->
+          <div style="display:flex;align-items:center;justify-content:space-between;margin:22px 2px 9px">
+            <span style="font-family:'Saira Condensed';font-weight:800;font-size:12px;letter-spacing:1.5px;text-transform:uppercase;color:#74746e">Your goal</span>
+            <span class="re-num" style="font-size:11.5px;color:#a3a39d;font-weight:600">{{ goalCount }}/200</span>
+          </div>
+          <textarea value="{{ goal }}" onChange="{{ onGoal }}" maxlength="200" placeholder="What's this run about? Tell runners the vibe, pace and any plans — e.g. coffee after." style="width:100%;height:92px;resize:none;border:1.5px solid #DEDEE2;border-radius:12px;padding:13px 14px;font-family:'Hanken Grotesk';font-size:14.5px;font-weight:500;line-height:1.45;color:#0B0B0C;outline:none;background:#fff" style-focus="border-color:#0B0B0C"></textarea>
+          <div style="display:flex;gap:7px;flex-wrap:wrap;margin-top:10px">
+            <sc-for list="{{ goalPrompts }}" as="p" hint-placeholder-count="3"><button onClick="{{ p.onClick }}" style="font-size:12.5px;font-weight:600;background:#fff;border:1px solid #E4E4DE;color:#3a3a36;padding:7px 12px;border-radius:999px;cursor:pointer" style-active="transform:scale(.97)">+ {{ p.label }}</button></sc-for>
+          </div>
+        </div>
+        </sc-if>
+
+        <!-- ---------- STEP 3 · VISIBILITY ---------- -->
+        <sc-if value="{{ isVis }}" hint-placeholder-val="{{ false }}">
+        <div>
+          <div style="font-family:'Saira Condensed';font-weight:800;font-size:12px;letter-spacing:1.5px;text-transform:uppercase;color:#74746e;margin:0 2px 6px">Who can join?</div>
+          <p style="font-size:13.5px;color:#74746e;font-weight:500;margin:0 2px 14px;line-height:1.45">You can change this any time while the run is open.</p>
+          <div style="display:flex;flex-direction:column;gap:11px">
+            <sc-for list="{{ visOptions }}" as="v" hint-placeholder-count="3">
+              <button onClick="{{ v.onClick }}" style="{{ v.cardStyle }}" style-active="transform:scale(.99)">
+                <span style="{{ v.iconWrap }}">{{ v.icon }}</span>
+                <span style="flex:1;text-align:left">
+                  <span style="display:block;font-family:'Saira Condensed';font-weight:800;font-size:17px;text-transform:uppercase;line-height:1;color:#0B0B0C">{{ v.label }}</span>
+                  <span style="display:block;font-size:12.5px;color:#74746e;font-weight:500;margin-top:4px;line-height:1.4">{{ v.desc }}</span>
+                </span>
+                <span style="{{ v.radioStyle }}"><span style="{{ v.radioDot }}"></span></span>
+              </button>
+            </sc-for>
+          </div>
+          <div style="display:flex;gap:11px;background:#0B0B0C;color:#fff;border-radius:14px;padding:14px 15px;margin-top:20px">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" style="flex:none;margin-top:1px"><path d="M12 3l7 3v5c0 4.5-3 7.7-7 9-4-1.3-7-4.5-7-9V6l7-3Z" stroke="#C8FA00" stroke-width="2" stroke-linejoin="round"/></svg>
+            <div><div style="font-family:'Saira Condensed';font-weight:800;font-size:14px;text-transform:uppercase;letter-spacing:.5px">You're the host</div><div style="font-size:12px;color:#b9b9be;font-weight:500;margin-top:2px;line-height:1.45">Runners see your profile and rating. You can message, accept or remove anyone in the group.</div></div>
+          </div>
+        </div>
+        </sc-if>
+
+        <!-- ---------- STEP 4 · REVIEW ---------- -->
+        <sc-if value="{{ isReview }}" hint-placeholder-val="{{ false }}">
+        <div>
+          <!-- preview card -->
+          <div style="background:#fff;border:1px solid #E4E4DE;border-left:5px solid {{ typeColor }};border-radius:16px;overflow:hidden;box-shadow:0 6px 16px rgba(11,11,12,.06)">
+            <div style="height:130px;position:relative;background:{{ headerBg }}">
+              <div style="position:absolute;inset:0;background-image:linear-gradient(#ffffff55 1px,transparent 1px),linear-gradient(90deg,#ffffff55 1px,transparent 1px);background-size:26px 26px"></div>
+              {{ routeSvg }}
+              <div style="position:absolute;left:12px;top:12px"><span style="{{ tagStyle }}">{{ typeLabel }}</span></div>
+              <div style="position:absolute;left:12px;bottom:12px;display:inline-flex;align-items:center;gap:6px;background:#fff;padding:5px 11px;border-radius:999px;box-shadow:0 3px 9px rgba(0,0,0,.12)"><span style="{{ routeDot }}"></span><span style="font-family:'Saira Condensed';font-weight:800;font-size:11px;letter-spacing:.5px;text-transform:uppercase;color:#0B0B0C">{{ routeLabel }}</span></div>
+            </div>
+            <div style="padding:14px 15px 16px">
+              <h1 style="font-family:'Saira Condensed';font-weight:900;font-size:27px;line-height:.95;text-transform:uppercase;letter-spacing:-.3px;margin:0">{{ displayName }}</h1>
+              <div style="font-size:12.5px;color:#74746e;font-weight:600;margin-top:4px">{{ startArea }} · Lisbon</div>
+              <p style="font-size:14px;line-height:1.5;color:#3a3a36;margin:11px 0 0;font-weight:500">"{{ displayGoal }}"</p>
+              <div style="display:flex;margin:15px 0 0;border:1px solid #E4E4DE;border-radius:13px;overflow:hidden">
+                <div style="flex:1;padding:11px 12px;border-right:1px solid #EDEDE8"><div class="re-num" style="font-family:'Saira Condensed';font-weight:800;font-size:22px;line-height:1">{{ km }}</div><div style="font-size:9px;letter-spacing:1px;text-transform:uppercase;color:#74746e;font-weight:700;margin-top:3px">KM</div></div>
+                <div style="flex:1;padding:11px 12px;border-right:1px solid #EDEDE8"><div class="re-num" style="font-family:'Saira Condensed';font-weight:800;font-size:22px;line-height:1">{{ pace }}</div><div style="font-size:9px;letter-spacing:1px;text-transform:uppercase;color:#74746e;font-weight:700;margin-top:3px">/KM</div></div>
+                <div style="flex:1;padding:11px 12px"><div class="re-num" style="font-family:'Saira Condensed';font-weight:800;font-size:22px;line-height:1">{{ day }}</div><div class="re-num" style="font-size:9px;letter-spacing:1px;text-transform:uppercase;color:#74746e;font-weight:700;margin-top:3px">{{ time }}</div></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- summary rows -->
+          <div style="background:#fff;border:1px solid #E4E4DE;border-radius:14px;margin-top:12px;overflow:hidden">
+            <sc-for list="{{ summaryRows }}" as="row" hint-placeholder-count="3">
+              <button onClick="{{ row.onClick }}" style="display:flex;align-items:center;gap:12px;width:100%;background:transparent;border:none;border-bottom:1px solid {{ row.border }};padding:14px 15px;cursor:pointer;text-align:left" style-active="background:#FAFAF8">
+                <span style="font-family:'Saira Condensed';font-weight:800;font-size:11px;letter-spacing:1px;text-transform:uppercase;color:#74746e;width:74px;flex:none">{{ row.label }}</span>
+                <span style="flex:1;font-size:14px;font-weight:600;color:#0B0B0C">{{ row.value }}</span>
+                <span style="font-family:'Saira Condensed';font-weight:800;font-size:11px;letter-spacing:.5px;text-transform:uppercase;color:#1466FF">Edit</span>
+              </button>
+            </sc-for>
+          </div>
+        </div>
+        </sc-if>
+
+      </div>
+
+      <!-- footer CTA -->
+      <div style="background:#fff;border-top:1px solid #EDEDE8;padding:13px 16px 26px;display:flex;gap:12px;align-items:center;flex:none">
+        <sc-if value="{{ isReview }}" hint-placeholder-val="{{ false }}">
+        <div style="flex:none"><div class="re-num" style="font-family:'Saira Condensed';font-weight:800;font-size:19px;line-height:.9;color:#0B0B0C">+{{ pts }} <span style="font-size:11px;color:#74746e">pts</span></div><div style="font-size:10px;color:#74746e;font-weight:600">to finishers</div></div>
+        </sc-if>
+        <button onClick="{{ onCta }}" style="{{ ctaStyle }}" style-active="transform:scale(.98)">{{ ctaLabel }}</button>
+      </div>
+    </div>
+    </sc-if>
+
+    <!-- ============ STEP 5 · PUBLISHED ============ -->
+    <sc-if value="{{ isPublished }}" hint-placeholder-val="{{ false }}">
+    <div style="position:absolute;inset:0;background:#0B0B0C;color:#fff;display:flex;flex-direction:column;overflow:hidden">
+      <div style="position:absolute;inset:0;opacity:.5">
+        <div style="position:absolute;inset:0;background-image:linear-gradient(#161616 1px,transparent 1px),linear-gradient(90deg,#161616 1px,transparent 1px);background-size:40px 40px"></div>
+        <svg style="position:absolute;inset:0" width="390" height="844"><path d="M-20 300 Q140 360 200 520 T420 740" stroke="#17171a" stroke-width="22" fill="none"/><path d="M60 -20 Q100 240 280 320 T380 700" stroke="#17171a" stroke-width="15" fill="none"/></svg>
+      </div>
+      <div style="position:absolute;top:120px;left:40px;width:7px;height:7px;background:{{ typeColor }};border-radius:2px;transform:rotate(20deg)"></div>
+      <div style="position:absolute;top:172px;right:48px;width:8px;height:8px;background:#C8FA00;border-radius:50%"></div>
+      <div style="position:absolute;top:150px;right:96px;width:6px;height:6px;background:#16C172;border-radius:2px;transform:rotate(-15deg)"></div>
+
+      <div class="re-num" style="position:relative;z-index:2;height:50px;display:flex;align-items:center;justify-content:space-between;padding:0 26px;font-size:15px;font-weight:800;font-family:'Saira Condensed'">7:24<span></span></div>
+
+      <div style="position:relative;z-index:2;flex:1;overflow-y:auto;padding:14px 26px 0;display:flex;flex-direction:column;align-items:center;text-align:center">
+        <div style="position:relative;margin-top:30px;width:96px;height:96px;display:flex;align-items:center;justify-content:center;animation:rePop .5s cubic-bezier(.2,.9,.3,1.3)">
+          <span style="position:absolute;inset:0;border-radius:50%;background:#C8FA00;animation:reRing 1.8s ease-out infinite"></span>
+          <span style="position:relative;width:96px;height:96px;border-radius:50%;background:#C8FA00;display:flex;align-items:center;justify-content:center;box-shadow:0 16px 40px rgba(200,250,0,.4)"><svg width="50" height="50" viewBox="0 0 24 24" fill="none"><path d="M5 12l4 4L19 6" stroke="#0B0B0C" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+        </div>
+        <div style="font-family:'Saira Condensed';font-weight:800;font-size:13px;letter-spacing:2px;text-transform:uppercase;color:#C8FA00;margin-top:26px">Your run is live</div>
+        <h1 style="font-family:'Saira Condensed';font-weight:900;font-size:42px;line-height:.92;text-transform:uppercase;letter-spacing:-1px;margin:8px 0 0;max-width:300px">{{ displayName }}</h1>
+        <p style="font-size:15px;line-height:1.5;color:#c8c8cf;font-weight:500;margin:14px 0 0;max-width:290px">It's on the Lisbon map and in <strong style="color:#fff">Managed by you</strong>. We'll ping you the moment someone asks to join.</p>
+
+        <div style="width:100%;display:flex;gap:9px;margin-top:24px">
+          <div style="flex:1;background:#15151a;border:1px solid #26262c;border-radius:14px;padding:13px 12px"><div class="re-num" style="font-family:'Saira Condensed';font-weight:800;font-size:26px;line-height:1">{{ km }}</div><div style="font-size:9px;letter-spacing:1px;text-transform:uppercase;color:#74747c;font-weight:700;margin-top:4px">KM</div></div>
+          <div style="flex:1;background:#15151a;border:1px solid #26262c;border-radius:14px;padding:13px 12px"><div class="re-num" style="font-family:'Saira Condensed';font-weight:800;font-size:26px;line-height:1">{{ cap }}</div><div style="font-size:9px;letter-spacing:1px;text-transform:uppercase;color:#74747c;font-weight:700;margin-top:4px">Spots</div></div>
+          <div style="flex:1;background:#15151a;border:1px solid #26262c;border-radius:14px;padding:13px 12px"><div class="re-num" style="font-family:'Saira Condensed';font-weight:800;font-size:26px;line-height:1">+{{ pts }}</div><div style="font-size:9px;letter-spacing:1px;text-transform:uppercase;color:#74747c;font-weight:700;margin-top:4px">Pts</div></div>
+        </div>
+      </div>
+
+      <div style="position:relative;z-index:2;padding:14px 26px 30px">
+        <button onClick="{{ goManaged }}" style="width:100%;font-family:'Saira Condensed';font-weight:800;font-size:18px;letter-spacing:.5px;text-transform:uppercase;color:#0B0B0C;background:#C8FA00;border:none;border-radius:14px;padding:16px 0;cursor:pointer;box-shadow:0 10px 26px rgba(200,250,0,.32)" style-active="transform:scale(.98)">View in Your Runs</button>
+        <button onClick="{{ createAnother }}" style="width:100%;margin-top:10px;font-family:'Saira Condensed';font-weight:800;font-size:14px;letter-spacing:.5px;text-transform:uppercase;color:#fff;background:transparent;border:none;padding:9px 0;cursor:pointer">Create another run</button>
+      </div>
+    </div>
+    </sc-if>
+
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:390,&quot;height&quot;:844}}">
+class Component extends DCLogic {
+  state = this.boot({ screen:'type', type:'Social', startIdx:0, name:'', km:5, pace:'6:00', day:'Sat', time:'08:00', closed:false, cap:8, goal:'', vis:'approval' });
+
+  boot(def){ try{ const p=new URLSearchParams(window.location.search); const s=p.get('s'); const map={type:'type',createType:'type',details:'details',createDetails:'details',vis:'vis',createVis:'vis',visibility:'vis',review:'review',createReview:'review',published:'published'}; if(s&&map[s]) def.screen=map[s]; }catch(e){} return def; }
+  toMain(s){ window.location.href='Run%20Everywhere%20-%20Main%20Flow.dc.html'+(s?'?s='+s:''); }
+  toDiscover(s){ window.location.href='Run%20Everywhere%20-%20Discover%20Flow.dc.html'+(s?'?s='+s:''); }
+
+  order(){ return ['type','details','vis','review']; }
+  go(s){ this.setState({ screen:s }); }
+
+  typeMeta(){ return { Discover:{ color:'#1466FF', on:'#fff', desc:'Explore a city or route — sightsee on foot at an easy effort.' }, Challenge:{ color:'#FF3B30', on:'#fff', desc:'Race pace or hard effort — push together, regroup at the top.' }, Social:{ color:'#16C172', on:'#06210f', desc:'Easy, chatty meet-up or recovery — all paces welcome.' } }; }
+  startSpots(){ return [
+    { area:'Belém', top:150, left:250 },
+    { area:'Alfama', top:70, left:70 },
+    { area:'Cais do Sodré', top:175, left:120 },
+    { area:'Bairro Alto', top:110, left:185 },
+  ]; }
+
+  chip(label, active, col, onClick){
+    const onC = (col==='#16C172') ? '#06210f' : '#fff';
+    return { label, onClick,
+      style:`font-family:'Saira Condensed';font-weight:800;font-size:13px;letter-spacing:.5px;text-transform:uppercase;border:1.5px solid ${active?(col||'#0B0B0C'):'#E4E4DE'};background:${active?(col||'#0B0B0C'):'#fff'};color:${active?(col?onC:'#fff'):'#74746e'};padding:9px 13px 7px;border-radius:999px;white-space:nowrap;cursor:pointer` };
+  }
+
+  renderVals(){
+    const s = this.state, h = React.createElement;
+    const tm = this.typeMeta(), meta = tm[s.type];
+    const typeColor = meta.color, typeOn = meta.on;
+    const spots = this.startSpots(), spot = spots[s.startIdx % spots.length];
+
+    // ----- header / progress -----
+    const order = this.order();
+    const idx = order.indexOf(s.screen);
+    const names = { type:'Step 1 of 4 · Type', details:'Step 2 of 4 · Details', vis:'Step 3 of 4 · Visibility', review:'Step 4 of 4 · Review' };
+    const progSegs = order.map((_,i)=>({ style:`flex:1;height:4px;border-radius:99px;background:${i<=idx?'#C8FA00':'#E4E4DE'};transition:background .2s` }));
+
+    // ----- step 1: type options -----
+    const typeOptions = ['Discover','Challenge','Social'].map(t=>{
+      const m = tm[t], on = s.type===t;
+      return { label:t, desc:m.desc, onClick:()=>this.setState({ type:t }),
+        cardStyle:`display:flex;align-items:center;gap:13px;width:100%;background:#fff;border:1.5px solid ${on?m.color:'#E4E4DE'};border-radius:15px;padding:14px 15px;cursor:pointer;box-shadow:${on?'0 4px 14px '+m.color+'22':'0 2px 8px rgba(11,11,12,.04)'}`,
+        dotStyle:`width:34px;height:34px;border-radius:10px;background:${m.color};flex:none`,
+        checkStyle:`width:24px;height:24px;border-radius:50%;flex:none;display:flex;align-items:center;justify-content:center;background:${on?m.color:'transparent'};border:${on?'none':'2px solid #DEDEE2'}` };
+    });
+
+    // ----- step 2 -----
+    const km = (s.km % 1 === 0) ? String(s.km) : s.km.toFixed(1);
+    const stepBtn = "width:40px;height:40px;border-radius:11px;border:1.5px solid #E4E4DE;background:#F6F6F3;font-family:'Saira Condensed';font-weight:800;font-size:22px;line-height:1;color:#0B0B0C;cursor:pointer;display:flex;align-items:center;justify-content:center;flex:none";
+    const paceChips = ['6:30','6:00','5:30','5:00','4:30'].map(p=>this.chip(p, s.pace===p, typeColor, ()=>this.setState({ pace:p })));
+    const dayChips = ['Today','Tomorrow','Sat','Sun'].map(d=>this.chip(d, s.day===d, null, ()=>this.setState({ day:d })));
+    const timeChips = ['06:30','08:00','12:00','18:00','19:30'].map(t=>this.chip(t, s.time===t, null, ()=>this.setState({ time:t })));
+    const routeBtn = (active)=>`flex:1;background:#fff;border:1.5px solid ${active?'#0B0B0C':'#E4E4DE'};border-radius:14px;padding:13px 14px;cursor:pointer;font-family:'Saira Condensed';font-weight:800;font-size:16px;text-transform:uppercase;color:${active?'#0B0B0C':'#74746e'};text-align:left`;
+    const goalPrompts = [
+      { label:'Easy effort', text:'Easy, conversational effort — we regroup so no one gets dropped.' },
+      { label:'See the sights', text:'We take the scenic way and stop at the best viewpoints.' },
+      { label:'Coffee after', text:'Coffee and pastéis after for anyone keen.' },
+    ].map(p=>({ label:p.label, onClick:()=>{ const cur=(this.state.goal||'').trim(); this.setState({ goal:((cur?cur+' ':'')+p.text).slice(0,200) }); } }));
+
+    // ----- step 3: visibility -----
+    const visIcon = (paths)=>h('svg',{width:20,height:20,viewBox:'0 0 24 24',fill:'none'}, ...paths.map((d,i)=>h('path',{key:i,d,stroke:'#0B0B0C',strokeWidth:2,strokeLinecap:'round',strokeLinejoin:'round'})));
+    const visData = [
+      { key:'open', label:'Open', desc:'Anyone can join instantly until the run is full.', icon:visIcon(['M5 12h14','M12 5v14']) },
+      { key:'approval', label:'Approval required', desc:"Runners request to join — you accept or decline each one.", icon:visIcon(['M20 6L9 17l-5-5']) },
+      { key:'invite', label:'Invite only', desc:'Hidden from the map. Only people you share the link with can join.', icon:visIcon(['M12 3l7 3v5c0 4.5-3 7.7-7 9-4-1.3-7-4.5-7-9V6l7-3Z']) },
+    ];
+    const visOptions = visData.map(v=>{
+      const on = s.vis===v.key;
+      return { label:v.label, desc:v.desc, icon:v.icon, onClick:()=>this.setState({ vis:v.key }),
+        cardStyle:`display:flex;align-items:center;gap:13px;width:100%;background:#fff;border:1.5px solid ${on?'#0B0B0C':'#E4E4DE'};border-radius:15px;padding:15px;cursor:pointer;box-shadow:${on?'0 4px 14px rgba(11,11,12,.08)':'0 2px 8px rgba(11,11,12,.04)'}`,
+        iconWrap:'width:40px;height:40px;border-radius:11px;background:#F0F0EC;flex:none;display:flex;align-items:center;justify-content:center',
+        radioStyle:`width:24px;height:24px;border-radius:50%;flex:none;display:flex;align-items:center;justify-content:center;border:2px solid ${on?'#0B0B0C':'#DEDEE2'}`,
+        radioDot:`width:12px;height:12px;border-radius:50%;background:${on?'#0B0B0C':'transparent'}` };
+    });
+    const visLabel = { open:'Open · anyone joins', approval:'Approval required', invite:'Invite only' }[s.vis];
+
+    // ----- step 4: review -----
+    const displayName = (s.name||'').trim() || 'Untitled run';
+    const displayGoal = (s.goal||'').trim() || 'Add a goal so runners know what to expect.';
+    const pts = Math.round(s.km*18) + (s.type==='Challenge'?40:s.type==='Discover'?15:0);
+    const headerBg = { Discover:'linear-gradient(135deg,#dde7f5,#eaf1ff)', Challenge:'linear-gradient(135deg,#f7e0de,#ffeceb)', Social:'linear-gradient(135deg,#d6f1e3,#e3f8ee)' }[s.type];
+    const routePaths = { Discover:'M40 110 C80 95 66 45 110 42 S180 70 252 28', Challenge:'M28 116 L70 40 L120 110 L168 36 L252 96', Social:'M148 28 C96 28 64 50 64 70 S100 112 148 112 232 96 232 70 200 28 148 28Z' };
+    const routeSvg = h('svg',{ style:{position:'absolute',inset:0}, width:'100%', height:130, viewBox:'0 0 282 130', preserveAspectRatio:'none' },
+      h('path',{ d:routePaths[s.type], stroke:typeColor, strokeWidth:5, fill:'none', strokeLinecap:'round', strokeLinejoin:'round' }),
+      h('circle',{ cx:s.type==='Social'?148:40, cy:s.type==='Social'?28:110, r:6, fill:'#fff', stroke:typeColor, strokeWidth:4 }),
+      s.type!=='Social' ? h('circle',{ cx:252, cy:s.type==='Challenge'?96:28, r:6, fill:typeColor }) : null );
+    const tagStyle = `font-family:'Saira Condensed';font-weight:800;font-size:11px;letter-spacing:1px;text-transform:uppercase;background:${typeColor};color:${typeOn};padding:5px 9px 3px;border-radius:6px;display:inline-block`;
+    const routeDot = `width:8px;height:8px;border-radius:50%;${s.closed?'background:'+typeColor:'border:2px solid '+typeColor};display:inline-block`;
+    const summaryRows = [
+      { label:'Pace', value:`${s.pace} /km · ${s.closed?'Closed loop':'Open route'}`, to:'details' },
+      { label:'When', value:`${s.day} · ${s.time}`, to:'details' },
+      { label:'Group', value:`Up to ${s.cap} runners`, to:'details' },
+      { label:'Joining', value:visLabel, to:'vis' },
+    ].map((r,i,arr)=>({ label:r.label, value:r.value, onClick:()=>this.go(r.to), border: i===arr.length-1?'transparent':'#EDEDE8' }));
+
+    // ----- footer cta -----
+    const ctaMap = { type:'Continue', details:'Continue', vis:'Review run', review:'Publish run' };
+    const ctaLabel = ctaMap[s.screen] || 'Continue';
+    const ctaPrimary = s.screen==='review';
+    const ctaStyle = `flex:1;font-family:'Saira Condensed';font-weight:800;font-size:17px;letter-spacing:.5px;text-transform:uppercase;border:none;border-radius:12px;padding:15px 0;cursor:pointer;color:${ctaPrimary?'#0B0B0C':'#fff'};background:${ctaPrimary?'#C8FA00':'#0B0B0C'}${ctaPrimary?';box-shadow:0 8px 20px rgba(200,250,0,.4)':''}`;
+    const onCta = ()=>{ if(s.screen==='review'){ this.setState({ screen:'published' }); } else { this.go(order[idx+1]); } };
+    const back = ()=>{ if(idx<=0){ this.toMain('explore'); } else { this.go(order[idx-1]); } };
+
+    return {
+      wizardOpen: s.screen!=='published',
+      isType: s.screen==='type', isDetails: s.screen==='details', isVis: s.screen==='vis', isReview: s.screen==='review', isPublished: s.screen==='published',
+      stepLabel: names[s.screen]||'', progSegs, back, exitCreate:()=>this.toMain('explore'),
+      typeColor, typeOn,
+      // step 1
+      typeOptions, startArea: spot.area,
+      startPinWrap: `position:absolute;top:${spot.top}px;left:${spot.left}px;width:46px;height:46px;display:flex;align-items:center;justify-content:center;transition:top .25s ease, left .25s ease;z-index:3`,
+      moveStart: ()=>this.setState({ startIdx:(s.startIdx+1)%spots.length }),
+      // step 2
+      name:s.name, onName:(e)=>this.setState({ name:e.target.value.slice(0,40) }),
+      km, kmUp:()=>this.setState({ km:Math.min(42, +(s.km+0.5).toFixed(1)) }), kmDown:()=>this.setState({ km:Math.max(1, +(s.km-0.5).toFixed(1)) }),
+      cap:s.cap, capUp:()=>this.setState({ cap:Math.min(30, s.cap+1) }), capDown:()=>this.setState({ cap:Math.max(2, s.cap-1) }), stepBtn,
+      paceChips, dayChips, timeChips,
+      openStyle:routeBtn(!s.closed), closedStyle:routeBtn(s.closed), setOpen:()=>this.setState({ closed:false }), setClosed:()=>this.setState({ closed:true }),
+      goal:s.goal, onGoal:(e)=>this.setState({ goal:e.target.value.slice(0,200) }), goalCount:(s.goal||'').length, goalPrompts,
+      // step 3
+      visOptions,
+      // step 4
+      displayName, displayGoal, pts, headerBg, routeSvg, tagStyle, typeLabel:s.type, routeDot,
+      routeLabel: s.closed?'Closed loop':'Open route', pace:s.pace, day:s.day, time:s.time, summaryRows,
+      // footer
+      ctaLabel, ctaStyle, onCta,
+      // published
+      goManaged:()=>this.toMain('myRuns&tab=managed'), createAnother:()=>this.setState({ screen:'type', name:'', goal:'', km:5, cap:8, pace:'6:00', type:'Social', startIdx:0, closed:false, vis:'approval' }),
+    };
+  }
+}
+</script>
+</body>
+</html>

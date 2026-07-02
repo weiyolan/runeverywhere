@@ -1,0 +1,53 @@
+<!-- @dsCard group="Components" viewport="700x320" name="Buttons & IconButtons" subtitle="Volt primary, ink, ghost, danger · sizes · shapes · icon controls" -->
+<!DOCTYPE html><html><head><meta charset="utf-8"><link rel="stylesheet" href="../../styles.css">
+<style>
+  body{margin:0;font-family:var(--font-body);background:var(--paper-2);padding:24px}
+  .grid{display:flex;flex-direction:column;gap:18px}
+  .row{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+  .cap{font-family:var(--font-display);font-weight:800;text-transform:uppercase;letter-spacing:.06em;font-size:11px;color:var(--ink-400);width:100%;margin-bottom:-6px}
+</style></head>
+<body>
+  <div id="root"></div>
+  <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+  <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+  <script crossorigin src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+  <script src="../../_ds_bundle.js"></script>
+  <script type="text/babel">
+    const DS = Object.values(window).find(v => v && typeof v === 'object' && v.Button && v.IconButton) || window;
+    const { Button, IconButton } = DS;
+    const Plus = () => <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round"><path d="M12 5v14M5 12h14"/></svg>;
+    const Arrow = () => <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>;
+    const Heart = () => <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4"><path d="M20.8 8.6a5 5 0 0 0-8.8-3.1A5 5 0 0 0 3.2 8.6c0 4.4 8.8 10 8.8 10s8.8-5.6 8.8-10z"/></svg>;
+    const Back = () => <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><path d="M15 6l-6 6 6 6"/></svg>;
+    function App(){
+      return (
+        <div className="grid">
+          <div className="row"><span className="cap">Variants</span>
+            <Button variant="primary" iconRight={<Arrow/>}>Request to join</Button>
+            <Button variant="secondary">Save run</Button>
+            <Button variant="ghost">Cancel</Button>
+            <Button variant="danger">Report</Button>
+            <Button variant="volt-outline">Following</Button>
+          </div>
+          <div className="row"><span className="cap">Sizes & shapes</span>
+            <Button size="lg" shape="pill" iconLeft={<Plus/>}>Create run</Button>
+            <Button size="md">Publish</Button>
+            <Button size="sm" shape="square">Filter</Button>
+            <Button variant="primary" disabled>Disabled</Button>
+          </div>
+          <div className="row"><span className="cap">Full width</span>
+            <div style={{width:'100%',maxWidth:340}}><Button variant="primary" full size="lg" iconRight={<Arrow/>}>Request to join</Button></div>
+          </div>
+          <div className="row"><span className="cap">Icon buttons</span>
+            <IconButton variant="surface" round><Back/></IconButton>
+            <IconButton variant="ink" round><Heart/></IconButton>
+            <IconButton variant="volt"><Plus/></IconButton>
+            <IconButton variant="ghost" active><Heart/></IconButton>
+            <IconButton variant="danger"><Heart/></IconButton>
+          </div>
+        </div>
+      );
+    }
+    ReactDOM.createRoot(document.getElementById('root')).render(<App/>);
+  </script>
+</body></html>

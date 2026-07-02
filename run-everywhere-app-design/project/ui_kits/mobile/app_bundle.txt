@@ -1,0 +1,1233 @@
+(function(global){
+ const React=global.React;
+
+/* components/buttons/Button.jsx */
+
+/**
+ * Run Everywhere — Button
+ * High-contrast athletic CTA. Volt primary, ink secondary, ghost, and danger.
+ * Condensed uppercase label, tight squared corners (or pill), snappy press.
+ */
+function Button({
+  children,
+  variant = "primary",   // primary | secondary | ghost | danger | volt-outline
+  size = "md",           // sm | md | lg
+  shape = "rounded",     // rounded | pill | square
+  full = false,
+  iconLeft = null,
+  iconRight = null,
+  disabled = false,
+  style = {},
+  ...rest
+}) {
+  const heights = { sm: "var(--control-h-sm)", md: "var(--control-h)", lg: "56px" };
+  const fonts = { sm: 13, md: 15, lg: 17 };
+  const pads = { sm: "0 16px", md: "0 22px", lg: "0 28px" };
+  const radii = {
+    rounded: "var(--r-sm)",
+    pill: "var(--r-pill)",
+    square: "var(--r-xs)",
+  };
+
+  const variants = {
+    primary: { background: "var(--action)", color: "var(--action-ink)", border: "var(--bw-bold) solid var(--action)" },
+    secondary: { background: "var(--ink-900)", color: "var(--paper)", border: "var(--bw-bold) solid var(--ink-900)" },
+    ghost: { background: "transparent", color: "var(--ink-900)", border: "var(--bw-bold) solid var(--ink-200)" },
+    "volt-outline": { background: "transparent", color: "var(--ink-900)", border: "var(--bw-bold) solid var(--volt-press)" },
+    danger: { background: "var(--danger)", color: "#fff", border: "var(--bw-bold) solid var(--danger)" },
+  };
+
+  const v = variants[variant] || variants.primary;
+
+  const base = {
+    display: "inline-flex",
+    alignItems: "center",
+    justifyContent: "center",
+    gap: "8px",
+    width: full ? "100%" : "auto",
+    height: heights[size],
+    padding: pads[size],
+    fontFamily: "var(--font-display)",
+    fontWeight: 800,
+    fontSize: fonts[size],
+    textTransform: "uppercase",
+    letterSpacing: "var(--track-caps)",
+    lineHeight: 1,
+    borderRadius: radii[shape],
+    cursor: disabled ? "not-allowed" : "pointer",
+    opacity: disabled ? 0.4 : 1,
+    transition: "transform var(--dur-fast) var(--ease-out), background var(--dur-fast) var(--ease-out), box-shadow var(--dur-fast) var(--ease-out)",
+    userSelect: "none",
+    whiteSpace: "nowrap",
+    ...v,
+    ...style,
+  };
+
+  const onDown = (e) => { if (!disabled) e.currentTarget.style.transform = "scale(var(--press-scale))"; };
+  const onUp = (e) => { e.currentTarget.style.transform = "scale(1)"; };
+
+  return (
+    <button style={base} disabled={disabled} onMouseDown={onDown} onMouseUp={onUp} onMouseLeave={onUp} {...rest}>
+      {iconLeft}
+      {children}
+      {iconRight}
+    </button>
+  );
+}
+
+
+/* components/buttons/IconButton.jsx */
+
+/**
+ * Run Everywhere — IconButton
+ * Square or circular icon-only control. Used for back, more, favourite, report,
+ * and the floating map controls. Min 44px hit target.
+ */
+function IconButton({
+  children,
+  variant = "surface",  // surface | ink | volt | ghost | danger
+  size = "md",          // sm | md | lg
+  round = false,
+  active = false,
+  disabled = false,
+  style = {},
+  ...rest
+}) {
+  const dims = { sm: 36, md: 44, lg: 52 };
+  const d = dims[size];
+
+  const variants = {
+    surface: { background: "var(--paper)", color: "var(--ink-900)", border: "var(--bw-mid) solid var(--ink-200)", boxShadow: "var(--shadow-sm)" },
+    ink: { background: "var(--ink-900)", color: "var(--paper)", border: "var(--bw-mid) solid var(--ink-900)" },
+    volt: { background: "var(--volt)", color: "var(--volt-ink)", border: "var(--bw-mid) solid var(--volt)" },
+    ghost: { background: "transparent", color: "var(--ink-900)", border: "var(--bw-mid) solid transparent" },
+    danger: { background: "var(--danger-soft)", color: "var(--danger)", border: "var(--bw-mid) solid transparent" },
+  };
+  const v = variants[variant] || variants.surface;
+
+  const base = {
+    display: "inline-flex",
+    alignItems: "center",
+    justifyContent: "center",
+    width: d,
+    height: d,
+    borderRadius: round ? "var(--r-pill)" : "var(--r-sm)",
+    cursor: disabled ? "not-allowed" : "pointer",
+    opacity: disabled ? 0.4 : 1,
+    transition: "transform var(--dur-fast) var(--ease-out)",
+    flex: "none",
+    ...v,
+    ...(active ? { background: "var(--ink-900)", color: "var(--volt)", borderColor: "var(--ink-900)" } : {}),
+    ...style,
+  };
+  const onDown = (e) => { if (!disabled) e.currentTarget.style.transform = "scale(var(--press-scale))"; };
+  const onUp = (e) => { e.currentTarget.style.transform = "scale(1)"; };
+
+  return (
+    <button style={base} disabled={disabled} onMouseDown={onDown} onMouseUp={onUp} onMouseLeave={onUp} {...rest}>
+      {children}
+    </button>
+  );
+}
+
+
+/* components/forms/Input.jsx */
+
+/**
+ * Run Everywhere — Input / TextField
+ * Bold structural field with an uppercase micro-label. Supports text, textarea,
+ * leading adornment (icon/unit) and trailing adornment.
+ */
+function Input({
+  label,
+  value,
+  onChange,
+  placeholder = "",
+  type = "text",
+  multiline = false,
+  rows = 3,
+  leading = null,
+  trailing = null,
+  hint = "",
+  invalid = false,
+  disabled = false,
+  style = {},
+  ...rest
+}) {
+  const [focus, setFocus] = React.useState(false);
+  const borderColor = invalid ? "var(--danger)" : focus ? "var(--ink-900)" : "var(--ink-200)";
+
+  const wrap = {
+    display: "flex",
+    alignItems: multiline ? "flex-start" : "center",
+    gap: "10px",
+    background: disabled ? "var(--paper-3)" : "var(--paper)",
+    border: `var(--bw-mid) solid ${borderColor}`,
+    borderRadius: "var(--r-sm)",
+    padding: multiline ? "12px 14px" : "0 14px",
+    height: multiline ? "auto" : "var(--control-h)",
+    transition: "border-color var(--dur-fast) var(--ease-out)",
+  };
+  const field = {
+    border: "none",
+    outline: "none",
+    background: "transparent",
+    width: "100%",
+    fontFamily: "var(--font-body)",
+    fontSize: "var(--t-md)",
+    fontWeight: 500,
+    color: "var(--text-primary)",
+    resize: "none",
+    padding: 0,
+  };
+  const labelStyle = {
+    fontFamily: "var(--font-display)",
+    fontWeight: 800,
+    fontSize: 12,
+    textTransform: "uppercase",
+    letterSpacing: "var(--track-label)",
+    color: "var(--ink-500)",
+    marginBottom: "8px",
+    display: "block",
+  };
+
+  return (
+    <label style={{ display: "block", ...style }}>
+      {label && <span style={labelStyle}>{label}</span>}
+      <div style={wrap}>
+        {leading}
+        {multiline ? (
+          <textarea style={field} rows={rows} value={value} onChange={onChange}
+            placeholder={placeholder} disabled={disabled}
+            onFocus={() => setFocus(true)} onBlur={() => setFocus(false)} {...rest} />
+        ) : (
+          <input style={field} type={type} value={value} onChange={onChange}
+            placeholder={placeholder} disabled={disabled}
+            onFocus={() => setFocus(true)} onBlur={() => setFocus(false)} {...rest} />
+        )}
+        {trailing}
+      </div>
+      {hint && (
+        <span style={{ display: "block", marginTop: 6, fontSize: 12, fontWeight: 500,
+          color: invalid ? "var(--danger)" : "var(--ink-400)" }}>{hint}</span>
+      )}
+    </label>
+  );
+}
+
+
+/* components/navigation/Tabs.jsx */
+
+/**
+ * Run Everywhere — Tabs
+ * Horizontal segmented control. Two looks:
+ *  - "underline" (ALL / MANAGED BY YOU / JOINED — section nav)
+ *  - "pill" (filter / map-list toggle — ink pill slides under active)
+ * Run-type tabs can color the active state per type via `accent`.
+ */
+function Tabs({
+  items = [],            // [{ id, label, count }]
+  value,
+  onChange = () => {},
+  variant = "underline", // underline | pill
+  accent = "var(--ink-900)",
+  full = true,
+  style = {},
+}) {
+  const isPill = variant === "pill";
+
+  const bar = {
+    display: "flex",
+    gap: isPill ? 4 : 0,
+    width: full ? "100%" : "auto",
+    background: isPill ? "var(--paper-3)" : "transparent",
+    borderRadius: isPill ? "var(--r-pill)" : 0,
+    padding: isPill ? 4 : 0,
+    borderBottom: isPill ? "none" : "var(--bw-mid) solid var(--ink-200)",
+  };
+
+  return (
+    <div style={{ ...bar, ...style }}>
+      {items.map((it) => {
+        const active = it.id === value;
+        const tab = {
+          flex: full ? 1 : "none",
+          display: "inline-flex",
+          alignItems: "center",
+          justifyContent: "center",
+          gap: 6,
+          cursor: "pointer",
+          border: "none",
+          background: isPill ? (active ? accent : "transparent") : "transparent",
+          color: isPill
+            ? (active ? "var(--paper)" : "var(--ink-500)")
+            : (active ? "var(--ink-900)" : "var(--ink-400)"),
+          fontFamily: "var(--font-display)",
+          fontWeight: 800,
+          fontSize: 13,
+          textTransform: "uppercase",
+          letterSpacing: "var(--track-caps)",
+          height: isPill ? 40 : 46,
+          borderRadius: isPill ? "var(--r-pill)" : 0,
+          borderBottom: isPill ? "none" : `3px solid ${active ? accent : "transparent"}`,
+          marginBottom: isPill ? 0 : -1.5,
+          transition: "color var(--dur-fast) var(--ease-out), background var(--dur-fast) var(--ease-out)",
+          whiteSpace: "nowrap",
+          padding: "0 12px",
+        };
+        return (
+          <button key={it.id} style={tab} onClick={() => onChange(it.id)}>
+            {it.label}
+            {it.count != null && (
+              <span style={{
+                fontFamily: "var(--font-body)", fontWeight: 700, fontSize: 11,
+                background: active ? (isPill ? "rgba(255,255,255,.25)" : accent) : "var(--ink-200)",
+                color: active ? (isPill ? "var(--paper)" : "var(--paper)") : "var(--ink-500)",
+                borderRadius: "var(--r-pill)", padding: "1px 7px", lineHeight: 1.5,
+              }}>{it.count}</span>
+            )}
+          </button>
+        );
+      })}
+    </div>
+  );
+}
+
+
+/* components/navigation/TabBar.jsx */
+
+/**
+ * Run Everywhere — TabBar (bottom navigation)
+ * 5-tab IA with a center Create (+) action. Locked: Explore · Runs · CREATE ·
+ * Messages · Profile. Center button is Volt and floats slightly proud.
+ * Pass icons (inline SVG / glyph) per item; the active tab tints Volt-on-ink.
+ */
+function TabBar({
+  items = [],          // [{ id, label, icon }] — 4 items; center create is separate
+  value,
+  onChange = () => {},
+  onCreate = () => {},
+  createLabel = "Create",
+  style = {},
+}) {
+  // split into left 2 / right 2 around the center create button
+  const left = items.slice(0, 2);
+  const right = items.slice(2, 4);
+
+  const bar = {
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "space-between",
+    height: "var(--tabbar-h)",
+    background: "var(--ink-900)",
+    padding: "0 8px",
+    position: "relative",
+    ...style,
+  };
+
+  const Tab = ({ it }) => {
+    const active = it.id === value;
+    return (
+      <button onClick={() => onChange(it.id)} style={{
+        flex: 1, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center",
+        gap: 3, border: "none", background: "transparent", cursor: "pointer",
+        color: active ? "var(--volt)" : "var(--ink-400)", height: "100%", padding: "0 4px",
+        transition: "color var(--dur-fast) var(--ease-out)",
+      }}>
+        <span style={{ display: "flex", width: 24, height: 24, alignItems: "center", justifyContent: "center" }}>{it.icon}</span>
+        <span style={{ fontFamily: "var(--font-display)", fontWeight: 700, fontSize: 10,
+          textTransform: "uppercase", letterSpacing: ".06em" }}>{it.label}</span>
+      </button>
+    );
+  };
+
+  return (
+    <nav style={bar}>
+      <div style={{ display: "flex", flex: 1 }}>{left.map((it) => <Tab key={it.id} it={it} />)}</div>
+      <button onClick={onCreate} aria-label={createLabel} style={{
+        width: 56, height: 56, flex: "none", borderRadius: "var(--r-pill)",
+        background: "var(--volt)", color: "var(--volt-ink)", border: "3px solid var(--ink-900)",
+        display: "flex", alignItems: "center", justifyContent: "center", cursor: "pointer",
+        marginTop: -18, boxShadow: "var(--shadow-volt)",
+        fontFamily: "var(--font-display)", fontWeight: 900, fontSize: 30, lineHeight: 1,
+        transition: "transform var(--dur-fast) var(--ease-spring)",
+      }}
+      onMouseDown={(e) => e.currentTarget.style.transform = "scale(0.92)"}
+      onMouseUp={(e) => e.currentTarget.style.transform = "scale(1)"}
+      onMouseLeave={(e) => e.currentTarget.style.transform = "scale(1)"}>+</button>
+      <div style={{ display: "flex", flex: 1 }}>{right.map((it) => <Tab key={it.id} it={it} />)}</div>
+    </nav>
+  );
+}
+
+
+/* components/data/TypeChip.jsx */
+
+const TYPES = {
+  discover:  { label: "Discover",  color: "var(--discover)",  soft: "var(--discover-soft)",  ink: "var(--discover-ink)" },
+  challenge: { label: "Challenge", color: "var(--challenge)", soft: "var(--challenge-soft)", ink: "var(--challenge-ink)" },
+  social:    { label: "Social",    color: "var(--social)",    soft: "var(--social-soft)",    ink: "var(--social-ink)" },
+};
+
+/**
+ * Run Everywhere — TypeChip
+ * The run-type label. Three locked types: discover / challenge / social.
+ * "solid" (on cards/headers) or "soft" (inline, low-emphasis).
+ */
+function TypeChip({ type = "discover", style = "solid", size = "md", custom, css = {} }) {
+  const t = TYPES[type] || TYPES.discover;
+  const label = custom || t.label;
+  const small = size === "sm";
+
+  const base = {
+    display: "inline-flex",
+    alignItems: "center",
+    gap: 6,
+    height: small ? 22 : 26,
+    padding: small ? "0 8px" : "0 11px",
+    borderRadius: "var(--r-pill)",
+    fontFamily: "var(--font-display)",
+    fontWeight: 800,
+    fontSize: small ? 11 : 12,
+    textTransform: "uppercase",
+    letterSpacing: "var(--track-caps)",
+    lineHeight: 1,
+    whiteSpace: "nowrap",
+    ...(style === "solid"
+      ? { background: t.color, color: t.ink }
+      : { background: t.soft, color: t.color }),
+    ...css,
+  };
+  return (
+    <span style={base}>
+      <span style={{ width: small ? 6 : 7, height: small ? 6 : 7, borderRadius: "var(--r-pill)",
+        background: style === "solid" ? t.ink : t.color, opacity: style === "solid" ? 0.85 : 1 }} />
+      {label}
+    </span>
+  );
+}
+
+
+/* components/data/Badge.jsx */
+
+const TONES = {
+  neutral: { bg: "var(--ink-100)", fg: "var(--ink-700)" },
+  ink:     { bg: "var(--ink-900)", fg: "var(--paper)" },
+  volt:    { bg: "var(--volt)",    fg: "var(--volt-ink)" },
+  go:      { bg: "var(--go-soft)", fg: "var(--go)" },
+  warn:    { bg: "var(--warn-soft)", fg: "#9A6A00" },
+  danger:  { bg: "var(--danger-soft)", fg: "var(--danger)" },
+  star:    { bg: "var(--star)", fg: "var(--ink-900)" },
+};
+
+/**
+ * Run Everywhere — Badge
+ * Small status/meta pill: "4 SPOTS LEFT", "FULL", "LIVE", "VERIFIED", "+120 PTS".
+ * Tone sets the color; pass an icon/dot via `icon`.
+ */
+function Badge({ children, tone = "neutral", icon = null, solid = false, css = {} }) {
+  const t = TONES[tone] || TONES.neutral;
+  return (
+    <span style={{
+      display: "inline-flex", alignItems: "center", gap: 5,
+      height: 22, padding: "0 9px", borderRadius: "var(--r-pill)",
+      background: t.bg, color: t.fg,
+      fontFamily: "var(--font-display)", fontWeight: 800, fontSize: 11,
+      textTransform: "uppercase", letterSpacing: "var(--track-caps)", lineHeight: 1, whiteSpace: "nowrap",
+      ...css,
+    }}>
+      {icon}
+      {children}
+    </span>
+  );
+}
+
+
+/* components/data/Avatar.jsx */
+
+/**
+ * Run Everywhere — Avatar
+ * Runner photo with optional verified tick and live/online ring. Falls back to
+ * initials on Volt. Sizes from xs (list) to xl (profile header).
+ */
+function Avatar({
+  src,
+  name = "",
+  size = "md",       // xs | sm | md | lg | xl
+  verified = false,
+  ring = null,       // null | "volt" | "go" (online) | run-type token color
+  css = {},
+}) {
+  const dims = { xs: 28, sm: 36, md: 44, lg: 64, xl: 96 };
+  const d = dims[size] || 44;
+  const initials = name.split(" ").map((w) => w[0]).slice(0, 2).join("").toUpperCase();
+
+  const ringColor = ring === "volt" ? "var(--volt)" : ring === "go" ? "var(--go)" : ring;
+
+  return (
+    <span style={{ position: "relative", display: "inline-flex", flex: "none", ...css }}>
+      <span style={{
+        width: d, height: d, borderRadius: "var(--r-pill)", overflow: "hidden",
+        display: "flex", alignItems: "center", justifyContent: "center",
+        background: "var(--volt)", color: "var(--volt-ink)",
+        fontFamily: "var(--font-display)", fontWeight: 900, fontSize: d * 0.38,
+        border: ringColor ? `2.5px solid ${ringColor}` : "none",
+        boxShadow: ringColor ? "0 0 0 2px var(--paper)" : "none",
+      }}>
+        {src ? <img src={src} alt={name} style={{ width: "100%", height: "100%", objectFit: "cover" }} /> : initials}
+      </span>
+      {verified && (
+        <span style={{
+          position: "absolute", right: -2, bottom: -2,
+          width: d * 0.34, height: d * 0.34, minWidth: 16, minHeight: 16,
+          borderRadius: "var(--r-pill)", background: "var(--go)", color: "#fff",
+          display: "flex", alignItems: "center", justifyContent: "center",
+          border: "2px solid var(--paper)", fontSize: d * 0.2,
+        }}>
+          <svg width="60%" height="60%" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="4" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+        </span>
+      )}
+    </span>
+  );
+}
+
+
+/* components/data/RatingStars.jsx */
+
+/**
+ * Run Everywhere — RatingStars
+ * Five-star runner rating. Shows partial fill for the average, optional numeric
+ * value and review count. Interactive when onRate is provided (review flow).
+ */
+function RatingStars({ value = 0, max = 5, size = 16, count = null, showValue = false, onRate = null, css = {} }) {
+  const Star = ({ fill, idx }) => (
+    <span
+      onClick={onRate ? () => onRate(idx + 1) : undefined}
+      style={{ position: "relative", width: size, height: size, display: "inline-block",
+        cursor: onRate ? "pointer" : "default", lineHeight: 0 }}>
+      <svg width={size} height={size} viewBox="0 0 24 24" style={{ position: "absolute", inset: 0 }}>
+        <path d="M12 2l2.9 6.3 6.9.7-5.1 4.6 1.4 6.8L12 17.6 5.9 20.4l1.4-6.8L2.2 9l6.9-.7z"
+          fill="var(--ink-200)" />
+      </svg>
+      <span style={{ position: "absolute", inset: 0, width: `${Math.max(0, Math.min(1, fill)) * 100}%`, overflow: "hidden" }}>
+        <svg width={size} height={size} viewBox="0 0 24 24">
+          <path d="M12 2l2.9 6.3 6.9.7-5.1 4.6 1.4 6.8L12 17.6 5.9 20.4l1.4-6.8L2.2 9l6.9-.7z"
+            fill="var(--star)" />
+        </svg>
+      </span>
+    </span>
+  );
+
+  return (
+    <span style={{ display: "inline-flex", alignItems: "center", gap: 6, ...css }}>
+      <span style={{ display: "inline-flex", gap: 2 }}>
+        {Array.from({ length: max }).map((_, i) => <Star key={i} idx={i} fill={value - i} />)}
+      </span>
+      {showValue && (
+        <span style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: size * 0.9,
+          color: "var(--ink-900)", lineHeight: 1 }}>{value.toFixed(1)}</span>
+      )}
+      {count != null && (
+        <span style={{ fontFamily: "var(--font-body)", fontWeight: 500, fontSize: 12, color: "var(--ink-400)" }}>
+          ({count})
+        </span>
+      )}
+    </span>
+  );
+}
+
+
+/* components/data/StatBlock.jsx */
+
+/**
+ * Run Everywhere — StatBlock
+ * Big condensed metric with an uppercase label. The KM / RUNS / D+ readouts on
+ * profiles and recaps. Group several in a row; pass accent for the value color.
+ */
+function StatBlock({ value, label, unit = "", accent = "var(--ink-900)", align = "center", size = "md", css = {} }) {
+  const sizes = { sm: 26, md: 38, lg: 52 };
+  return (
+    <div style={{ display: "flex", flexDirection: "column", alignItems: align === "center" ? "center" : "flex-start", gap: 2, ...css }}>
+      <div style={{ display: "flex", alignItems: "baseline", gap: 3 }}>
+        <span style={{ fontFamily: "var(--font-metric)", fontWeight: 900, fontSize: sizes[size],
+          lineHeight: 0.9, color: accent, fontVariantNumeric: "tabular-nums", letterSpacing: "-0.01em" }}>{value}</span>
+        {unit && <span style={{ fontFamily: "var(--font-display)", fontWeight: 700, fontSize: sizes[size] * 0.4,
+          color: "var(--ink-400)", textTransform: "uppercase" }}>{unit}</span>}
+      </div>
+      <span style={{ fontFamily: "var(--font-display)", fontWeight: 700, fontSize: 11,
+        textTransform: "uppercase", letterSpacing: "var(--track-label)", color: "var(--ink-400)" }}>{label}</span>
+    </div>
+  );
+}
+
+
+/* components/run/MapPin.jsx */
+
+const TYPE_COLOR_m10 = {
+  discover: "var(--discover)",
+  challenge: "var(--challenge)",
+  social: "var(--social)",
+};
+
+/**
+ * Run Everywhere — MapPin
+ * Teardrop map pin, color-coded by run type. Shows distance or a glyph, can be
+ * "selected" (larger, ink ring) or a small "cluster" count. Floats over the map.
+ */
+function MapPin({
+  type = "discover",
+  label = "",          // e.g. "5K" or count
+  selected = false,
+  cluster = false,
+  css = {},
+  ...rest
+}) {
+  const color = TYPE_COLOR_m10[type] || TYPE_COLOR_m10.discover;
+  const size = selected ? 52 : 40;
+
+  if (cluster) {
+    return (
+      <span style={{ display: "inline-flex", alignItems: "center", justifyContent: "center",
+        width: 38, height: 38, borderRadius: "var(--r-pill)", background: "var(--ink-900)",
+        color: "var(--paper)", border: "2.5px solid var(--paper)", boxShadow: "var(--shadow-pin)",
+        fontFamily: "var(--font-display)", fontWeight: 900, fontSize: 15, ...css }} {...rest}>{label}</span>
+    );
+  }
+
+  return (
+    <span style={{ position: "relative", display: "inline-block", width: size, height: size * 1.2,
+      filter: "drop-shadow(var(--shadow-pin))", ...css }} {...rest}>
+      <svg width={size} height={size * 1.2} viewBox="0 0 40 48" style={{ position: "absolute", inset: 0 }}>
+        <path d="M20 1C9.5 1 1 9.3 1 19.6 1 32 20 47 20 47s19-15 19-27.4C39 9.3 30.5 1 20 1z"
+          fill={color} stroke={selected ? "var(--ink-900)" : "var(--paper)"} strokeWidth={selected ? 3 : 2.5} />
+        <circle cx="20" cy="19" r="11" fill="rgba(255,255,255,0.18)" />
+      </svg>
+      <span style={{ position: "absolute", top: size * 0.40, left: 0, right: 0, textAlign: "center",
+        transform: "translateY(-50%)", color: "#fff",
+        fontFamily: "var(--font-display)", fontWeight: 900, fontSize: selected ? 15 : 12,
+        textTransform: "uppercase", letterSpacing: ".02em", lineHeight: 1 }}>{label}</span>
+    </span>
+  );
+}
+
+
+/* components/run/RouteMarker.jsx */
+
+/**
+ * Run Everywhere — RouteMarker
+ * Start/finish indicator for a route preview. "open" = point-to-point (start
+ * flag), "closed" = loop (start = finish ring). Color-coded by run type.
+ */
+function RouteMarker({ kind = "start", type = "discover", size = 28, css = {} }) {
+  const TYPE_COLOR_m11 = { discover: "var(--discover)", challenge: "var(--challenge)", social: "var(--social)" };
+  const color = TYPE_COLOR_m11[type] || TYPE_COLOR_m11.discover;
+
+  const ring = {
+    display: "inline-flex", alignItems: "center", justifyContent: "center",
+    width: size, height: size, borderRadius: "var(--r-pill)",
+    border: `3px solid ${color}`, background: "var(--paper)", boxShadow: "var(--shadow-sm)", ...css,
+  };
+
+  if (kind === "closed") {
+    // loop: ring with rotating arrow
+    return (
+      <span style={ring}>
+        <svg width={size * 0.55} height={size * 0.55} viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
+          <path d="M21 12a9 9 0 1 1-3-6.7"/><path d="M21 3v5h-5"/>
+        </svg>
+      </span>
+    );
+  }
+  if (kind === "finish") {
+    return (
+      <span style={{ ...ring, background: color }}>
+        <svg width={size * 0.5} height={size * 0.5} viewBox="0 0 24 24"><path d="M5 3v18M5 4h11l-2 4 2 4H5" fill="#fff" stroke="#fff" strokeWidth="1.5" strokeLinejoin="round"/></svg>
+      </span>
+    );
+  }
+  // start: solid type dot
+  return (
+    <span style={{ ...ring, background: color, border: `3px solid var(--paper)`, boxShadow: "0 0 0 2px " + color + ", var(--shadow-sm)" }}>
+      <span style={{ width: size * 0.28, height: size * 0.28, borderRadius: "var(--r-pill)", background: "#fff" }} />
+    </span>
+  );
+}
+
+
+/* components/run/RunCard.jsx */
+
+const TYPE_COLOR_m12 = {
+  discover: "var(--discover)",
+  challenge: "var(--challenge)",
+  social: "var(--social)",
+};
+
+/**
+ * Run Everywhere — RunCard
+ * The core discovery object. A run, color-coded by type with a left accent rail.
+ * Shows title, goal, host, key stats (distance / pace / when) and spots-left.
+ * variant: "default" (list) | "compact" (map sheet / search) | "feature" (hero).
+ */
+function RunCard({
+  type = "discover",
+  title = "",
+  goal = "",
+  host = {},                 // { name, src, rating, verified }
+  distance = "",             // "5.2 km"
+  pace = "",                 // "5:30 /km"
+  when = "",                 // "Tomorrow · 07:00"
+  city = "",
+  spotsLeft = null,
+  spotsTotal = null,
+  closedLoop = false,
+  attendees = [],            // [{name, src}]
+  variant = "default",
+  onClick,
+  css = {},
+}) {
+  const accent = TYPE_COLOR_m12[type] || TYPE_COLOR_m12.discover;
+  const compact = variant === "compact";
+  const feature = variant === "feature";
+  const full = spotsLeft != null && spotsLeft <= 0;
+
+  const Stat = ({ icon, children }) => (
+    <span style={{ display: "inline-flex", alignItems: "center", gap: 5,
+      fontFamily: "var(--font-display)", fontWeight: 700, fontSize: compact ? 13 : 14,
+      color: "var(--ink-700)", textTransform: "uppercase", letterSpacing: ".02em" }}>
+      <span style={{ color: accent, display: "flex" }}>{icon}</span>{children}
+    </span>
+  );
+
+  return (
+    <div onClick={onClick} style={{
+      position: "relative", display: "flex", flexDirection: "column",
+      background: "var(--paper)", borderRadius: "var(--r-md)", overflow: "hidden",
+      border: "var(--bw-hair) solid var(--ink-200)",
+      boxShadow: feature ? "var(--shadow-lg)" : "var(--shadow-sm)",
+      cursor: onClick ? "pointer" : "default",
+      transition: "transform var(--dur-fast) var(--ease-out), box-shadow var(--dur-fast) var(--ease-out)",
+      ...css,
+    }}
+    onMouseEnter={onClick ? (e) => { e.currentTarget.style.boxShadow = "var(--shadow-md)"; } : undefined}
+    onMouseLeave={onClick ? (e) => { e.currentTarget.style.boxShadow = feature ? "var(--shadow-lg)" : "var(--shadow-sm)"; } : undefined}>
+      {/* left accent rail */}
+      <span style={{ position: "absolute", left: 0, top: 0, bottom: 0, width: 5, background: accent }} />
+
+      <div style={{ padding: compact ? "13px 15px 13px 19px" : "16px 18px 16px 21px" }}>
+        {/* header row */}
+        <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: compact ? 8 : 10 }}>
+          <TypeChip type={type} size={compact ? "sm" : "md"} />
+          {city && <span style={{ fontFamily: "var(--font-body)", fontWeight: 600, fontSize: 12, color: "var(--ink-400)" }}>{city}</span>}
+          <span style={{ marginLeft: "auto" }}>
+            {full
+              ? <Badge tone="danger">Full</Badge>
+              : spotsLeft != null && <Badge tone={spotsLeft <= 2 ? "warn" : "go"}>{spotsLeft} spots left</Badge>}
+          </span>
+        </div>
+
+        {/* title */}
+        <div style={{ fontFamily: "var(--font-display)", fontWeight: 800,
+          fontSize: feature ? 26 : compact ? 19 : 22, lineHeight: 1.02, textTransform: "uppercase",
+          letterSpacing: "var(--track-caps)", color: "var(--ink-900)" }}>{title}</div>
+
+        {/* goal */}
+        {goal && !compact && (
+          <div style={{ fontFamily: "var(--font-body)", fontWeight: 400, fontSize: 14,
+            color: "var(--ink-500)", marginTop: 5, lineHeight: 1.35,
+            display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical", overflow: "hidden" }}>
+            “{goal}”
+          </div>
+        )}
+
+        {/* stats */}
+        <div style={{ display: "flex", flexWrap: "wrap", gap: compact ? 12 : 16, marginTop: compact ? 10 : 13 }}>
+          {distance && <Stat icon={<RouteGlyph/>}>{distance}</Stat>}
+          {pace && <Stat icon={<SpeedGlyph/>}>{pace}</Stat>}
+          {when && <Stat icon={<ClockGlyph/>}>{when}</Stat>}
+        </div>
+
+        {/* footer: host + attendees */}
+        <div style={{ display: "flex", alignItems: "center", gap: 10, marginTop: compact ? 11 : 14,
+          paddingTop: compact ? 11 : 13, borderTop: "var(--bw-hair) solid var(--ink-100)" }}>
+          <Avatar name={host.name} src={host.src} size="sm" verified={host.verified} />
+          <div style={{ display: "flex", flexDirection: "column", lineHeight: 1.1 }}>
+            <span style={{ fontFamily: "var(--font-body)", fontWeight: 600, fontSize: 13, color: "var(--ink-900)" }}>{host.name}</span>
+            <span style={{ fontFamily: "var(--font-body)", fontWeight: 500, fontSize: 11, color: "var(--ink-400)" }}>
+              Host{host.rating ? ` · ${host.rating.toFixed(1)} ★` : ""}
+            </span>
+          </div>
+          <div style={{ marginLeft: "auto", display: "flex", alignItems: "center" }}>
+            {attendees.slice(0, 3).map((a, i) => (
+              <span key={i} style={{ marginLeft: i ? -8 : 0, borderRadius: "var(--r-pill)", boxShadow: "0 0 0 2px var(--paper)" }}>
+                <Avatar name={a.name} src={a.src} size="xs" />
+              </span>
+            ))}
+            {attendees.length > 3 && (
+              <span style={{ marginLeft: -8, width: 28, height: 28, borderRadius: "var(--r-pill)",
+                background: "var(--ink-900)", color: "var(--paper)", boxShadow: "0 0 0 2px var(--paper)",
+                display: "flex", alignItems: "center", justifyContent: "center",
+                fontFamily: "var(--font-display)", fontWeight: 800, fontSize: 11 }}>+{attendees.length - 3}</span>
+            )}
+            {closedLoop && (
+              <span title="Closed loop" style={{ marginLeft: 10, color: accent, display: "flex" }}><LoopGlyph/></span>
+            )}
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+/* inline glyphs (stroke = currentColor) */
+const RouteGlyph = () => (<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round"><circle cx="6" cy="19" r="2.4"/><circle cx="18" cy="6" r="2.4"/><path d="M8.2 18h6.3a3 3 0 0 0 0-6h-5a3 3 0 0 1 0-6H16"/></svg>);
+const SpeedGlyph = () => (<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round"><path d="M12 14l4-4"/><path d="M5 19a9 9 0 1 1 14 0"/></svg>);
+const ClockGlyph = () => (<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>);
+const LoopGlyph = () => (<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round"><path d="M17 4l3 3-3 3"/><path d="M7 20l-3-3 3-3"/><path d="M20 7H9a5 5 0 0 0-5 5M4 17h11a5 5 0 0 0 5-5"/></svg>);
+
+
+/* ui_kits/mobile/PhoneFrame.jsx */
+
+/**
+ * PhoneFrame — 390-wide iPhone shell with status bar and home indicator.
+ * Wraps each UI-kit screen so previews read as a real device.
+ */
+function PhoneFrame({ children, dark = false, time = "7:24" }) {
+  return (
+    <div style={{
+      width: 390, height: 844, position: "relative", flex: "none",
+      background: dark ? "var(--ink-900)" : "var(--paper-2)",
+      borderRadius: 44, overflow: "hidden",
+      boxShadow: "var(--shadow-lg)", border: "1px solid var(--ink-200)",
+      fontFamily: "var(--font-body)",
+    }}>
+      {/* status bar */}
+      <div style={{
+        position: "absolute", top: 0, left: 0, right: 0, height: 50, zIndex: 50,
+        display: "flex", alignItems: "center", justifyContent: "space-between",
+        padding: "0 26px", color: dark ? "#fff" : "var(--ink-900)", pointerEvents: "none",
+      }}>
+        <span style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: 15, letterSpacing: ".02em" }}>{time}</span>
+        <div style={{ display: "flex", gap: 6, alignItems: "center" }}>
+          <svg width="18" height="12" viewBox="0 0 18 12" fill="currentColor"><rect x="0" y="7" width="3" height="5" rx="1"/><rect x="5" y="4" width="3" height="8" rx="1"/><rect x="10" y="1" width="3" height="11" rx="1"/><rect x="15" y="1" width="3" height="11" rx="1" opacity="0.4"/></svg>
+          <svg width="22" height="12" viewBox="0 0 22 12" fill="none" stroke="currentColor" strokeWidth="1.2"><rect x="1" y="1.5" width="17" height="9" rx="2.5"/><rect x="2.5" y="3" width="12" height="6" rx="1" fill="currentColor" stroke="none"/><rect x="19.5" y="4" width="1.5" height="4" rx="0.7" fill="currentColor" stroke="none"/></svg>
+        </div>
+      </div>
+      {/* notch */}
+      <div style={{ position: "absolute", top: 11, left: "50%", transform: "translateX(-50%)",
+        width: 122, height: 30, background: "var(--ink-900)", borderRadius: 18, zIndex: 60 }} />
+      {/* screen content */}
+      <div style={{ position: "absolute", inset: 0, display: "flex", flexDirection: "column" }}>{children}</div>
+      {/* home indicator */}
+      <div style={{ position: "absolute", bottom: 8, left: "50%", transform: "translateX(-50%)",
+        width: 134, height: 5, borderRadius: 3, background: dark ? "rgba(255,255,255,.5)" : "rgba(0,0,0,.35)", zIndex: 70 }} />
+    </div>
+  );
+}
+
+
+/* ui_kits/mobile/MapCanvas.jsx */
+
+/**
+ * MapCanvas — lightweight stylized light-map background (no tiles).
+ * Streets, a river, parks and blocks rendered with CSS/SVG so screens read as
+ * a city map. Children (pins, markers, routes) float on top.
+ */
+function MapCanvas({ children, style = {} }) {
+  return (
+    <div style={{ position: "absolute", inset: 0, overflow: "hidden", background: "#EAEBE6", ...style }}>
+      <svg width="100%" height="100%" viewBox="0 0 390 844" preserveAspectRatio="xMidYMid slice" style={{ position: "absolute", inset: 0 }}>
+        {/* parks */}
+        <rect x="-20" y="120" width="150" height="170" rx="18" fill="#D9E7C9" />
+        <rect x="250" y="430" width="200" height="240" rx="20" fill="#D9E7C9" />
+        {/* river */}
+        <path d="M-20 560 C 120 520, 180 660, 410 600 L 410 844 L -20 844 Z" fill="#C7DCEC" />
+        <path d="M-20 560 C 120 520, 180 660, 410 600" fill="none" stroke="#B4CFE3" strokeWidth="3" />
+        {/* blocks */}
+        {[[150,150],[210,150],[150,210],[40,330],[110,330],[180,330],[250,150],[300,210],[40,420],[110,420],[180,440],[280,330]].map(([x,y],i)=>(
+          <rect key={i} x={x} y={y} width="46" height="46" rx="6" fill="#E0E1DB" />
+        ))}
+        {/* roads (casing + fill) */}
+        {[
+          "M0 110 H390","M0 300 H390","M0 410 H390","M0 510 H390",
+          "M130 0 V844","M240 0 V844","M40 0 V300",
+        ].map((d,i)=>(<g key={i}><path d={d} stroke="#fff" strokeWidth="14" /><path d={d} stroke="#F4F4F1" strokeWidth="10" /></g>))}
+        {/* diagonal avenue */}
+        <g><path d="M-10 740 L 410 250" stroke="#fff" strokeWidth="16" /><path d="M-10 740 L 410 250" stroke="#F4F4F1" strokeWidth="11" /></g>
+      </svg>
+      {children}
+    </div>
+  );
+}
+
+
+/* ui_kits/mobile/ExploreScreen.jsx */
+
+const PINS = [
+  { id: "r1", type: "discover",  label: "5K",  x: 60,  y: 250 },
+  { id: "r2", type: "challenge", label: "10K", x: 210, y: 330 },
+  { id: "r3", type: "social",    label: "6K",  x: 130, y: 470 },
+  { id: "r4", type: "discover",  label: "8K",  x: 280, y: 250 },
+  { id: "r5", type: "social",    label: "4K",  x: 300, y: 540 },
+];
+
+const SHEET = {
+  r1: { type:"discover", title:"Sunrise Old-Town Loop", goal:"Easy social 5k to see the old town and the river path.", host:{name:"Maya Okafor",rating:4.9,verified:true}, distance:"5.2 km", pace:"5:30 /km", when:"Tomorrow · 07:00", city:"Alfama", spotsLeft:4, closedLoop:true, attendees:[{name:"T"},{name:"A"},{name:"J"},{name:"K"}] },
+  r2: { type:"challenge", title:"Tempo Bridges 10K", goal:"Threshold session — 4:30 pace, no stopping.", host:{name:"Diego Sosa",rating:4.7}, distance:"10 km", pace:"4:30 /km", when:"Sat · 08:30", city:"Belém", spotsLeft:2, attendees:[{name:"R"},{name:"M"}] },
+  r3: { type:"social", title:"Coffee & Cobblestones", goal:"Relaxed jog, long coffee after. New runners welcome.", host:{name:"Lena Brandt",rating:5.0,verified:true}, distance:"6 km", pace:"6:10 /km", when:"Sun · 09:00", city:"Príncipe Real", spotsLeft:5, closedLoop:true, attendees:[{name:"A"},{name:"B"},{name:"C"}] },
+  r4: { type:"discover", title:"Miradouro Hunt", goal:"Hill route hitting the five best viewpoints.", host:{name:"Sofia Reis",rating:4.8}, distance:"8 km", pace:"5:50 /km", when:"Today · 18:30", city:"Graça", spotsLeft:3, attendees:[{name:"P"},{name:"Q"}] },
+  r5: { type:"social", title:"Riverside Recovery", goal:"Flat, slow shake-out along the water.", host:{name:"Marco Pena",rating:4.6}, distance:"4 km", pace:"6:30 /km", when:"Mon · 07:15", city:"Cais do Sodré", spotsLeft:6, closedLoop:true, attendees:[{name:"D"},{name:"E"}] },
+};
+
+const TYPE_FILTERS = [
+  { id: "all", label: "All" },
+  { id: "discover", label: "Discover" },
+  { id: "challenge", label: "Challenge" },
+  { id: "social", label: "Social" },
+];
+
+function ExploreScreen({ onOpenRun = () => {}, onOpenFilters = () => {} }) {
+  const [filter, setFilter] = React.useState("all");
+  const [sel, setSel] = React.useState("r1");
+  const pins = PINS.filter((p) => filter === "all" || p.type === filter);
+  const sheet = SHEET[sel] || SHEET.r1;
+  const accent = filter === "all" ? "var(--ink-900)" : `var(--${filter})`;
+
+  return (
+    <div style={{ position: "relative", flex: 1, overflow: "hidden" }}>
+      <MapCanvas />
+
+      {/* top header overlay */}
+      <div style={{ position: "absolute", top: 50, left: 0, right: 0, padding: "10px 16px 0", zIndex: 20 }}>
+        <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+          <div style={{ flex: 1, display: "flex", alignItems: "center", gap: 10, height: 48, background: "var(--paper)",
+            borderRadius: "var(--r-pill)", padding: "0 8px 0 16px", boxShadow: "var(--shadow-md)" }}>
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--ink-400)" strokeWidth="2.4" strokeLinecap="round"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4-4"/></svg>
+            <div style={{ display: "flex", flexDirection: "column", lineHeight: 1.05, flex: 1 }}>
+              <span style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: 15, textTransform: "uppercase", letterSpacing: ".02em" }}>Lisbon</span>
+              <span style={{ fontSize: 11, color: "var(--ink-400)", fontWeight: 500 }}>{pins.length} runs near you</span>
+            </div>
+            <IconButton variant="ghost" size="sm" onClick={onOpenFilters} aria-label="Filters">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round"><path d="M3 5h18M6 12h12M10 19h4"/></svg>
+            </IconButton>
+          </div>
+        </div>
+        <div style={{ marginTop: 10 }}>
+          <Tabs variant="pill" value={filter} onChange={setFilter} accent={accent} items={TYPE_FILTERS} />
+        </div>
+      </div>
+
+      {/* pins */}
+      {pins.map((p) => (
+        <button key={p.id} onClick={() => setSel(p.id)} style={{
+          position: "absolute", left: p.x, top: p.y, transform: "translate(-50%,-100%)",
+          background: "none", border: "none", padding: 0, cursor: "pointer", zIndex: p.id === sel ? 15 : 10,
+        }}>
+          <MapPin type={p.type} label={p.label} selected={p.id === sel} />
+        </button>
+      ))}
+
+      {/* recenter */}
+      <div style={{ position: "absolute", right: 16, bottom: 250, zIndex: 18 }}>
+        <IconButton variant="surface" round aria-label="Recenter">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3"/></svg>
+        </IconButton>
+      </div>
+
+      {/* bottom run sheet */}
+      <div style={{ position: "absolute", left: 0, right: 0, bottom: 0, zIndex: 25, padding: "0 14px 16px",
+        background: "linear-gradient(to top, var(--paper-2) 60%, transparent)" }}>
+        <div style={{ width: 38, height: 4, borderRadius: 3, background: "var(--ink-300)", margin: "0 auto 10px" }} />
+        <RunCard {...sheet} variant="compact" onClick={() => onOpenRun(sel)} css={{ boxShadow: "var(--shadow-lg)" }} />
+      </div>
+    </div>
+  );
+}
+
+
+/* ui_kits/mobile/RunsScreen.jsx */
+
+const RUNS = [
+  { key:"a", tab:"mine", data:{ type:"discover", title:"Sunrise Old-Town Loop", goal:"Easy social 5k to see the old town and the river path.", host:{name:"You",rating:4.9,verified:true}, distance:"5.2 km", pace:"5:30 /km", when:"Tomorrow · 07:00", city:"Alfama", spotsLeft:4, closedLoop:true, attendees:[{name:"T"},{name:"A"},{name:"J"},{name:"K"}] }, requests:2 },
+  { key:"b", tab:"mine", data:{ type:"challenge", title:"Wednesday Track Intervals", goal:"8×400m at 5k pace. Bring water.", host:{name:"You",rating:4.9,verified:true}, distance:"7 km", pace:"4:10 /km", when:"Wed · 19:00", city:"Estádio", spotsLeft:0, attendees:[{name:"R"},{name:"M"},{name:"P"},{name:"L"},{name:"S"}] } },
+  { key:"c", tab:"joined", data:{ type:"social", title:"Coffee & Cobblestones", goal:"Relaxed jog, long coffee after.", host:{name:"Lena Brandt",rating:5.0,verified:true}, distance:"6 km", pace:"6:10 /km", when:"Sun · 09:00", city:"Príncipe Real", spotsLeft:5, closedLoop:true, attendees:[{name:"A"},{name:"B"},{name:"C"}] } },
+  { key:"d", tab:"joined", data:{ type:"challenge", title:"Tempo Bridges 10K", goal:"Threshold session — 4:30 pace, no stopping.", host:{name:"Diego Sosa",rating:4.7}, distance:"10 km", pace:"4:30 /km", when:"Sat · 08:30", city:"Belém", spotsLeft:2, attendees:[{name:"R"},{name:"M"}] } },
+];
+
+function RunsScreen({ onOpenRun = () => {} }) {
+  const [tab, setTab] = React.useState("all");
+  const mine = RUNS.filter((r) => r.tab === "mine");
+  const joined = RUNS.filter((r) => r.tab === "joined");
+  const visible = tab === "all" ? RUNS : RUNS.filter((r) => r.tab === tab);
+
+  return (
+    <div style={{ flex: 1, display: "flex", flexDirection: "column", overflow: "hidden", background: "var(--paper-2)" }}>
+      {/* header */}
+      <div style={{ padding: "60px 20px 0" }}>
+        <span style={{ fontFamily: "var(--font-display)", fontWeight: 700, fontSize: 13, textTransform: "uppercase",
+          letterSpacing: ".1em", color: "var(--ink-400)" }}>Your runs</span>
+        <h1 style={{ margin: "2px 0 14px", fontFamily: "var(--font-display)", fontWeight: 900, fontSize: 38,
+          textTransform: "uppercase", letterSpacing: "-0.01em", lineHeight: 0.95, color: "var(--ink-900)" }}>
+          7 days, 3 runs
+        </h1>
+        <Tabs value={tab} onChange={setTab} items={[
+          { id: "all", label: "All", count: RUNS.length },
+          { id: "mine", label: "Managed", count: mine.length },
+          { id: "joined", label: "Joined", count: joined.length },
+        ]} />
+      </div>
+
+      {/* list */}
+      <div style={{ flex: 1, overflowY: "auto", padding: "16px 16px 96px", display: "flex", flexDirection: "column", gap: 14 }}>
+        {visible.map((r) => (
+          <div key={r.key} style={{ position: "relative" }}>
+            {r.requests ? (
+              <div style={{ position: "absolute", top: -7, right: 8, zIndex: 5 }}>
+                <Badge tone="volt" icon={<span style={{ width: 6, height: 6, borderRadius: 99, background: "var(--volt-ink)" }} />}>{r.requests} requests</Badge>
+              </div>
+            ) : null}
+            <RunCard {...r.data} onClick={() => onOpenRun(r.key)} />
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+
+/* ui_kits/mobile/RunDetailScreen.jsx */
+
+const RUN = {
+  type: "discover",
+  title: "Sunrise Old-Town Loop",
+  goal: "Easy social 5k to see the old town and the river path. We regroup at every miradouro — no one gets dropped. Coffee at the end for anyone who wants it.",
+  host: { name: "Maya Okafor", rating: 4.9, verified: true, runs: 37 },
+  city: "Alfama, Lisbon",
+  when: "Tomorrow · 07:00",
+  distance: "5.2", pace: "5:30", elev: "180",
+  spotsLeft: 4, spotsTotal: 8, closedLoop: true,
+  attendees: [{ name: "Tom R" }, { name: "Ana B" }, { name: "Jo K" }, { name: "Liv M" }],
+};
+
+function RunDetailScreen({ onBack = () => {}, onJoin = () => {} }) {
+  const [fav, setFav] = React.useState(false);
+  const [requested, setRequested] = React.useState(false);
+  const accent = `var(--${RUN.type})`;
+
+  return (
+    <div style={{ flex: 1, display: "flex", flexDirection: "column", overflow: "hidden", background: "var(--paper-2)" }}>
+      <div style={{ flex: 1, overflowY: "auto", paddingBottom: 110 }}>
+        {/* route map hero */}
+        <div style={{ position: "relative", height: 320, flex: "none" }}>
+          <MapCanvas>
+            {/* route path */}
+            <svg width="100%" height="100%" viewBox="0 0 390 320" preserveAspectRatio="none" style={{ position: "absolute", inset: 0 }}>
+              <path d="M95 240 C 60 170, 150 140, 180 120 S 300 110, 300 170 S 200 250, 150 235 S 110 250, 95 240"
+                fill="none" stroke={accent} strokeWidth="5" strokeLinecap="round" strokeOpacity="0.95" />
+            </svg>
+            <div style={{ position: "absolute", left: 95, top: 240, transform: "translate(-50%,-50%)" }}><RouteMarker kind="start" type={RUN.type} /></div>
+            <div style={{ position: "absolute", left: 300, top: 170, transform: "translate(-50%,-50%)" }}><RouteMarker kind="closed" type={RUN.type} size={26} /></div>
+          </MapCanvas>
+
+          {/* top controls */}
+          <div style={{ position: "absolute", top: 56, left: 16, right: 16, display: "flex", justifyContent: "space-between", zIndex: 10 }}>
+            <IconButton variant="surface" round onClick={onBack} aria-label="Back">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><path d="M15 6l-6 6 6 6"/></svg>
+            </IconButton>
+            <div style={{ display: "flex", gap: 8 }}>
+              <IconButton variant="surface" round active={fav} onClick={() => setFav(!fav)} aria-label="Favourite">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill={fav ? "currentColor" : "none"} stroke="currentColor" strokeWidth="2.4"><path d="M20.8 8.6a5 5 0 0 0-8.8-3.1A5 5 0 0 0 3.2 8.6c0 4.4 8.8 10 8.8 10s8.8-5.6 8.8-10z"/></svg>
+              </IconButton>
+              <IconButton variant="surface" round aria-label="Share">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><path d="M8.6 13.5l6.8 4M15.4 6.5l-6.8 4"/></svg>
+              </IconButton>
+            </div>
+          </div>
+
+          {/* loop badge */}
+          <div style={{ position: "absolute", left: 16, bottom: 14, zIndex: 10, display: "flex", gap: 8 }}>
+            <Badge tone="ink" icon={<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><path d="M17 4l3 3-3 3"/><path d="M7 20l-3-3 3-3"/><path d="M20 7H9a5 5 0 0 0-5 5M4 17h11a5 5 0 0 0 5-5"/></svg>}>Closed loop</Badge>
+          </div>
+        </div>
+
+        {/* body */}
+        <div style={{ padding: "18px 20px 0", marginTop: -4 }}>
+          <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 10 }}>
+            <TypeChip type={RUN.type} />
+            <span style={{ fontFamily: "var(--font-body)", fontWeight: 600, fontSize: 13, color: "var(--ink-400)" }}>{RUN.city}</span>
+          </div>
+
+          <h1 style={{ margin: 0, fontFamily: "var(--font-display)", fontWeight: 900, fontSize: 32, lineHeight: 1.04,
+            textTransform: "uppercase", letterSpacing: "-0.01em", color: "var(--ink-900)" }}>{RUN.title}</h1>
+
+          <div style={{ display: "flex", alignItems: "center", gap: 8, marginTop: 12,
+            fontFamily: "var(--font-display)", fontWeight: 700, fontSize: 16, textTransform: "uppercase", color: accent }}>
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>
+            {RUN.when}
+          </div>
+
+          {/* stat strip */}
+          <div style={{ display: "flex", gap: 8, background: "var(--ink-900)", borderRadius: "var(--r-md)",
+            padding: "18px 12px", marginTop: 16 }}>
+            <StatBlock value={RUN.distance} unit="km" label="Distance" accent="#fff" css={{ flex: 1 }} />
+            <span style={{ width: 1, background: "var(--ink-700)" }} />
+            <StatBlock value={RUN.pace} unit="/km" label="Pace" accent="#fff" css={{ flex: 1 }} />
+            <span style={{ width: 1, background: "var(--ink-700)" }} />
+            <StatBlock value={RUN.elev} unit="m" label="D+" accent="var(--volt)" css={{ flex: 1 }} />
+          </div>
+
+          {/* goal */}
+          <div style={{ marginTop: 20 }}>
+            <span style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: 12, textTransform: "uppercase", letterSpacing: ".08em", color: "var(--ink-400)" }}>The goal</span>
+            <p style={{ margin: "8px 0 0", fontSize: 15.5, lineHeight: 1.5, color: "var(--ink-700)", fontWeight: 400 }}>“{RUN.goal}”</p>
+          </div>
+
+          {/* host */}
+          <div style={{ marginTop: 22, display: "flex", alignItems: "center", gap: 13, padding: "14px",
+            background: "var(--paper)", border: "1px solid var(--ink-200)", borderRadius: "var(--r-md)" }}>
+            <Avatar name={RUN.host.name} size="lg" verified={RUN.host.verified} />
+            <div style={{ flex: 1 }}>
+              <div style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: 18, textTransform: "uppercase", color: "var(--ink-900)", lineHeight: 1 }}>{RUN.host.name}</div>
+              <div style={{ fontSize: 12, color: "var(--ink-400)", fontWeight: 500, margin: "3px 0 5px" }}>Host · {RUN.host.runs} runs led</div>
+              <RatingStars value={RUN.host.rating} count={42} size={14} showValue />
+            </div>
+            <IconButton variant="surface" aria-label="Message host">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+            </IconButton>
+          </div>
+
+          {/* who's joined */}
+          <div style={{ marginTop: 22, display: "flex", alignItems: "center" }}>
+            <div>
+              <span style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: 12, textTransform: "uppercase", letterSpacing: ".08em", color: "var(--ink-400)" }}>Who's running</span>
+              <div style={{ display: "flex", marginTop: 10 }}>
+                {RUN.attendees.map((a, i) => (
+                  <span key={i} style={{ marginLeft: i ? -10 : 0, boxShadow: "0 0 0 2.5px var(--paper-2)", borderRadius: 99 }}>
+                    <Avatar name={a.name} size="md" />
+                  </span>
+                ))}
+                <span style={{ marginLeft: 12, alignSelf: "center", fontFamily: "var(--font-body)", fontWeight: 500, fontSize: 13, color: "var(--ink-500)" }}>
+                  {RUN.attendees.length} going
+                </span>
+              </div>
+            </div>
+            <div style={{ marginLeft: "auto" }}>
+              <Badge tone="warn">{RUN.spotsLeft} spots left</Badge>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* sticky CTA */}
+      <div style={{ position: "absolute", left: 0, right: 0, bottom: 0, padding: "14px 20px 30px",
+        background: "var(--paper)", borderTop: "1px solid var(--ink-200)", boxShadow: "0 -6px 20px rgba(0,0,0,.06)" }}>
+        <Button variant={requested ? "secondary" : "primary"} full size="lg"
+          onClick={() => { setRequested(true); onJoin(); }}
+          iconRight={requested ? null : <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>}>
+          {requested ? "Request sent ✓" : "Request to join"}
+        </Button>
+        <div style={{ textAlign: "center", marginTop: 8, fontSize: 11.5, color: "var(--ink-400)", fontWeight: 500 }}>
+          {requested ? "Maya will confirm your spot soon" : "Approval required · host confirms your spot"}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+
+/* ui_kits/mobile/ProfileScreen.jsx */
+
+const REVIEWS = [
+  { name: "Diego Sosa", rating: 5, type: "challenge", text: "Strong, steady pacing and great energy on the climbs. Would run with again.", when: "2d ago" },
+  { name: "Lena Brandt", rating: 5, type: "social", text: "Super welcoming to a newcomer in the city — showed me all the best spots.", when: "1w ago" },
+];
+
+function ProfileScreen({ onEdit = () => {}, self = true }) {
+  return (
+    <div style={{ flex: 1, display: "flex", flexDirection: "column", overflow: "hidden", background: "var(--paper-2)" }}>
+      <div style={{ flex: 1, overflowY: "auto", paddingBottom: 96 }}>
+        {/* ink header */}
+        <div style={{ background: "var(--ink-900)", padding: "58px 20px 26px", position: "relative" }}>
+          <div style={{ position: "absolute", top: 56, right: 16, display: "flex", gap: 8 }}>
+            <IconButton variant="ghost" round aria-label="Settings" style={{ color: "#fff", borderColor: "var(--ink-700)" }}>
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.6 1.6 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.6 1.6 0 0 0-2.7 1.1V21a2 2 0 0 1-4 0v-.1A1.6 1.6 0 0 0 6.7 19.3a2 2 0 1 1-2.8-2.8l.1-.1a1.6 1.6 0 0 0-1.1-2.7H2a2 2 0 0 1 0-4h.1a1.6 1.6 0 0 0 1.1-2.7 2 2 0 1 1 2.8-2.8l.1.1A1.6 1.6 0 0 0 9 4.6V4a2 2 0 0 1 4 0v.1a1.6 1.6 0 0 0 2.7 1.1 2 2 0 1 1 2.8 2.8l-.1.1a1.6 1.6 0 0 0 1.1 2.7H21a2 2 0 0 1 0 4h-.1a1.6 1.6 0 0 0-1.5 1z"/></svg>
+            </IconButton>
+          </div>
+
+          <div style={{ display: "flex", alignItems: "center", gap: 16 }}>
+            <Avatar name="Maya Okafor" size="xl" verified ring="volt" />
+            <div style={{ flex: 1, minWidth: 0 }}>
+              <h1 style={{ margin: 0, fontFamily: "var(--font-display)", fontWeight: 900, fontSize: 26, textTransform: "uppercase", color: "#fff", lineHeight: 1.04 }}>Maya Okafor</h1>
+              <div style={{ display: "flex", alignItems: "center", gap: 8, marginTop: 9 }}>
+                <RatingStars value={4.9} size={15} showValue css={{ color: "#fff" }} />
+                <span style={{ fontSize: 12, color: "var(--ink-300)", fontWeight: 500 }}>· 42 reviews</span>
+              </div>
+              <div style={{ marginTop: 10, display: "flex", gap: 6, flexWrap: "wrap" }}>
+                <Badge tone="go">Verified</Badge>
+                <Badge tone="volt">Level 6</Badge>
+              </div>
+            </div>
+          </div>
+
+          <p style={{ margin: "16px 0 0", color: "var(--ink-300)", fontSize: 14, lineHeight: 1.5, fontWeight: 400 }}>
+            Marathoner, map-collector. Home base Lisbon — happy to show visitors the hilly bits. Speaks EN / PT / FR.
+          </p>
+
+          {/* stat strip */}
+          <div style={{ display: "flex", gap: 8, marginTop: 18 }}>
+            <StatBlock value="842" label="Km" accent="#fff" css={{ flex: 1 }} />
+            <span style={{ width: 1, background: "var(--ink-700)" }} />
+            <StatBlock value="37" label="Runs" accent="#fff" css={{ flex: 1 }} />
+            <span style={{ width: 1, background: "var(--ink-700)" }} />
+            <StatBlock value="9.6k" unit="m" label="D+" accent="var(--volt)" css={{ flex: 1 }} />
+          </div>
+        </div>
+
+        {/* action row */}
+        <div style={{ padding: "16px 20px 0", display: "flex", gap: 10 }}>
+          {self
+            ? <Button variant="secondary" full onClick={onEdit}>Edit profile</Button>
+            : <><Button variant="primary" full>Follow</Button><Button variant="ghost" full>Message</Button></>}
+        </div>
+
+        {/* favourite routes */}
+        <div style={{ padding: "22px 20px 0" }}>
+          <span style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: 12, textTransform: "uppercase", letterSpacing: ".08em", color: "var(--ink-400)" }}>Usual runs</span>
+          <div style={{ display: "flex", gap: 8, marginTop: 10, flexWrap: "wrap" }}>
+            <TypeChip type="discover" /><TypeChip type="challenge" /><TypeChip type="social" style="soft" />
+          </div>
+        </div>
+
+        {/* reviews */}
+        <div style={{ padding: "22px 20px 0" }}>
+          <span style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: 12, textTransform: "uppercase", letterSpacing: ".08em", color: "var(--ink-400)" }}>Other runners say</span>
+          <div style={{ display: "flex", flexDirection: "column", gap: 12, marginTop: 12 }}>
+            {REVIEWS.map((r, i) => (
+              <div key={i} style={{ background: "var(--paper)", border: "1px solid var(--ink-200)", borderRadius: "var(--r-md)", padding: 14 }}>
+                <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+                  <Avatar name={r.name} size="sm" />
+                  <div style={{ flex: 1 }}>
+                    <div style={{ fontFamily: "var(--font-display)", fontWeight: 700, fontSize: 14, textTransform: "uppercase", color: "var(--ink-900)", lineHeight: 1 }}>{r.name}</div>
+                    <span style={{ fontSize: 11, color: "var(--ink-400)", fontWeight: 500 }}>{r.when}</span>
+                  </div>
+                  <RatingStars value={r.rating} size={13} />
+                </div>
+                <p style={{ margin: "10px 0 0", fontSize: 14, lineHeight: 1.45, color: "var(--ink-700)" }}>{r.text}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* report */}
+        {!self && (
+          <div style={{ padding: "18px 20px 0", textAlign: "center" }}>
+            <button style={{ background: "none", border: "none", color: "var(--ink-400)", fontFamily: "var(--font-display)", fontWeight: 700, fontSize: 12, textTransform: "uppercase", letterSpacing: ".06em", cursor: "pointer" }}>Report runner</button>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
+
+
+ global.RE={ Button, IconButton, Input, Tabs, TabBar, TypeChip, Badge, Avatar, RatingStars, StatBlock, MapPin, RouteMarker, RunCard, PhoneFrame, MapCanvas, ExploreScreen, RunsScreen, RunDetailScreen, ProfileScreen };
+})(window);

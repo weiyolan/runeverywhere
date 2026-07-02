@@ -1,0 +1,6 @@
+/* Run Everywhere — Webfonts
+   Display/headlines + big metrics: Saira Condensed (heavy, uppercase).
+   Body/UI: Saira (the normal-width sibling) — one cohesive athletic superfamily.
+   NOTE: served from Google Fonts CDN. To ship offline, swap for local .woff2 files. */
+
+@import url('https://fonts.googleapis.com/css2?family=Saira:wght@400;500;600;700&family=Saira+Condensed:wght@500;600;700;800;900&display=swap');

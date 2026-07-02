@@ -1,0 +1,63 @@
+<!-- @dsCard group="Components" viewport="700x440" name="Run cards, map pins & route markers" subtitle="The core run object in 3 types + map pins + start/finish markers" -->
+<!DOCTYPE html><html><head><meta charset="utf-8"><link rel="stylesheet" href="../../styles.css">
+<style>
+  body{margin:0;font-family:var(--font-body);background:var(--paper-2);padding:24px}
+  .wrap{display:flex;gap:24px;align-items:flex-start}
+  .cards{display:flex;flex-direction:column;gap:14px;width:360px;flex:none}
+  .side{display:flex;flex-direction:column;gap:22px}
+  .cap{font-family:var(--font-display);font-weight:800;text-transform:uppercase;letter-spacing:.06em;font-size:11px;color:var(--ink-400);margin-bottom:10px}
+  .pins{display:flex;align-items:flex-end;gap:14px}
+  .markers{display:flex;align-items:center;gap:18px}
+  .mk{display:flex;flex-direction:column;align-items:center;gap:6px}
+  .mklbl{font-size:10px;color:var(--ink-400);font-weight:600;text-transform:uppercase}
+</style></head>
+<body>
+  <div id="root"></div>
+  <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+  <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+  <script crossorigin src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+  <script src="../../_ds_bundle.js"></script>
+  <script type="text/babel">
+    const DS = Object.values(window).find(v => v && typeof v === 'object' && v.RunCard && v.MapPin) || window;
+    const { RunCard, MapPin, RouteMarker } = DS;
+    function App(){
+      return (
+        <div className="wrap">
+          <div className="cards">
+            <RunCard type="discover" title="Sunrise Old-Town Loop"
+              goal="Easy social 5k to see the old town and the river path."
+              host={{name:'Maya Okafor', rating:4.9, verified:true}}
+              distance="5.2 km" pace="5:30 /km" when="Tomorrow · 07:00"
+              city="Lisbon" spotsLeft={4} closedLoop
+              attendees={[{name:'T'},{name:'A'},{name:'J'},{name:'K'},{name:'L'}]} />
+            <RunCard type="challenge" title="Tempo Bridges 10K"
+              goal="Threshold session — 4:30 pace, no stopping. Bring it."
+              host={{name:'Diego Sosa', rating:4.7}}
+              distance="10 km" pace="4:30 /km" when="Sat · 08:30"
+              city="Lisbon" spotsLeft={2}
+              attendees={[{name:'R'},{name:'M'}]} />
+            <RunCard type="social" title="Coffee & Cobblestones"
+              host={{name:'Lena Brandt', rating:5.0, verified:true}}
+              distance="6 km" pace="6:10 /km" when="Sun · 09:00"
+              city="Lisbon" spotsLeft={0} closedLoop variant="compact"
+              attendees={[{name:'A'},{name:'B'},{name:'C'},{name:'D'}]} />
+          </div>
+          <div className="side">
+            <div><div className="cap">Map pins — by type</div><div className="pins">
+              <MapPin type="discover" label="5K" />
+              <MapPin type="challenge" label="10K" selected />
+              <MapPin type="social" label="6K" />
+              <MapPin cluster label="12" />
+            </div></div>
+            <div><div className="cap">Route markers</div><div className="markers">
+              <div className="mk"><RouteMarker kind="start" type="discover" /><span className="mklbl">Start</span></div>
+              <div className="mk"><RouteMarker kind="finish" type="discover" /><span className="mklbl">Finish</span></div>
+              <div className="mk"><RouteMarker kind="closed" type="social" /><span className="mklbl">Loop</span></div>
+            </div></div>
+          </div>
+        </div>
+      );
+    }
+    ReactDOM.createRoot(document.getElementById('root')).render(<App/>);
+  </script>
+</body></html>

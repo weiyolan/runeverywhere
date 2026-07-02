@@ -1,0 +1,31 @@
+<!-- @dsCard group="Components" viewport="700x230" name="Inputs & fields" subtitle="Uppercase micro-labels · multiline goal · units · error state" -->
+<!DOCTYPE html><html><head><meta charset="utf-8"><link rel="stylesheet" href="../../styles.css">
+<style>
+  body{margin:0;font-family:var(--font-body);background:var(--paper-2);padding:24px}
+  .grid{display:grid;grid-template-columns:1fr 1fr;gap:18px;max-width:640px}
+  .unit{font-family:var(--font-display);font-weight:800;font-size:13px;color:var(--ink-400);text-transform:uppercase}
+</style></head>
+<body>
+  <div id="root"></div>
+  <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+  <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+  <script crossorigin src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+  <script src="../../_ds_bundle.js"></script>
+  <script type="text/babel">
+    const DS = Object.values(window).find(v => v && typeof v === 'object' && v.Input) || window;
+    const { Input } = DS;
+    function App(){
+      const [g,setG] = React.useState("Easy social 5k to see the old town and the river path.");
+      return (
+        <div className="grid">
+          <Input label="Distance" value="5.2" trailing={<span className="unit">km</span>} />
+          <Input label="Target pace" value="5:30" trailing={<span className="unit">/km</span>} />
+          <div style={{gridColumn:'1 / -1'}}><Input label="Run goal" multiline rows={2} value={g} onChange={e=>setG(e.target.value)} /></div>
+          <Input label="Email" value="maya@" invalid hint="Enter a valid email address" />
+          <Input label="Home city" placeholder="e.g. Lisbon" value="" />
+        </div>
+      );
+    }
+    ReactDOM.createRoot(document.getElementById('root')).render(<App/>);
+  </script>
+</body></html>
