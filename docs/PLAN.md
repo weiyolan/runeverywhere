@@ -60,16 +60,18 @@ Design-system port: tokens in `src/theme/theme.ts` (1:1 from `project/tokens/*.c
 
 ## 5. Build order (each phase ends runnable)
 
+Each phase has a detailed, executable implementation plan in [`docs/phases/`](phases/README.md).
+
 | Phase | Weeks | Scope | Verify |
 |---|---|---|---|
-| **P0 Foundation** | 1 | This scaffold | Boots on both platforms; tabs navigate; gallery renders |
-| **P1 Auth + onboarding** | 2–3 | Hosted Supabase project; email/Apple/Google sign-in; forgot password; 4-step onboarding (photo → Storage, home city via reverse geocode). **Apply for Strava Extended Access + Garmin dev program now.** | Full signup → onboarding → tabs; two-user RLS smoke test |
-| **P2 Core loop** | 4–7 | Explore map (custom light style, typed pins + km labels, clustering, user location), list/search/filters/sort, Create wizard (pin drop + reverse geocode + points preview), Run detail + request-to-join, host inbox, manage/edit/cancel, invite links | Create → discover → request → approve across two devices |
-| **P3 Chat + notifications** | 8–9 | Group chat + DMs (Broadcast), unread counts, notification center, push pipeline, pg_cron reminders | Realtime A→B; push with app killed; reminder fires |
-| **P4 Live run + points + reviews** | 10–13 | Background GPS recording (iOS `UIBackgroundModes: location`, Android foreground service), smoothing + D+, live trace/stats, `complete_run` + ledger, animated recap, rate-the-crew, history | Real outdoor run with screen locked; points idempotent; rating aggregates update |
-| **P5 Gamification + profile + safety** | 14–16 | Levels/badges/leaderboard, full profiles, report/block, settings, trusted contacts + live-share page + SOS (compose-SMS only) | Leaderboard across week boundary; blocked user disappears everywhere; share URL works in a plain browser |
-| **P6 Integrations** | 17–19 | HealthKit first (no external approval), then Strava + Garmin behind feature flags | Recorded run appears in Apple Health; Strava import for test athlete |
-| **P7 Hardening + stores** | 20–22 | Empty/error/offline states, deep-link QA, accessibility, privacy manifests, review notes + demo video, EAS Submit, staged rollout | App Store + Play submissions accepted |
+| [**P0 Foundation**](phases/P0-foundation.md) | 1 | This scaffold | Boots on both platforms; tabs navigate; gallery renders |
+| [**P1 Auth + onboarding**](phases/P1-auth-onboarding.md) | 2–3 | Hosted Supabase project; email/Apple/Google sign-in; forgot password; 4-step onboarding (photo → Storage, home city via reverse geocode). **Apply for Strava Extended Access + Garmin dev program now.** | Full signup → onboarding → tabs; two-user RLS smoke test |
+| [**P2 Core loop**](phases/P2-core-loop.md) | 4–7 | Explore map (custom light style, typed pins + km labels, clustering, user location), list/search/filters/sort, Create wizard (pin drop + reverse geocode + points preview), Run detail + request-to-join, host inbox, manage/edit/cancel, invite links | Create → discover → request → approve across two devices |
+| [**P3 Chat + notifications**](phases/P3-chat-notifications.md) | 8–9 | Group chat + DMs (Broadcast), unread counts, notification center, push pipeline, pg_cron reminders | Realtime A→B; push with app killed; reminder fires |
+| [**P4 Live run + points + reviews**](phases/P4-live-run-points-reviews.md) | 10–13 | Background GPS recording (iOS `UIBackgroundModes: location`, Android foreground service), smoothing + D+, live trace/stats, `complete_run` + ledger, animated recap, rate-the-crew, history | Real outdoor run with screen locked; points idempotent; rating aggregates update |
+| [**P5 Gamification + profile + safety**](phases/P5-gamification-profile-safety.md) | 14–16 | Levels/badges/leaderboard, full profiles, report/block, settings, trusted contacts + live-share page + SOS (compose-SMS only) | Leaderboard across week boundary; blocked user disappears everywhere; share URL works in a plain browser |
+| [**P6 Integrations**](phases/P6-integrations.md) | 17–19 | HealthKit first (no external approval), then Strava + Garmin behind feature flags | Recorded run appears in Apple Health; Strava import for test athlete |
+| [**P7 Hardening + stores**](phases/P7-hardening-stores.md) | 20–22 | Empty/error/offline states, deep-link QA, accessibility, privacy manifests, review notes + demo video, EAS Submit, staged rollout | App Store + Play submissions accepted |
 
 ## 6. Risks & mitigations
 

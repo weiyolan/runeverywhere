@@ -2,17 +2,17 @@
 
 | | |
 |---|---|
-| **Depends on** | P0 (dev builds both platforms, tokens, `Button`/`TypeChip`/`RunCard`/`TabBar`, local stack with `00000000000001_core.sql` + `00000000000002_points_reward_on_all_writes.sql`, typed client, committed `database.types.ts`, EAS project linked); P1 (real auth + AuthGate, onboarded `profiles` with `home_point`, hosted Supabase project with migrations `…10`/`…11` pushed, `Input` + `IconButton` components, EAS env-var pattern, Google Cloud project with OAuth SHA-1s already registered) |
-| **Provides to later phases** | The app-wide TanStack Query **key schema + invalidation policy** (P3–P6 reuse it); membership transition RPCs `cancel_join`/`remove_member` + `run_approved_count` + `search_runs` (migrations `…20`/`…21`); the single `AppMap` wrapper + custom map style (P4 live trace, P5 live-share reuse it); ported `Tabs`/`Badge`/`Avatar`/`StatBlock`/`MapPin`/`RouteMarker`; installed `@gorhom/bottom-sheet` + `@react-native-community/datetimepicker`; Google Maps API keys (restricted, in EAS env); `invite/[code]` deep-link pattern (P7 QA matrix builds on it); `run/[id]` screens P3 chat and P4 live/recap link out of |
+| **Depends on** | P0 (dev builds both platforms, tokens, `Button`/`TypeChip`/`RunCard`/`TabBar`, local stack with `00000000000001_core.sql` + `00000000000002_points_reward_on_all_writes.sql` + `00000000000003_profile_caches_server_only.sql`, typed client, committed `database.types.ts`, EAS project linked); P1 (real auth + AuthGate, onboarded `profiles` with `home_point`, hosted Supabase project with migrations `…10`/`…11` pushed, `Input` + `IconButton` components, EAS env-var pattern, Google Cloud project with OAuth SHA-1s already registered) |
+| **Provides to later phases** | The app-wide TanStack Query **key schema + invalidation policy** (P3–P6 reuse it); membership transition RPCs `cancel_join`/`remove_member` + `run_approved_count` + `search_runs` (migrations `…20`/`…21`); URL-safe `invite_code` alphabet (migration `…22` — P7's https bounce page and QA matrix rely on it); the single `AppMap` wrapper + custom map style (P4 live trace, P5 live-share reuse it); ported `Tabs`/`Badge`/`Avatar`/`StatBlock`/`MapPin`/`RouteMarker`; installed `@gorhom/bottom-sheet` + `@react-native-community/datetimepicker`; Google Maps API keys (restricted, in EAS env); `invite/[code]` deep-link pattern (P7 QA matrix builds on it); `run/[id]` screens P3 chat and P4 live/recap link out of |
 | **Verify gate (PLAN.md §5)** | "Create → discover → request → approve across two devices" |
 
 ## Goal
 
-Ship the product's core loop end-to-end: a host creates a run through the 4-step wizard (pin drop, validated details, server-computed points preview), other runners discover it on the Explore map/list/search with filters, open its detail, request to join with an intro message, and the host approves from an inbox — all state transitions running through the `SECURITY DEFINER` RPCs from [0001_core.sql](../../supabase/migrations/00000000000001_core.sql) plus two small P2 migrations that close the runner-cancel / host-remove / capacity-count / search gaps. The phase is almost entirely client work; it ends with the two-device verify gate passing on real hardware.
+Ship the product's core loop end-to-end: a host creates a run through the 4-step wizard (pin drop, validated details, server-computed points preview), other runners discover it on the Explore map/list/search with filters, open its detail, request to join with an intro message, and the host approves from an inbox — all state transitions running through the `SECURITY DEFINER` RPCs from [0001_core.sql](../../supabase/migrations/00000000000001_core.sql) plus three small P2 migrations that close the runner-cancel / host-remove / capacity-count / search gaps and swap invite codes to a URL-safe alphabet. The phase is almost entirely client work; it ends with the two-device verify gate passing on real hardware.
 
 ## Definition of done
 
-1. Migrations `00000000000020_membership_transitions.sql` and `00000000000021_search_runs.sql` apply cleanly (`supabase db reset` local, `supabase db push` hosted); `npm run db:types` regenerated and committed diff-clean.
+1. Migrations `00000000000020_membership_transitions.sql`, `00000000000021_search_runs.sql`, and `00000000000022_invite_code_urlsafe.sql` apply cleanly (`supabase db reset` local, `supabase db push` hosted); `npm run db:types` regenerated and committed diff-clean.
 2. Google Maps renders via `PROVIDER_GOOGLE` with the custom light JSON style on **both** platforms in dev builds using restricted per-platform API keys (no blank/beige tiles, no watermark errors).
 3. Explore map shows nearby published runs as type-colored teardrop `MapPin`s with km labels (e.g. "7.5K"); overlapping pins cluster into dark count bubbles via supercluster; tapping a cluster zooms to expand it.
 4. Foreground location permission is requested on first Explore open; granted → user dot + recenter button work; denied → map centers on `profiles.home_point` (fallback Lisbon) with a "location off" banner.
@@ -25,14 +25,14 @@ Ship the product's core loop end-to-end: a host creates a run through the 4-step
 11. Run detail shows: quoted goal in body face, host card (avatar, name, rating), StatBlocks (km, pace, day, time), `+N PTS` badge, GOING count, and **spots left = `max_group − 1 − approved_count`** (host occupies one slot — matches `join_run`'s capacity check exactly).
 12. Request-to-join modal (intro ≤240 chars + prompt chips) calls `join_run`; detail then renders the pending "Request sent" state with WITHDRAW.
 13. Open-visibility runs join instantly (no modal); a full run renders FULL with the CTA disabled; `join_run`'s "run is full" error is surfaced cleanly if capacity races.
-14. Invite-only run: hidden everywhere public; share sheet from detail/manage shares `runeverywhere://invite/<code>`; opening the link resolves via `get_run_by_invite` and lands on detail with an instant JOIN.
+14. Invite-only run: hidden everywhere public; share sheet from detail/manage shares `runeverywhere://invite/<code>`; opening the link resolves via `get_run_by_invite` and lands on detail with an instant JOIN. Codes contain only `[A-Za-z0-9_-]` (migration `…22`), so the raw code never splits the `invite/[code]` path segment.
 15. Host inbox `run/[id]/requests` lists pending requests with profile + intro; ACCEPT/DECLINE call `respond_to_join_request` with optimistic UI; approving into a full run surfaces the server error and refetches.
 16. Requester sees APPROVED (or DECLINED) state on their device after app-focus refetch or pull-to-refresh — no manual restart needed.
 17. `cancel_join` (runner withdraws pending or cancels approved spot) and `remove_member` (host removes approved) work end-to-end; a removed runner sees the removed state and **cannot** re-request (server behavior).
 18. `run/[id]/manage`: edit title/goal/distance/max-group/pace/time/route/visibility with validation (max_group never below approved+1); CANCEL RUN sets `status='cancelled'`; cancelled run shows a banner on detail and disappears from Explore/search.
 19. `(tabs)/runs` shows ALL / MANAGED BY YOU / JOINED underline tabs with counts; managed cards show a pending-requests badge; joined cards show pending/approved status.
 20. `/dev/components` gallery renders the six newly ported components in all contract states.
-21. `supabase/tests/core_loop_smoke.sql` passes locally and on hosted (RLS + RPC behavior, incl. removed-cannot-rejoin and capacity-full).
+21. `supabase/tests/core_loop_smoke.sql` passes locally and on hosted (RLS + RPC behavior, incl. removed-cannot-rejoin, capacity-full, anon-caller rejection on every membership RPC, and the URL-safe invite-code alphabet).
 22. Two-device verification script (below) passes in full; automated gates green (`npm run typecheck`, `npm run lint`, `supabase db lint --level warning`, types drift clean).
 
 ## Preconditions
@@ -40,12 +40,12 @@ Ship the product's core loop end-to-end: a host creates a run through the 4-step
 | Precondition | How to check |
 |---|---|
 | P1 verify gate passed: sign-up → onboarding → tabs; RLS smoke green | Sign in on device with a real account; `profiles.onboarded_at` set |
-| Migrations `…01`, `…02`, `…10`, `…11` applied local + hosted | `select version from supabase_migrations.schema_migrations` lists all four |
+| Migrations `…01`, `…02`, `…03`, `…10`, `…11` applied local + hosted | `select version from supabase_migrations.schema_migrations` lists all five |
 | Typed client + committed types | `src/types/database.types.ts` exists; `npm run typecheck` green |
 | `Input`, `IconButton` ported (P1 D1/D2) | `ls src/components/ui/` shows both; gallery renders them. If missing, execute P1 D1/D2 first — P2 does not re-specify them |
 | Google Cloud project from P1 (OAuth clients, SHA-1s recorded) | console.cloud.google.com → project "Run Everywhere" exists |
 | Google Cloud **billing enabled** (required to enable Maps SDKs; mobile SDK usage itself is $0 unlimited per PLAN.md §1) | Console → Billing shows a linked account |
-| Two physical devices (or 1 device + 1 emulator w/ Play services) + two onboarded accounts | Both sign in against the hosted project |
+| Two physical devices (or 1 device + 1 emulator w/ Play services) + **three** onboarded accounts: A (host), B (runner), C (spare — views the full run in verify step 10; can share B's device) | All three sign in against the hosted project |
 | EAS env-var pattern from P1 B4 in place | `eas env:list --environment development` shows the P1 vars |
 | Dev-build workflow working (Expo Go cannot run `react-native-maps`) | `npx expo run:ios` / `run:android` boot the current app |
 
@@ -80,28 +80,34 @@ npx expo install @react-native-community/datetimepicker   # native → dev clien
 
 Full SQL in **Data model & security**. P2 owns slots `…20`–`…29`.
 
-**B1. `supabase/migrations/00000000000020_membership_transitions.sql`** — three functions: `cancel_join(p_run_id)` (runner: pending|approved → cancelled), `remove_member(p_run_id, p_user_id)` (host: approved → removed), `run_approved_count(p_run_id)` (definer count so non-members can render spots-left; RLS blocks them from counting `run_members` rows directly).
+**B1. `supabase/migrations/00000000000020_membership_transitions.sql`** — three functions: `cancel_join(p_run_id)` (runner: pending|approved → cancelled), `remove_member(p_run_id, p_user_id)` (host: approved → removed), `run_approved_count(p_run_id)` (definer count so non-members can render spots-left; RLS blocks them from counting `run_members` rows directly) — plus a hardening `create or replace` of 0001's `respond_to_join_request` (see Data model & security). Rule for every definer write RPC: open with the `if v_uid is null then raise exception 'not authenticated'` guard — Supabase grants EXECUTE on public functions to `anon`, and with a NULL `auth.uid()` an ownership check like `host_id <> v_uid` evaluates to NULL, which plpgsql treats as false.
 - Acceptance: `supabase db reset` clean; `supabase db lint --level warning` clean.
 
 **B2. `supabase/migrations/00000000000021_search_runs.sql`** — trigram GIN index on `runs.area_name` + `search_runs(p_query, p_lat, p_lng, p_limit)` RPC (SECURITY INVOKER — reuses the runs SELECT policy, so invite runs stay hidden).
 - Acceptance: in psql as an authed role, `select (run).title from public.search_runs('old', 38.72, -9.14)` returns "Old Town Loop"; searching an invite run's title returns 0 rows.
 
-**B3. Extend `supabase/seed.sql`** (local-only fixtures; never pushed to hosted):
+**B3. `supabase/migrations/00000000000022_invite_code_urlsafe.sql`** — swap the `runs.invite_code` column default from standard base64 (its alphabet includes `+` and `/`; a `/` lands in ~31% of 12-char codes and splits the `invite/[code]` path segment, `+` decoding is parser-dependent) to the URL-safe variant, and backfill existing rows in place. Full SQL in **Data model & security**.
+- Acceptance: local and hosted (after `db push`), `select count(*) from runs where invite_code !~ '^[A-Za-z0-9_-]+$'` returns 0; `supabase db lint --level warning` clean.
+
+**B4. Extend `supabase/seed.sql`** (local-only fixtures; never pushed to hosted):
+- Add a 3rd demo user to the `auth.users` block (same password / `on conflict` / profile-update pattern as maya and marco): id `00000000-0000-4000-8000-000000000003`, email `nadia@example.com`, display_name `Nadia K.`, onboarded in Lisbon. She exists so one run can hold an approved **and** a pending non-host member at once — the capacity smoke case (#7) needs both.
 - Add a 4th run: id `10000000-0000-4000-8000-000000000004`, host maya (`…0001`), `type='challenge'`, `visibility='invite'`, `invite_code='DEVLINK01'` (explicit, deterministic for link testing), title `Track Repeats`, goal `6×800m on the track — bring spikes if you have them.`, start_point `POINT(-9.1650 38.7420)`, area `Campolide`, city `Lisbon`, `distance_km 8.0`, `max_group 4`, pace `240`, `starts_at now() + interval '4 days'`, `closed_loop true`.
-- Add membership fixtures: maya **pending** on `Old Town Loop` (intro `New in Lisbon this week and keen to explore with locals.`) → marco gets an inbox fixture; marco **approved** on `Sunset 5K` (`decided_at now()`) → roster fixture.
-- Acceptance: after `supabase db reset`, marco's Requests inbox for Old Town Loop shows maya; Sunset 5K shows 1 approved.
+- Add membership fixtures: maya **pending** on `Old Town Loop` (intro `New in Lisbon this week and keen to explore with locals.`) → marco gets an inbox fixture; marco **approved** on `Sunset 5K` (`decided_at now()`) → roster fixture; nadia **pending** on `Sunset 5K` (intro `Visiting for the weekend — easy pace suits me.`) → the second non-host member for smoke #7.
+- Acceptance: after `supabase db reset`, marco's Requests inbox for Old Town Loop shows maya; Sunset 5K shows 1 approved + 1 pending.
 
-**B4. Regenerate types**: `npm run db:types`; commit. The new RPCs appear under `Database['public']['Functions']`.
+**B5. Regenerate types**: `npm run db:types`; commit. The new RPCs appear under `Database['public']['Functions']`.
 
-**B5. `supabase/tests/core_loop_smoke.sql`** (same role-play technique as P1's `rls_smoke.sql`: `set local role authenticated; set local request.jwt.claims = '{"sub":"<uuid>","role":"authenticated"}'`; one `begin…rollback` block per expected error). Cases (expected result in header comments):
+**B6. `supabase/tests/core_loop_smoke.sql`** (same role-play technique as P1's `rls_smoke.sql`: `set local role authenticated; set local request.jwt.claims = '{"sub":"<uuid>","role":"authenticated"}'`; one `begin…rollback` block per expected error). Cases (expected result in header comments):
 1. As marco: `select count(*) from runs where id = '<track-repeats>'` → `0` (invite hidden); `select count(*) from get_run_by_invite('DEVLINK01')` → `1`.
 2. As marco: `insert into run_members …` → RLS error (no INSERT policy; writes only via RPCs).
 3. As marco: `join_run('<track-repeats>')` → row with `status='approved'` (invite joins instantly); repeat → error `already requested or joined`.
 4. As maya (non-host): `respond_to_join_request('<old-town>', …)` → error `only the host can decide requests`.
 5. As maya: `cancel_join('<old-town>')` → `status='cancelled'`; `join_run('<old-town>', 'again')` → `status='pending'` (re-request after cancel allowed).
 6. As marco (host): `respond_to_join_request('<old-town>', '<maya>', true)` → approved; `remove_member('<old-town>', '<maya>')` → `removed`; as maya: `join_run('<old-town>')` → error `already requested or joined` (**removed cannot rejoin** — documented behavior).
-7. Capacity: as postgres set `max_group=2` on a fixture, approve one member, then approve a second pending → error `run is full`; `run_approved_count` returns 1.
+7. Capacity: as postgres, `update runs set max_group = 2 where id = '<sunset-5k>'`; as maya (host): `respond_to_join_request('<sunset-5k>', '<nadia>', true)` → error `run is full` (marco already holds the only non-host spot); `run_approved_count('<sunset-5k>')` returns 1. Runs on a fresh `db reset` — the B4 fixtures provide both members.
 8. Regression (P0): `update runs set points_reward = 9999 where id = '<old-town>'` as postgres → value recomputes via trigger.
+9. Anon guard: `set local role anon` (no JWT claims) → `join_run('<old-town>')`, `cancel_join('<old-town>')`, `remove_member('<old-town>', '<maya>')`, `respond_to_join_request('<old-town>', '<maya>', true)` each → error `not authenticated` (Supabase grants `anon` EXECUTE on public functions; the guard is all that stands between the app's embedded anon key and definer writes).
+10. Invite alphabet: as postgres, insert 20 throwaway runs relying on the `invite_code` default → all 20 codes match `^[A-Za-z0-9_-]{12}$` (`begin…rollback` block).
 - Acceptance: `psql postgresql://postgres:postgres@127.0.0.1:54322/postgres -f supabase/tests/core_loop_smoke.sql` output matches headers; same blocks pass in the hosted SQL editor (with hosted uuids where fixtures don't exist — cases 2/4 style checks still run against real rows).
 
 ### C — Design-system ports + map foundation
@@ -285,7 +291,7 @@ Recent searches: `recentQueries: string[]` (max 8, in-memory only) also lives he
 | `visibility = 'open'` or resolved via invite `code` | `Button "JOIN RUN"` → `joinRun(id, '')` directly (instant, optimistic) |
 
 - States: loading skeleton; `RunNotFoundError` → "This run is no longer available." + BACK.
-- Share `IconButton` → `Share.share({ message: 'Join my run “{title}” on Run Everywhere → runeverywhere://invite/{invite_code}' })` (host/approved members see it; custom scheme only in P2 — universal links are P7).
+- Share `IconButton` → `Share.share({ message: 'Join my run “{title}” on Run Everywhere → runeverywhere://invite/{invite_code}' })` (host/approved members see it; custom scheme only in P2 — universal links are P7). The raw code is path-segment-safe — migration `…22` guarantees the `[A-Za-z0-9_-]` alphabet, so no `encodeURIComponent` here or decoding in I4.
 
 **H3. `src/app/run/[id]/request.tsx`** — modal (design: Discover Flow request sheet): title "REQUEST TO JOIN", caption "{host} hosts · {spotsLeft} spots left"; `Input multiline` maxLength 240 with live `{n}/240` counter, placeholder "Say hi and why you'd like to join — pace, experience, anything the host should know."; three prompt chips appending canned text (design copy: "I'm new in town" / "Easy pace" / "Coffee after?"); footer `Button "SEND REQUEST" full` → `useJoinRun` → on success `router.back()` (detail now renders pending panel — no toast system in P2); footnote caption "The host sees your profile, rating & this note."
 - Acceptance: DoD #12; full-race error path shows the server message inline.
@@ -300,7 +306,7 @@ Recent searches: `recentQueries: string[]` (max 8, in-memory only) also lives he
 
 **I3. `src/app/run/[id]/roster.tsx`** — host + approved members can view (RLS enforces anyway). Sections: HOST (self card), GOING (approved: Avatar + name + rating; host additionally sees `Button "REMOVE" size="sm" variant="danger"` → confirm `Alert` "Remove {name}? They won't be able to rejoin." → `removeMember`). Pending count footer (host only) linking to requests.
 
-**I4. `src/app/invite/[code].tsx`** — deep-link target (`runeverywhere://invite/<code>`; scheme registered since P0). On mount: `rpc('get_run_by_invite', { p_code: code })`; found → `router.replace(\`/run/${run.id}?code=${code}\`)`; empty → error screen "This invite link is invalid or the run is no longer live." + `Button "EXPLORE RUNS"` → `/(tabs)`. Signed-out cold-start deep links bounce to welcome via P1's AuthGate and are NOT preserved (P7 deep-link QA; Decisions #16).
+**I4. `src/app/invite/[code].tsx`** — deep-link target (`runeverywhere://invite/<code>`; scheme registered since P0; `…22` guarantees the code never contains `/` or `+`, so the `[code]` segment always matches). On mount: `rpc('get_run_by_invite', { p_code: code })`; found → `router.replace(\`/run/${run.id}?code=${code}\`)`; empty → error screen "This invite link is invalid or the run is no longer live." + `Button "EXPLORE RUNS"` → `/(tabs)`. Signed-out cold-start deep links bounce to welcome via P1's AuthGate and are NOT preserved (P7 deep-link QA; Decisions #16).
 - Acceptance: DoD #14 including `npx uri-scheme open "runeverywhere://invite/DEVLINK01" --ios` against local seed.
 
 ### J — Your Runs tab (`(tabs)/runs`)
@@ -319,7 +325,7 @@ Run the **Verification script** below on two physical devices against the hosted
 
 ## Data model & security
 
-Two migrations. No new tables (P3–P6 tables untouched per PLAN.md §3); only functions + one index. All functions `set search_path = ''`, schema-qualified references, style-matched to 0001.
+Three migrations. No new tables (P3–P6 tables untouched per PLAN.md §3); only functions, one index, and one column-default swap + backfill. All functions `set search_path = ''`, schema-qualified references, style-matched to 0001.
 
 ### `supabase/migrations/00000000000020_membership_transitions.sql`
 
@@ -368,6 +374,11 @@ declare
   v_uid uuid := (select auth.uid ());
   v_row public.run_members;
 begin
+  -- Mandatory: without this, an anon caller (auth.uid() IS NULL) slips past
+  -- the host check below — `host_id <> null` is NULL, plpgsql treats it as
+  -- false — and the definer UPDATE would run. See rls review notes.
+  if v_uid is null then raise exception 'not authenticated'; end if;
+
   select * into v_run from public.runs where id = p_run_id for update;
   if not found or v_run.host_id <> v_uid then
     raise exception 'only the host can remove members';
@@ -391,6 +402,56 @@ language sql security definer set search_path = '' stable
 as $$
   select count(*)::integer from public.run_members
   where run_id = p_run_id and status = 'approved';
+$$;
+
+-- Hardening: 0001's respond_to_join_request shipped WITHOUT the
+-- not-authenticated guard. Supabase grants EXECUTE on public functions to
+-- anon by default, and with auth.uid() NULL its only auth check
+-- (`host_id <> v_uid`) evaluates to NULL → false in plpgsql, so an anon
+-- caller could decide pending requests. Re-create with the guard; body
+-- otherwise identical to 0001.
+create or replace function public.respond_to_join_request (
+  p_run_id uuid,
+  p_user_id uuid,
+  p_approve boolean
+)
+returns public.run_members
+language plpgsql security definer set search_path = ''
+as $$
+declare
+  v_run public.runs;
+  v_uid uuid := (select auth.uid ());
+  v_approved_count integer;
+  v_row public.run_members;
+begin
+  if v_uid is null then raise exception 'not authenticated'; end if;
+
+  select * into v_run from public.runs where id = p_run_id for update;
+  if not found or v_run.host_id <> v_uid then
+    raise exception 'only the host can decide requests';
+  end if;
+
+  if p_approve then
+    select count(*) into v_approved_count
+    from public.run_members
+    where run_id = p_run_id and status = 'approved';
+    if v_approved_count + 1 >= v_run.max_group then
+      raise exception 'run is full';
+    end if;
+  end if;
+
+  update public.run_members
+  set status = case when p_approve then 'approved' else 'declined' end::public.member_status,
+      decided_at = now(),
+      decided_by = v_uid
+  where run_id = p_run_id and user_id = p_user_id and status = 'pending'
+  returning * into v_row;
+
+  if v_row is null then
+    raise exception 'no pending request for that runner';
+  end if;
+  return v_row;
+end;
 $$;
 ```
 
@@ -435,10 +496,29 @@ as $$
 $$;
 ```
 
+### `supabase/migrations/00000000000022_invite_code_urlsafe.sql`
+
+```sql
+-- P2: invite codes travel as a URL path segment (runeverywhere://invite/<code>
+-- in H2/I4; P7's https bounce page). 0001's default is standard base64, whose
+-- alphabet includes '+' and '/' — a '/' lands in ~31% of 12-char codes
+-- (1 − (62/64)^12) and splits the invite/[code] route segment. Swap new codes
+-- to the URL-safe alphabet and translate existing rows in place ('-' and '_'
+-- never occur in standard base64, so the swap is collision-free and the
+-- unique constraint holds).
+alter table public.runs
+  alter column invite_code
+  set default translate(encode(gen_random_bytes(9), 'base64'), '+/', '-_');
+
+update public.runs
+set invite_code = translate(invite_code, '+/', '-_')
+where invite_code ~ '[+/]';
+```
+
 **RLS review notes**
-- No policy changes. `run_members` still has **no** INSERT/UPDATE/DELETE policies — every write path in this phase is a definer RPC (`join_run`, `respond_to_join_request`, `cancel_join`, `remove_member`), preserving 0001's invariant.
+- No policy changes. `run_members` still has **no** INSERT/UPDATE/DELETE policies — every write path in this phase is a definer RPC (`join_run`, `respond_to_join_request`, `cancel_join`, `remove_member`), preserving 0001's invariant. That invariant only holds if every one of those RPCs opens with the `not authenticated` guard: Supabase grants `anon` EXECUTE on public functions, and a NULL `auth.uid()` passes ownership checks silently (`host_id <> null` → NULL → false). `…20` writes the guard into both new functions and retrofits 0001's `respond_to_join_request`, which shipped without it; smoke #9 calls all four as `anon` expecting failure.
 - `cancel_join`/`remove_member` lock the run row (`for update`) — serialized with `join_run`/`respond_to_join_request`, so capacity counts never interleave.
-- `run_approved_count` and `get_run_by_invite` are the only definer read paths for non-members; both leak deliberately-minimal data (a count; a run row addressable only by its unguessable 12-char code).
+- `run_approved_count` and `get_run_by_invite` are the only definer read paths for non-members; both leak deliberately-minimal data (a count; a run row addressable only by its unguessable 12-char code — URL-safe alphabet as of `…22`, entropy unchanged at 72 bits).
 - `runs` UPDATE policy (host-only) covers edit/cancel; `title`/`distance_km`/`max_group`/`target_pace_s_per_km` stay constraint-checked by 0001, and the P0 trigger recomputes `points_reward` on every write. `max_group < approved+1` is NOT DB-enforced — client validation only; worst case a run reads "-1 spots"/FULL, capacity RPCs stay correct (they compare against `max_group` live). Recorded as a risk.
 - Escape `%`/`_` client-side before `search_runs` (D4); a raw `%` merely broadens the ILIKE match — no injection surface (parameterized).
 
@@ -451,7 +531,7 @@ $$;
 
 ## Verification script
 
-Manual QA on hosted backend. Device/account A = host, device/account B = runner (both onboarded via P1 flow).
+Manual QA on hosted backend. Device/account A = host, device/account B = runner (both onboarded via P1 flow); account C (Preconditions, onboarded) appears only in step 10.
 
 1. **Keys/map**: fresh dev builds on both devices → Explore renders styled Google tiles, user dot after permission grant, recenter works. Deny permission on B first → home-city fallback + banner, then re-enable via Settings.
 2. **Create (A)**: FAB → wizard: pick CHALLENGE → drag pin in your city (area label updates) → details: title "QA Hills", goal set, 10 km, max 3, pace 5:30, tomorrow 08:00, closed loop, APPROVAL REQUIRED → review shows `+220 PTS` (10×18+40) from the RPC → PUBLISH → success → VIEW RUN. Studio: row has `points_reward = 220`, `invite_code` non-null.
@@ -462,8 +542,8 @@ Manual QA on hosted backend. Device/account A = host, device/account B = runner 
 7. **Withdraw/re-request (B)**: CANCEL MY SPOT → confirm → CTA returns to REQUEST TO JOIN; re-request → A sees a fresh pending (new intro visible).
 8. **Decline path**: A declines this one → B sees "wasn't accepted" caption, CTA still available once.
 9. **Remove**: A approves again, then ROSTER → REMOVE B → B sees "The host removed you" and no CTA; B attempting nothing further (server would reject).
-10. **Capacity/open run**: A creates OPEN run with max_group 2 → B: JOIN RUN → instantly approved, detail shows FULL for a third account (or check `run_approved_count` = 1 and card shows FULL on B after joining from a signed-out-of… simplest: seed check via smoke #7 already covers the race).
-11. **Invite run**: A creates INVITE ONLY run → confirm absent from B's map/list/search → A: detail → share → send link to B (any channel) → B opens `runeverywhere://invite/<code>` → detail with JOIN RUN → instant approved. Also `npx uri-scheme open "runeverywhere://invite/DEVLINK01"` locally.
+10. **Capacity/open run**: A creates OPEN run with max_group 2 → B: JOIN RUN → instantly approved, "YOU'RE IN" panel (the run is now full). Sign account C in (Preconditions; B's device works) → open the run from Explore list → detail shows GOING · 2 and the disabled FULL button (DoD #13). The approve-into-full race itself is server-tested by smoke #7.
+11. **Invite run**: A creates INVITE ONLY run → confirm absent from B's map/list/search → A: detail → share → send link to B (any channel) → B opens `runeverywhere://invite/<code>` → detail with JOIN RUN → instant approved. Confirm the shared code contains only `[A-Za-z0-9_-]` (`…22` default). Also `npx uri-scheme open "runeverywhere://invite/DEVLINK01"` locally.
 12. **Edit/cancel**: A edits distance 10→12 → B's detail (refetch) shows 12 KM and `+256 PTS` (12×18+40, trigger-recomputed); A cancels run → B sees cancelled banner; run gone from Explore/search; A's MANAGED card shows CANCELLED badge.
 13. **Runs tab counts**: both devices' ALL/MANAGED/JOINED counts match Studio queries.
 14. **Gallery**: `/dev/components` renders Tabs/Badge/Avatar/StatBlock/MapPin/RouteMarker sections on both platforms.
@@ -474,7 +554,7 @@ Automated gates:
 npm run typecheck
 npm run lint                                  # also proves the react-native-maps import fence
 supabase db lint --level warning
-supabase db reset                             # 01,02,10,11,20,21 + seed apply cleanly
+supabase db reset                             # 01,02,03,10,11,20,21,22 + seed apply cleanly
 npm run db:types && git diff --exit-code src/types/database.types.ts
 psql postgresql://postgres:postgres@127.0.0.1:54322/postgres -f supabase/tests/rls_smoke.sql
 psql postgresql://postgres:postgres@127.0.0.1:54322/postgres -f supabase/tests/core_loop_smoke.sql
@@ -494,6 +574,8 @@ psql postgresql://postgres:postgres@127.0.0.1:54322/postgres -f supabase/tests/c
 | Host shrinks `max_group` below approved+1 | Client clamps (I2); DB check only enforces 2–30 — accepted v1 gap; capacity RPCs remain correct regardless (documented in RLS notes) |
 | No realtime in P2 → B "never sees" approval | Focus-refetch wiring (D5) + pull-to-refresh + verify step 6 make the loop demoable; P3 push closes the gap properly |
 | Invite links opened signed-out / app-not-installed | Out of P2 (Decisions #16); share copy includes the run title so the link failing cold isn't meaningless; universal links + deep-link QA in P7 |
+| Standard-base64 invite codes contain `/` or `+` (~31% of codes) and break the `invite/[code]` route | Migration `…22` swaps the default to the URL-safe alphabet and backfills existing rows; smoke #10 asserts the alphabet; verify step 11 checks the shared code |
+| Definer RPCs are EXECUTE-granted to `anon` by default — a missing null-uid guard means the anon key can mutate memberships | Every write RPC opens with the `not authenticated` guard; `…20` adds it to `remove_member` and retrofits 0001's `respond_to_join_request`; smoke #9 calls each RPC as `anon` expecting failure |
 | Reverse geocode empty in parks/rural areas | G4 manual AREA NAME input fallback; `area_name`/`city` default `''` is schema-legal |
 | Weekend/today filter boundaries across timezones | Windows computed device-local with date-fns (D6); server compares `timestamptz` — consistent |
 | `@gorhom/bottom-sheet` + reanimated 4 integration | v5 supports reanimated v4 (v5.1.8+); GestureHandlerRootView wired in A3; if the sheet misbehaves, fallback is a plain absolute-positioned card (sheet is presentation-only here) |
@@ -502,7 +584,7 @@ psql postgresql://postgres:postgres@127.0.0.1:54322/postgres -f supabase/tests/c
 ## Decisions made by this plan
 
 1. **Spots-left formula fixed as `max_group − 1 − approved_count`** (host occupies a slot) — matches `join_run`/`respond_to_join_request` (`approved + 1 >= max_group` ⇒ full) and `runs_within_radius`'s open-spots predicate; GOING count = `approved_count + 1`.
-2. **Migration split**: `…20` membership transitions + `run_approved_count`, `…21` search — two single-concern files in P2's slots.
+2. **Migration split**: `…20` membership transitions + `run_approved_count` + the `respond_to_join_request` auth-guard retrofit, `…21` search, `…22` URL-safe invite codes — three single-concern files in P2's slots.
 3. **`cancel_join` requires `status='published'`** — leaving a cancelled/completed run is meaningless; historical membership rows stay intact for P4.
 4. **Removed members cannot rejoin** — inherited from `join_run`'s ON CONFLICT clause (revives only cancelled/declined); surfaced as explicit UI state, tested in smoke #6. Declined members may re-request once more (server allows; UI permits with a caption).
 5. **Search mechanism = dedicated `search_runs` RPC** (SECURITY INVOKER, ILIKE + trgm `similarity` ordering over title + area_name, new area_name GIN index) rather than client `.ilike()` — one round trip returns distance + approved_count in the same shape as `runs_within_radius`.
@@ -523,7 +605,9 @@ psql postgresql://postgres:postgres@127.0.0.1:54322/postgres -f supabase/tests/c
 20. **Geography I/O**: write as WKT `POINT(lng lat)` string in INSERTs; read via one `parsePoint` util handling hex-EWKB and GeoJSON. No PostGIS casts added to RPC outputs to keep 0001's function shapes untouched.
 21. **ESLint import fence on `react-native-maps`** (allowed only under `src/components/map/`) operationalizes PLAN.md's one-wrapper rule.
 22. **Recent searches are in-memory only** (zustand, max 8) — persistence adds AsyncStorage churn for marginal value; revisit in P7.
-23. **Seed gains deterministic fixtures** (`DEVLINK01` invite run, one pending + one approved membership) so host inbox, roster, invite link, and smoke tests work on a fresh `db reset` without manual setup.
+23. **Seed gains deterministic fixtures** (`DEVLINK01` invite run, a 3rd demo user nadia, one pending inbox membership, one approved roster membership, one pending capacity-case membership) so host inbox, roster, invite link, and every smoke case — including capacity #7 — work on a fresh `db reset` without manual setup.
+24. **Every definer write RPC opens with the not-authenticated guard** — Supabase grants `anon` EXECUTE on public functions, and a NULL `auth.uid()` slides past ownership checks (`host_id <> null` → NULL → false in plpgsql). `…20` bakes the guard into `cancel_join`/`remove_member` and retrofits 0001's `respond_to_join_request`, which shipped without it; smoke #9 pins the behavior. Future RPCs (P3–P6) inherit the rule.
+25. **Invite codes switch to the URL-safe base64 alphabet in `…22`** (default `translate(encode(gen_random_bytes(9),'base64'),'+/','-_')`, existing rows backfilled) — standard base64 puts `/` or `+` in ~31% of 12-char codes, and a `/` splits the `invite/[code]` path segment. Fixing the alphabet at the source beats per-call URL-encoding, and P7's https bounce page inherits the guarantee.
 
 ## Out of scope
 

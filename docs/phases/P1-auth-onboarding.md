@@ -2,8 +2,8 @@
 
 | | |
 |---|---|
-| **Depends on** | P0 scaffold (routes, theme tokens, Button/TypeChip/RunCard/TabBar, local Supabase stack, migration [`00000000000001_core.sql`](../../supabase/migrations/00000000000001_core.sql)) |
-| **Provides to later phases** | Hosted Supabase project (linked, migrations pushed); real sign-in (email + Apple + Google) and session persistence; auth-state routing guards; completed `profiles` rows (`onboarded_at` set) that P2 discovery/create depend on; `avatars` Storage bucket + RLS; `Input` + `IconButton` components; generated `src/types/database.types.ts`; filed Strava Extended Access + Garmin developer applications (P6 lead time) |
+| **Depends on** | P0 scaffold + gap closure (routes, theme tokens, Button/TypeChip/RunCard/TabBar, local Supabase stack, migrations [`00000000000001_core.sql`](../../supabase/migrations/00000000000001_core.sql) + `00000000000002_points_reward_on_all_writes.sql` + `00000000000003_profile_caches_server_only.sql`, committed `src/types/database.types.ts` + typed client + CI drift gate, EAS project linked) |
+| **Provides to later phases** | Hosted Supabase project (linked, migrations pushed); real sign-in (email + Apple + Google) and session persistence; auth-state routing guards; completed `profiles` rows (`onboarded_at` set) that P2 discovery/create depend on; `avatars` Storage bucket + RLS; `Input` + `IconButton` components; regenerated `src/types/database.types.ts` covering the P1 migrations; first iOS EAS cloud dev build (Apple credentials + EAS env proven — closes P0 decision 8); filed Strava Extended Access + Garmin developer applications (P6 lead time) |
 | **Verify gate (PLAN.md §5)** | "Full signup → onboarding → tabs; two-user RLS smoke test" |
 
 ## Goal
@@ -12,8 +12,8 @@ Replace the scaffold's dev bypass with production auth: a hosted Supabase projec
 
 ## Definition of done
 
-1. Hosted Supabase project exists, is linked (`supabase link`), and `supabase db push` has applied migrations `00000000000001`, `00000000000010`, `00000000000011` cleanly.
-2. `.env` strategy works: app runs against the local stack **and** the hosted project by swapping `.env`; EAS environment variables are configured for the `development` profile.
+1. Hosted Supabase project exists, is linked (`supabase link`), and `supabase db push` has applied migrations `00000000000001`, `00000000000002`, `00000000000003`, `00000000000010`, `00000000000011` cleanly.
+2. `.env` strategy works: app runs against the local stack **and** the hosted project by swapping `.env`; EAS environment variables are configured for the `development` profile; one iOS EAS cloud dev build (`eas build --profile development --platform ios`, B5 — the P0-decision-8 deferral) has completed, installed, and booted on a device.
 3. Email sign-up (name/email/password/ToS checkbox) creates an auth user, the trigger-created `profiles` row carries `display_name`, and `tos_accepted_at` is set.
 4. Email sign-in works; wrong password shows an inline error, not a crash.
 5. Forgot-password round trip: request email → tap link on the same device → app opens via `runeverywhere://forgot-password?code=…` → new password form → sign-in with the new password succeeds.
@@ -95,12 +95,16 @@ External review queues gate P6; file both applications before writing any code.
 - From dashboard → Project Settings → API: copy Project URL and the **anon (publishable) key**. Never the service-role key into anything `EXPO_PUBLIC_*`.
 - Repo env files:
   - `.env` (gitignored) — the *active* backend. Local values by default.
-  - Extend `.env.example` with a commented "hosted" block and the new vars (all safe-to-commit *names*, empty values): `EXPO_PUBLIC_SUPABASE_URL`, `EXPO_PUBLIC_SUPABASE_ANON_KEY`, `EXPO_PUBLIC_GOOGLE_WEB_CLIENT_ID`, `EXPO_PUBLIC_GOOGLE_IOS_CLIENT_ID`, `GOOGLE_SIGNIN_IOS_URL_SCHEME`, `GOOGLE_MAPS_API_KEY_IOS`, `GOOGLE_MAPS_API_KEY_ANDROID`.
+  - Extend `.env.example` — which already lists `EXPO_PUBLIC_SUPABASE_URL`, `EXPO_PUBLIC_SUPABASE_ANON_KEY`, `GOOGLE_MAPS_API_KEY_IOS`, `GOOGLE_MAPS_API_KEY_ANDROID` — with a commented "hosted" block and the **three new vars** (safe-to-commit *names*, empty values): `EXPO_PUBLIC_GOOGLE_WEB_CLIENT_ID`, `EXPO_PUBLIC_GOOGLE_IOS_CLIENT_ID`, `GOOGLE_SIGNIN_IOS_URL_SCHEME`.
   - Add `.env.hosted.example` documenting the hosted shape (URL `https://<ref>.supabase.co`); developer keeps a real gitignored `.env.hosted` and swaps with `cp .env.hosted .env` + restart Metro with `--clear` (EXPO_PUBLIC vars are baked at bundle time).
   - Verify `.gitignore` covers `.env` and `.env.hosted` (add if missing).
-- EAS: create environment variables (dashboard → project → Environment variables, or `eas env:create`) for environments `development`/`preview`/`production`: the five `EXPO_PUBLIC_*`/`GOOGLE_*` vars above pointing at the **hosted** project. Edit [`eas.json`](../../eas.json): add `"environment": "development" | "preview" | "production"` to the matching build profiles.
+- EAS: create environment variables (dashboard → project → Environment variables, or `eas env:create`) for environments `development`/`preview`/`production` — the full set of **seven**: `EXPO_PUBLIC_SUPABASE_URL` + `EXPO_PUBLIC_SUPABASE_ANON_KEY` (pointing at the **hosted** project), `EXPO_PUBLIC_GOOGLE_WEB_CLIENT_ID`, `EXPO_PUBLIC_GOOGLE_IOS_CLIENT_ID`, `GOOGLE_SIGNIN_IOS_URL_SCHEME`, plus `GOOGLE_MAPS_API_KEY_IOS` and `GOOGLE_MAPS_API_KEY_ANDROID` (consumed by `app.config.ts` at build time for `ios.config.googleMapsApiKey` / `android.config.googleMaps.apiKey` — omit them and cloud dev clients ship with no Maps key). Edit [`eas.json`](../../eas.json): add `"environment": "development" | "preview" | "production"` to the matching build profiles.
 - Update `README.md`: replace the "Enter app (dev)" paragraph with sign-in instructions and the local-vs-hosted `.env` swap.
 - Acceptance: `npx expo start` with hosted `.env` → sign-in against hosted works (after Workstream F); with local `.env` → seeded users work.
+
+**B5. First iOS EAS cloud build (the deliverable P0 decision 8 deferred here).**
+- P0 shipped only the Android cloud dev build; iOS was deferred to P1, where the Apple Developer account is mandatory anyway (Sign in with Apple). Run this once G1/G2 have landed the new native modules and B4's EAS env vars exist: register the test device (`eas device:create`), then `eas build --profile development --platform ios` (EAS manages the ad-hoc provisioning profile + distribution certificate on first run — accept).
+- Acceptance: the build completes, installs on the iOS device, boots, and signs in against the hosted project — proving Apple credentials and the `development` EAS environment end-to-end (Definition of done #2).
 
 ### C — Migrations, storage bucket, generated types
 
@@ -109,14 +113,14 @@ P1 owns migration slots `00000000000010`–`00000000000019`. Two new files; appl
 **C1. `supabase/migrations/00000000000010_avatars_storage.sql`** — `avatars` bucket (public read, 5 MB, jpeg/png/webp) + 4 `storage.objects` policies (public read; owner-only insert/update/delete keyed on first path segment = `auth.uid()`).
 - Acceptance: `supabase db reset` clean; `select * from storage.buckets` shows `avatars`.
 
-**C2. `supabase/migrations/00000000000011_profiles_onboarding.sql`** — `touch_updated_at` trigger on `profiles`; column-level UPDATE grants so clients can never write `points_total`/`level`/`rating_*` (server-authoritative caches per PLAN.md §2); RPC `set_home_location(p_lat, p_lng, p_city)`.
+**C2. `supabase/migrations/00000000000011_profiles_onboarding.sql`** — `touch_updated_at` trigger on `profiles`; a **tightened re-grant superseding P0's `00000000000003_profile_caches_server_only.sql`** (P0 already revoked table-wide UPDATE and re-granted user-editable columns *including* `updated_at`; this migration re-runs the revoke + grant with `updated_at` dropped from the list, since the touch trigger now owns it); RPC `set_home_location(p_lat, p_lng, p_city)`.
 - Acceptance: `supabase db lint --level warning` clean; as an authenticated user, `update profiles set points_total = 1` fails with permission denied.
 
-**C3. Generate DB types (first time).**
-- With local stack running migrations-current: `npm run db:types` → creates `src/types/database.types.ts`. Commit it.
-- Update `src/lib/supabase.ts` to `createClient<Database>(…)` (import from `@/types/database.types`).
-- Extend CI (`.github/workflows/ci.yml`, `db` job) with a drift gate: after `supabase db start`, run `supabase gen types typescript --local > /tmp/db.types.ts && diff /tmp/db.types.ts src/types/database.types.ts`.
-- Acceptance: `npm run typecheck` passes; re-running `npm run db:types` produces no git diff.
+**C3. Regenerate DB types.**
+- The typed foundation already exists from P0 gap closure (committed `src/types/database.types.ts` in the existing `src/types/` dir, `createClient<Database>`-typed client, `npm run db:types:check`, and a CI types-drift gate in the `db` job) — C3 only keeps it current with the two new migrations.
+- With the local stack running migrations-current (C1 + C2 applied): `npm run db:types` → regenerates `src/types/database.types.ts` (picks up the `set_home_location` function). Commit the diff.
+- No CI change: the existing drift gate — which runs after full `supabase start` per P0 D2 (deliberately not `db start`, so `seed.sql` and the seed-login probe are exercised; do not regress it) — covers the new migrations automatically.
+- Acceptance: `npm run typecheck` passes; `npm run db:types:check` exits 0; re-running `npm run db:types` produces no git diff.
 
 **C4. RLS smoke script `supabase/tests/rls_smoke.sql`** (new dir). Content per **Verification script** step 12: role-played `authenticated` sessions via `set local role authenticated; set local request.jwt.claims = '{"sub":"<uuid>","role":"authenticated"}'`, one `begin…rollback` block per expected-failure case (errors abort a tx). Runs locally via `psql postgresql://postgres:postgres@127.0.0.1:54322/postgres -f supabase/tests/rls_smoke.sql`; same statements paste into the hosted SQL editor.
 - Acceptance: script output matches the expected results documented in its header comments.
@@ -159,7 +163,7 @@ P0 audit: shipped = `Button`, `TypeChip`, `RunCard`, `TabBar` ([PLAN.md §4](../
 
 **E3. Centralize the guard in `src/app/_layout.tsx`.**
 - Add an `AuthGate` component inside the providers using `useSegments()` + `router.replace` in a `useEffect`:
-  - `status === 'loading'` or (`signedIn` && `profileStatus === 'loading'`) → render `null` (splash stays up).
+  - `status === 'loading'` or (`signedIn` && `profileStatus` is `'idle'` **or** `'loading'`) → render `null` (splash stays up). `'idle'` must suppress rendering exactly like `'loading'`: in the window between the SIGNED_IN auth event and the profile fetch's first `set()` (E2 may use separate `set()` calls), `profile` is still `null`, and letting the onboarding rule below observe that window would misroute an already-onboarded user into onboarding until the fetch resolves (breaking Definition of done #8 / verification step 8 — relaunch goes straight to tabs, no flicker).
   - `profileStatus === 'error'` → minimal inline error view (`textStyles.body` message + `Button label="RETRY"` → `refreshProfile()`).
   - `recovering === true` → no redirects (keeps the user on `(auth)/forgot-password` while resetting).
   - `signedOut` && segment ≠ `(auth)` → `router.replace('/(auth)/welcome')`.
@@ -176,15 +180,15 @@ P0 audit: shipped = `Button`, `TypeChip`, `RunCard`, `TabBar` ([PLAN.md §4](../
 
 ### F — Email/password auth screens
 
-All screens: `KeyboardAvoidingView` + `ScrollView`, gutter `sizing.gutter`, bg `colors.paper2`, titles per `textStyles.screenTitle`, validation with `zod` (already installed), single volt primary per screen. Error mapping (from supabase-js `AuthApiError.code`): `invalid_credentials` → "Wrong email or password."; `user_already_exists`/`email_exists` → "That email is already registered — log in instead."; `weak_password` → "Use 8+ characters with a number."; `over_email_send_rate_limit` → "Too many emails sent — try again later."; anything else → "Something went wrong. Try again." Buttons show a disabled working state (label → "LOGGING IN…" etc.); never spinners-only.
+All screens: `KeyboardAvoidingView` + `ScrollView`, gutter `sizing.gutter`, bg `colors.paper2`, titles per `textStyles.screenTitle`, validation with `zod` (already installed), single volt primary per screen. Error mapping (from supabase-js `AuthApiError.code`): `invalid_credentials` → "Wrong email or password."; `user_already_exists`/`email_exists` → "That email is already registered — log in instead."; `weak_password` → "Use 8+ characters with letters and numbers."; `over_email_send_rate_limit` → "Too many emails sent — try again later."; anything else → "Something went wrong. Try again." Buttons show a disabled working state (label → "LOGGING IN…" etc.); never spinners-only.
 
 **F1. `src/lib/auth.ts`** — thin service module so screens stay presentational:
 - `signUpWithEmail({ displayName, email, password })` → `supabase.auth.signUp({ email, password, options: { data: { display_name: displayName } } })`; if a session is returned (confirmations off), immediately `update profiles set tos_accepted_at = now()` for `auth.uid()`; if no session (confirmations later enabled), return a `needsEmailConfirm` flag.
 - `signInWithEmail({ email, password })`.
 - `requestPasswordReset(email)` → `supabase.auth.resetPasswordForEmail(email, { redirectTo: 'runeverywhere://forgot-password' })`.
-- `completePasswordReset(code, newPassword)` → `supabase.auth.exchangeCodeForSession(code)` then `supabase.auth.updateUser({ password: newPassword })`.
+- `exchangeResetCode(code)` → `supabase.auth.exchangeCodeForSession(code)` (F4 calls it on mount, before any new password exists); `updatePassword(newPassword)` → `supabase.auth.updateUser({ password: newPassword })` (F4 calls it on submit). Two functions, not one — the two calls happen at different moments in the screen's lifecycle.
 - `signInWithApple()`, `signInWithGoogle()` (Workstream G).
-- Zod schemas: `displayName` 1–40 chars; email `.email()`; password min 8 + `/\d/` (mirrors hosted policy, B3).
+- Zod schemas: `displayName` 1–40 chars; email `.email()`; password min 8 + `/\d/` + `/[a-zA-Z]/` (mirrors the hosted "letters and digits" policy, B3, and local `password_requirements`, G3 — all three layers must agree or the `.env` swap in B4 changes sign-up behavior).
 - Acceptance: unit-free; exercised through the screens below.
 
 **F2. `src/app/(auth)/sign-in.tsx`** (design: "LOGIN" frame of the flow file):
@@ -198,7 +202,7 @@ All screens: `KeyboardAvoidingView` + `ScrollView`, gutter `sizing.gutter`, bg `
 
 **F3. `src/app/(auth)/sign-up.tsx`** (design: "REGISTER 1", shown as step 1/4 there — see Decisions on step counting):
 - Back `IconButton`; title "CREATE ACCOUNT"; sub "Start with the basics."
-- `Input label="FULL NAME"` (`autoComplete="name"`), `Input label="EMAIL"`, `Input label="PASSWORD"` (eye toggle, hint "Use 8+ characters with a number.").
+- `Input label="FULL NAME"` (`autoComplete="name"`), `Input label="EMAIL"`, `Input label="PASSWORD"` (eye toggle, hint "Use 8+ characters with letters and numbers." — supersedes the flow file's "with a number", which understates the letters-and-digits rule enforced in B3/F1/G3).
 - ToS row (required): 22px checkbox (ink900 fill + volt check when on, per flow HTML) + "I agree to the **Terms of Service** and **Privacy Policy**." — bold spans open the A1 URLs via `Linking.openURL`.
 - "OR" divider + the same two `ProviderButton`s (deviation from the flow file — see Decisions).
 - Sticky footer `Button label="CONTINUE"` (disabled until schema valid + ToS checked) → `signUpWithEmail`; on success AuthGate lands on `onboarding/profile`. If `needsEmailConfirm`, render a "Check your email" panel (future-proofing; unreachable while confirmations are off).
@@ -206,7 +210,7 @@ All screens: `KeyboardAvoidingView` + `ScrollView`, gutter `sizing.gutter`, bg `
 
 **F4. `src/app/(auth)/forgot-password.tsx`** — two modes in one route:
 - **Request mode** (default): title "RESET PASSWORD"; `Input label="EMAIL"`; `Button label="SEND RESET LINK"` → `requestPasswordReset`; success state swaps the form for "Check your email — open the link on this phone." + "BACK TO LOG IN".
-- **Reset mode**: activated when `useLocalSearchParams()` contains `code` (deep link `runeverywhere://forgot-password?code=…`; the group segment is elided so the path maps to this route). On mount with `code`: `setRecovering(true)`, call `completePasswordReset` in two stages — exchange first, then show `Input label="NEW PASSWORD"` + `Input label="CONFIRM PASSWORD"` + `Button label="SET NEW PASSWORD"` → `updateUser`; on success `setRecovering(false)` (AuthGate then routes to tabs/onboarding) and show a brief "Password updated" hint.
+- **Reset mode**: activated when `useLocalSearchParams()` contains `code` (deep link `runeverywhere://forgot-password?code=…`; the group segment is elided so the path maps to this route). On mount with `code`: `setRecovering(true)`, call `exchangeResetCode(code)` (F1); on success show `Input label="NEW PASSWORD"` + `Input label="CONFIRM PASSWORD"` + `Button label="SET NEW PASSWORD"` → `updatePassword(newPassword)` (F1); on success `setRecovering(false)` (AuthGate then routes to tabs/onboarding) and show a brief "Password updated" hint.
 - Handle Supabase error redirect params (`error`, `error_code=otp_expired` → "That link expired — request a new one.") and the PKCE cross-device failure (exchange throws because the code verifier lives on the requesting device) → same message + request mode.
 - Local email testing: Mailpit inbox at `http://127.0.0.1:54324` (bundled with `supabase start`); hosted: real inbox.
 - Acceptance: Definition of done #5 on a physical device (both cold start and warm app).
@@ -230,7 +234,7 @@ npm install base64-arraybuffer
 - OAuth consent screen: External, app name, support email; Publishing status *Testing* with your test Google accounts is fine for P1 (privacy URL from A1 when publishing later).
 - Credentials → three OAuth client IDs: **iOS** (bundle `com.runeverywhere.app`); **Android** (package `com.runeverywhere.app` + SHA-1s: local debug keystore via `keytool -list -v -alias androiddebugkey -keystore ~/.android/debug.keystore -storepass android`, plus the EAS-managed keystore SHA-1 from `eas credentials -p android` for EAS builds); **Web application** (no redirect URIs needed — it is the `webClientId` audience for the id token).
 - Fill `.env` (+ EAS env vars): `EXPO_PUBLIC_GOOGLE_WEB_CLIENT_ID`, `EXPO_PUBLIC_GOOGLE_IOS_CLIENT_ID`, `GOOGLE_SIGNIN_IOS_URL_SCHEME`.
-- Supabase: hosted per B3; local — edit [`supabase/config.toml`](../../supabase/config.toml) adding `[auth.external.apple] enabled = true, client_id = "com.runeverywhere.app"` and `[auth.external.google] enabled = true, client_id = "<ios-client-id>,<web-client-id>"` (client IDs are public identifiers, safe to commit), plus `[auth] minimum_password_length = 8`.
+- Supabase: hosted per B3; local — edit [`supabase/config.toml`](../../supabase/config.toml) adding `[auth.external.apple] enabled = true, client_id = "com.runeverywhere.app"` and `[auth.external.google] enabled = true, client_id = "<ios-client-id>,<web-client-id>"` (client IDs are public identifiers, safe to commit), plus `[auth] minimum_password_length = 8` **and** `password_requirements = "letters_digits"` — without the latter, `12345678` passes local sign-up but fails hosted with `weak_password`, breaking the B4 backend-swap equivalence.
 - Acceptance: `supabase stop && supabase start` reloads config without error.
 
 **G4. `signInWithApple()` in `src/lib/auth.ts`:**
@@ -266,9 +270,9 @@ Routes under `src/app/onboarding/` with a `_layout.tsx` Stack (headers hidden, `
   - `Location.requestForegroundPermissionsAsync()`; denied → hint "You can type your city instead." (no re-prompt loop).
   - `Location.getCurrentPositionAsync({ accuracy: Accuracy.Balanced })` → `Location.reverseGeocodeAsync({ latitude, longitude })` → take `city` (fallback `subregion`/`region`) into the input; keep coords in local state; button flips to the connected/"go" style (border `colors.go`) with label "LOCATION SET".
 - `Input label="HOME CITY"` with leading map-pin icon (required, ≤40 chars; editable after geocode).
-- CONTINUE → coords present ? `setHomeLocation(lat, lng, city)` RPC : `updateProfile({ home_city: city })` → `refreshProfile()` → push `/onboarding/preferences`.
+- CONTINUE → coords in local state ? `setHomeLocation(lat, lng, city)` RPC : `updateProfile({ home_city: city, ...(city !== profile?.home_city ? { home_point: null } : {}) })` → `refreshProfile()` → push `/onboarding/preferences`. The manual path **nulls `home_point` when the typed city differs from the prefilled one** — otherwise a user who saved coordinates in a previous session (write-through resume, DoD #15) and re-runs step 2 with a new city ends up with the new `home_city` paired to the stale point. `home_point` is in the column grant (C2), so the plain UPDATE covers it.
 - States: locating (button working), permission-denied hint, geocode-empty fallback (leave input focused).
-- Acceptance: with location granted, `home_point` is non-null (check Studio); manual-city path leaves `home_point` null but saves `home_city`.
+- Acceptance: with location granted, `home_point` is non-null (check Studio); manual-city path saves `home_city` and leaves `home_point` null — including after a resume where a different city replaces a previously geolocated one.
 
 **H4. `src/app/onboarding/preferences.tsx` — step 3/4 "HOW DO YOU RUN?"** (design "ONBOARDING PREFS"):
 - Header back; progress 75%. Sub "We use this to match you with the right runs."
@@ -343,11 +347,11 @@ create trigger profiles_touch_updated_at
   before update on public.profiles
   for each row execute function public.touch_updated_at ();
 
--- 2) Column-level write protection: the RLS policy allows own-row UPDATE, but
+-- 2) Column-level write protection, superseding P0's 00000000000003 grant:
 --    points_total / level / rating_avg / rating_count / created_at / updated_at
 --    are server-maintained caches (PLAN.md §2 — client never writes points or
---    rating aggregates). Default table-wide grant is revoked and re-granted
---    per column.
+--    rating aggregates). P0's grant list included updated_at; now that the
+--    touch trigger owns it, the revoke + re-grant is repeated without it.
 revoke update on public.profiles from authenticated, anon;
 grant update (display_name, bio, avatar_url, home_city, home_point,
               pace_band, distance_band, languages, units, visibility,
@@ -391,7 +395,7 @@ end; $$;
 **RLS review notes**
 - `profiles` SELECT (`visibility <> 'hidden' or own`) and UPDATE (own row) policies from `00000000000001_core.sql` are unchanged; P1 adds column-grant hardening only. No INSERT/DELETE policies exist → trigger-only creation, cascade-only deletion — correct.
 - No new tables. `connected_accounts` is **P6**; Workstream A only files external applications, no schema.
-- Manual-city onboarding path writes `home_city` via plain UPDATE (grant covers it); RPC is used only when coordinates exist.
+- Manual-city onboarding path writes `home_city` — and nulls a stale `home_point` when the city changed — via plain UPDATE (the grant covers both columns); the RPC is used only when coordinates exist in local state (H3).
 - The storage policies rely on the `<uid>/…` path convention; the client must never construct another user's prefix (enforced server-side regardless).
 
 ## Design references
@@ -406,7 +410,7 @@ end; $$;
 Manual QA (hosted backend unless noted; account A = fresh email, account B = second email):
 
 1. Fresh install (delete app), cold start → lands on welcome; no dev-bypass button.
-2. GET STARTED → sign-up: CONTINUE disabled until name/email/valid password/ToS; password hint text matches design copy.
+2. GET STARTED → sign-up: CONTINUE disabled until name/email/valid password/ToS; password hint reads "Use 8+ characters with letters and numbers." (F3); an all-digit password like `12345678` is rejected client-side.
 3. Submit sign-up (account A) → app lands on onboarding step 1 without manual navigation.
 4. Step 1: pick a photo (crop UI appears), set bio, CONTINUE. In Supabase Studio: `profiles.display_name/bio/avatar_url/tos_accepted_at` set; Storage has `avatars/<uid>/avatar.jpg`; open `avatar_url` in a browser — image loads.
 5. Step 2: USE CURRENT LOCATION → OS prompt → city fills; CONTINUE. Studio: `home_city` + non-null `home_point`.
@@ -422,7 +426,7 @@ Manual QA (hosted backend unless noted; account A = fresh email, account B = sec
     c. As marco: `insert into storage.objects (bucket_id, name) values ('avatars', '<maya>/avatar.jpg')` → new-row RLS violation.
     d. As maya: `update public.profiles set visibility='hidden' where id='<maya>'` → `UPDATE 1`; then as marco `select count(*) from public.profiles where id='<maya>'` → `0`; as maya herself → `1`.
     Each expected-error case sits in its own `begin … rollback` block; sessions are role-played with `set local role authenticated; set local request.jwt.claims = '{"sub":"<uuid>","role":"authenticated"}'`.
-13. Two-device sanity: account A on iOS + account B on Android signed in simultaneously; B's Explore/profile screens never show A's hidden data (visibility from 12d).
+13. Two-device sanity: account A on iOS + account B on Android signed in simultaneously; both sessions stay valid (no forced sign-out). P1 ships no Explore map (P2) or user-profile screens (P5), so check hidden-profile invisibility at the API level instead of in UI: with B's access token, `curl "https://<ref>.supabase.co/rest/v1/profiles?id=eq.<A-uuid>&select=id" -H "apikey: <anon key>" -H "Authorization: Bearer <B access token>"` → `[]` while A is hidden (visibility from 12d); the same query with A's own token returns her row.
 
 Automated gates (all must pass; first two + db lint run in CI):
 
@@ -444,7 +448,7 @@ npm run db:types && git diff --exit-code src/types/database.types.ts
 | PKCE reset link opened on another device/browser → exchange fails | F4 shows "link expired — request a new one" and returns to request mode; QA step 10 covers it |
 | Hosted built-in SMTP is heavily rate-limited (a few emails/hour) and not for production | Acceptable for P1 dev volumes; custom SMTP + email confirmations are P7 hardening. Avoid burning sends when testing resets |
 | New native modules mean Expo Go and stale dev clients break | All installs batched in G1 with an immediate `expo run:ios/android` rebuild; README already mandates dev builds |
-| AuthGate redirect loops or skipped success screen | Guard rules are exhaustive and mutually exclusive (E3); the `onboarded_at` write defers `refreshProfile` until START EXPLORING (H5); `recovering` flag suspends redirects during reset |
+| AuthGate redirect loops or skipped success screen | Guard rules are exhaustive and mutually exclusive (E3 — note `profileStatus 'idle'` folds into the render-`null` branch, so no rule ever sees a signed-in user with an unfetched profile); the `onboarded_at` write defers `refreshProfile` until START EXPLORING (H5); `recovering` flag suspends redirects during reset |
 | Reverse geocode returns no `city` (rural/odd locales) | Fallback chain city → subregion → region; manual input always available and required-validated |
 | Storage RLS gives opaque 4xx from the client | RLS smoke (12c) proves policies at SQL level first; client errors then indicate a wrong path prefix, not policy drift |
 | Strava/Garmin reviews stall past P6 (PLAN.md §6) | Applications filed day 1 (Workstream A) with re-check dates in the tracking doc; HealthKit remains the guaranteed P6 integration; both integrations feature-flagged |
@@ -465,7 +469,7 @@ npm run db:types && git diff --exit-code src/types/database.types.ts
 11. **Routing centralized in a root `AuthGate`** (`useSegments` + `router.replace`); the `<Redirect>`s in `(auth)/_layout` and `(tabs)/_layout` are removed as duplicates. A `recovering` flag suspends redirects during password reset.
 12. **Write-through onboarding** (each step persists on CONTINUE, prefilled from `profiles`) instead of a zustand draft store — survives app kills, needs no new store; relaunch resumes at step 1 with saved values.
 13. **Deferred `refreshProfile` on FINISH** so the success screen isn't skipped by the guard; store refresh happens on START EXPLORING.
-14. **Column-level UPDATE grants on `profiles`** added in P1 (revoke + re-grant writable columns): the core migration's own-row policy would otherwise let users write their own `points_total`/`level`/`rating_*`, violating PLAN.md §2's server-authoritative rule. Plus a `touch_updated_at` trigger since clients can no longer write `updated_at`.
+14. **Column-level UPDATE grants on `profiles` tightened** (kept from P0): P0's `00000000000003_profile_caches_server_only.sql` already closed the points/rating self-write hole; P1's migration 11 deliberately repeats the revoke + re-grant with `updated_at` removed from the grant list, because the new `touch_updated_at` trigger owns that column now.
 15. **`set_home_location` RPC (SECURITY INVOKER)** for coordinate writes — validates ranges and avoids hand-built WKT in the client; manual-city path uses a plain column update.
 16. **Avatar upload pattern:** `expo-image-picker` (library only, square crop, quality 0.7) + `expo-file-system` legacy base64 read + `base64-arraybuffer` → `storage.upload` with `upsert: true` at fixed path `<uid>/avatar.jpg`; `avatar_url` stores the public URL with a `?v=` cache-buster. Photo optional; display name and home city required.
 17. **Bucket limits:** 5 MB, `image/jpeg|png|webp` — enforced in the bucket row, not app code.
@@ -475,7 +479,7 @@ npm run db:types && git diff --exit-code src/types/database.types.ts
 21. **Legal pages** self-written v1, hosted on Netlify free tier (public repo pages would require a plan change); markdown source kept in `docs/legal/`.
 22. **Defaults:** pace `steady`, distance `mid`, languages `['EN']`, units `km`, visibility `everyone` — no locale detection dependency in P1.
 23. **Temporary SIGN OUT button** on the `(tabs)/profile` placeholder — required for multi-account QA; replaced by P5's real profile/settings.
-24. **CI gains a types-drift step** in the existing `db` job (regenerate against `supabase db start` and diff `src/types/database.types.ts`).
+24. **CI types-drift gate is kept from P0 unchanged** — the `db` job already regenerates types against the full `supabase start` stack and diffs `src/types/database.types.ts` (P0 D2); P1 adds no CI steps, only the regenerated types file (C3).
 
 ## Out of scope
 

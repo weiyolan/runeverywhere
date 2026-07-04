@@ -18,13 +18,13 @@ Turn the feature-complete app into a shippable product: a systematic empty/error
 4. Invite deep links opened signed-out are preserved: after sign-in (+ onboarding for new users) the app lands on the invited run (reverses P2 Decision #16).
 5. Every row of the Workstream B deep-link matrix passes on one iOS and one Android physical device, cold start and warm start.
 6. `profiles.units = 'mi'` renders correctly on every distance/pace surface (Explore, cards, detail, live, recap, history) — closes P4's explicit deferral.
-7. Every `IconButton`, map pin, tab, toggle, and star control has an `accessibilityLabel`/role; `npm run lint` fails on an unlabeled `IconButton` (rule added in C1).
+7. Every `IconButton`, map pin, tab, toggle, and star control has an `accessibilityLabel`/role; `npm run typecheck` fails on an unlabeled `IconButton` (required prop, C1 — no lint rule needed).
 8. VoiceOver (iOS) and TalkBack (Android) walks of the 5 core flows (C4) complete without dead ends; issues found are fixed or logged with rationale.
 9. Contrast audit table (C2) verified: text-on-Volt ≥ 4.5:1 (measured ≈ 16.7:1 — AAA), and the two known large-text-only pairs are confined to large/bold uses.
 10. Reduced motion honored: with OS reduce-motion on, recap ring/count-up/draw-on render final state instantly, pulse loops stop, and the live-share web page disables its CSS pulse via `prefers-reduced-motion`.
 11. Dynamic type at the largest non-accessibility iOS setting (and Android font scale 1.3): no clipped or overlapping text on the 10 audit screens in C3.
 12. With a 500-run seeded map region, Explore pan/zoom stays fluid (no frame-drop bursts in perf monitor); rendered markers are capped and `tracksViewChanges` is false after first render.
-13. Sentry receives a symbolicated crash from a **production** build of each platform (test crash), and from an EAS Update bundle (source maps uploaded both paths).
+13. Sentry receives a symbolicated crash from a **production** build of each platform (test event fired via D4's hidden trigger — 7 taps on the `settings/index` version row), and from an EAS Update bundle (source maps uploaded both paths).
 14. Built IPA contains the aggregated `PrivacyInfo.xcprivacy` with the four required-reason API categories; App Store Connect App Privacy labels and the Play Data Safety form are submitted per the E2/E3 tables.
 15. Reviewer notes (E4) + demo video are attached in both consoles; the seeded reviewer account signs in on a clean install against production.
 16. Guideline 4.8 + 5.1.1(v) checklist passes: Apple sign-in present and listed first on iOS auth screens, account deletion reachable in-app (Profile → Settings → Account & security → DELETE ACCOUNT), and a web deletion-instructions page is linked in Play Data Safety.
@@ -40,7 +40,7 @@ Turn the feature-complete app into a shippable product: a systematic empty/error
 | Precondition | How to check |
 |---|---|
 | P5 verify gate passed (blocks everywhere, share URL in plain browser, deletion works) | Run P5's verification script steps 6, 10, 12 |
-| P6 verify gate passed, or P6 features flagged OFF for launch | Recorded run appears in Apple Health; Strava import works for a test athlete — or both flags off. Either way read `docs/phases/P6-*.md` + `supabase/migrations/000000000000006*.sql` and audit: the connected-apps settings route name, HealthKit purpose strings, `connected_accounts` columns. **Privacy declarations E2/E3 have conditional Health rows — pick per what actually ships** |
+| P6 verify gate passed, or P6 features flagged OFF for launch | Recorded run appears in Apple Health; Strava import works for a test athlete — or both flags off. Either way read `docs/phases/P6-*.md` + `supabase/migrations/0000000000006*.sql` and audit: the connected-apps settings route name, HealthKit purpose strings, `connected_accounts` columns. **Privacy declarations E2/E3 have conditional Health rows — pick per what actually ships** |
 | Migrations ≤ `0000000000006x` local == hosted | `supabase migration list` |
 | Apple Developer Program active; App Store Connect access | developer.apple.com → Membership (P1 precondition) |
 | **Google Play Console account exists and identity-verified — created as early as possible** | play.google.com/console. If it is a *personal* account created after 2023-11-13, production access requires a closed test with **≥ 12 opted-in testers for 14 consecutive days** ([Play policy](https://support.google.com/googleplay/android-developer/answer/14151465)) — the closed test must START on week-20 day 1 (Workstream G1) or the week-22 submission slips |
@@ -98,9 +98,9 @@ No cache persistence to disk in v1 (Decisions). Acceptance: with airplane mode o
 
 **A4. `src/app/+not-found.tsx`** — expo-router unmatched-route screen: `EmptyState icon={compass} title="NOTHING HERE" body="That link doesn't go anywhere anymore." actionLabel="EXPLORE RUNS" onAction={() => router.replace('/(tabs)')}`. Register nothing (file convention handles it). Acceptance: `npx uri-scheme open "runeverywhere://bogus/path" --ios` lands here; button recovers.
 
-**A5. Gate the dev gallery.** `src/app/dev/components.tsx`: first line `if (!__DEV__) return <Redirect href="/" />;`. Acceptance: production build cannot open it via deep link.
+**A5. Gate the dev gallery.** `src/app/dev/components.tsx`: first line `if (!__DEV__) return <Redirect href="/" />;`. Acceptance: production build cannot open it via deep link. (This deliberately does NOT gate the Sentry test-crash trigger — production builds need one for DoD 13, so it lives behind D4's hidden version-row gesture, not here.)
 
-**A6. Units pass (closes P4 deferral).** Create `src/lib/format.ts` if P2–P4 left formatting inline: `formatDistance(km, units)` (`'5.2 km'` / `'3.2 mi'`, factor 0.621371), `formatPace(sPerKm, units)` (`'5:30 /km'` / `'8:51 /mi'`, s-per-mi = s-per-km / 0.621371), `formatElevation(m, units)` (m / ft ×3.28084). Sweep every render of distance/pace/D+ (Explore pins keep **km labels on the map** regardless — pin labels are part of the map's visual system and `runs.distance_km` is the stored truth; Decisions) and route them through these helpers with `useSession().profile.units`. Acceptance: flip `settings/preferences` to MI → cards, detail, live console, recap, history all switch; DB values unchanged.
+**A6. Units pass (closes P4 deferral).** Extend P2's existing `src/lib/format.ts` (P2 D2 created it unit-less, and P2 mandates every screen already routes through it) — this is a **migration of that module, not a new one**: add a `units` parameter to the distance/pace helpers, renaming `formatKm` → `formatDistance(km, units)` (`'5.2 km'` / `'3.2 mi'`, factor 0.621371) and changing `formatPace` → `formatPace(sPerKm, units)` (`'5:30 /km'` / `'8:51 /mi'`, s-per-mi = s-per-km / 0.621371); add `formatElevation(m, units)` (m / ft ×3.28084). The signature change deliberately breaks every P2–P5 call site — `npm run typecheck` is the sweep checklist; update them all in one sitting. `formatPinLabel`, `spotsLeft`, `formatWhen`, and `formatAway` stay untouched (Explore pins keep **km labels on the map** regardless — pin labels are part of the map's visual system and `runs.distance_km` is the stored truth; Decisions). Route any distance/pace/D+ rendering that P3–P5 left inline through these helpers too, passing `useSession().profile.units`. Acceptance: flip `settings/preferences` to MI → cards, detail, live console, recap, history all switch; DB values unchanged.
 
 **A7. Route-by-route audit + fixes — THE TABLE.** Every route from [PLAN.md §4](../PLAN.md) (+ the P5/P6 additions). For each row: verify the listed states exist (most shipped with their phase — this is enforcement, not re-design), replace any ad-hoc inline error/empty views with `EmptyState`/`ErrorState`, and implement the **Offline** column exactly. Copy shown is final (uppercase titles; sentence-case bodies; no emoji).
 
@@ -146,11 +146,11 @@ Acceptance: for each row, capture light-mode screenshots of empty/error/offline 
 
 **B2. Notification cold-start race (fix-if-broken).** Audit P3 E4: `getLastNotificationResponseAsync` must not `router.push` before the root layout + session resolve. Route the URL through `pendingLink.capture` unconditionally and let AuthGate consume it — one mechanism for both cases. Acceptance: kill app → tap a chat push → cold start lands in the right chat, not a dropped navigation.
 
-**B3. Web bounce page for invites (fix).** Custom-scheme URLs (`runeverywhere://invite/…`) are not tappable in iOS Messages/most mail clients. Add `invite.html` to the Netlify legal site: reads `?code=`, immediately tries `location.href = 'runeverywhere://invite/' + code`, and shows a fallback card with "GET THE APP" store links + the code. Change the share message (P2 H2, `run/[id]` + manage) to `https://<netlify-site>/invite.html?code={invite_code}`. Full universal links / Android App Links stay deferred (Decisions). Acceptance: link tapped from a real SMS on both platforms opens the app when installed; opens the fallback page when not.
+**B3. Web bounce page for invites (fix).** Custom-scheme URLs (`runeverywhere://invite/…`) are not tappable in iOS Messages/most mail clients. Add `invite.html` to the Netlify legal site: reads `?code=`, immediately tries `location.href = 'runeverywhere://invite/' + code`, and shows a fallback card with "GET THE APP" store links + the code. Raw interpolation into both the query string and the scheme URL's path segment is safe because P2's `…22` migration made invite codes URL-safe base64 (`[A-Za-z0-9_-]` only — no `+`/`/`); the page still `encodeURIComponent`s the code as belt-and-braces. Change the share message (P2 H2, `run/[id]` + manage) to `https://<netlify-site>/invite.html?code={invite_code}`. Full universal links / Android App Links stay deferred (Decisions). Acceptance: link tapped from a real SMS on both platforms opens the app when installed; opens the fallback page when not.
 
 **B4. Hosted auth email settings.** Dashboard → Auth: turn **email confirmations ON** for production (P1 deferred this decision here) and configure **custom SMTP** (Resend free tier — Supabase's built-in sender is rate-limited to a few emails/hour and not for production; verify current limits at execution). Confirmation + email-change links redirect to `runeverywhere://` (already in Redirect URLs); the app shows a "Email confirmed — log in." toast on that deep link (small handler in AuthGate). Sign-up already handles the `needsEmailConfirm` flag (P1 F1). Acceptance: fresh sign-up receives mail via Resend; tapping the link opens the app with the toast; unconfirmed sign-in shows the Supabase error inline.
 
-**B5. The matrix.** Execute every row on both platforms; record pass/fail + build number in `docs/store/deeplink-matrix.md` (a checked-off copy of this table).
+**B5. The matrix.** Execute every row on both platforms; record pass/fail + build number in `docs/store/deeplink-matrix.md` (a checked-off copy of this table). Fixtures: rows 1–4 use the deterministic seeded code `DEVLINK01` — present locally via `seed.sql` (P2) and on hosted via the E4 SQL-editor seeding; row 5 uses a **freshly created** invite run (maya account) so a real *generated* code (P2 `…22` URL-safe default, `[A-Za-z0-9_-]`) is exercised, not just the fixture.
 
 | # | Link / trigger | Entry state | Expected |
 |---|---|---|---|
@@ -158,7 +158,7 @@ Acceptance: for each row, capture light-mode screenshots of empty/error/offline 
 | 2 | Same | Signed in, cold (app killed) | Same, after splash |
 | 3 | Same | Signed out, cold | Welcome → sign in → **replayed** to run detail (B1) |
 | 4 | Same, invalid code | Any | Invalid-invite EmptyState (not error) |
-| 5 | `https://<site>/invite.html?code=…` from SMS | App installed | Bounce page → app opens on run detail |
+| 5 | `https://<site>/invite.html?code=<fresh code>` from SMS (invite run created ad hoc as maya — generated code, not `DEVLINK01`) | App installed | Bounce page → app opens on run detail |
 | 6 | Password-reset email link | Signed out, same device | `forgot-password` reset mode → new password works (P1) |
 | 7 | Password-reset link, expired / other device | Signed out | "That link expired — request a new one." |
 | 8 | Sign-up confirmation email link (B4) | Signed out | App opens, "Email confirmed" toast, sign-in works |
@@ -168,12 +168,13 @@ Acceptance: for each row, capture light-mode screenshots of empty/error/offline 
 | 12 | Push `message` tap | Killed / background | `/chat/[conversationId]`; suppressed while that chat is on screen |
 | 13 | Push `run_reminder` tap | Killed | `/run/[id]` |
 | 14 | Push `run_completed` tap | Killed | `/review/[runId]` (P4 H6) |
-| 15 | Push `badge_earned` / `leaderboard_weekly` tap | Background | `/rewards` (P5 D4) |
-| 16 | Google OAuth round-trip | Sign-in screen, iOS (reversed-client-id scheme) + Android | Returns signed in; user-cancel returns silently |
-| 17 | Apple sign-in sheet | iOS | Signs in; cancel returns silently |
-| 18 | Live-share URL | Desktop Chrome + iOS Safari + Android Chrome (no app) | P5 page renders, polls, then "ended" after finish |
-| 19 | `runeverywhere://bogus/path` | Cold | `+not-found` → EXPLORE RUNS recovers |
-| 20 | Push tap for a since-deleted run | Killed | `run/[id]` not-found EmptyState (no crash) |
+| 15 | Push `review_received` tap | Killed | `/run/[id]` completed detail (P4 H6) |
+| 16 | Push `badge_earned` / `leaderboard_weekly` tap | Background | `/rewards` (P5 D4) |
+| 17 | Google OAuth round-trip | Sign-in screen, iOS (reversed-client-id scheme) + Android | Returns signed in; user-cancel returns silently |
+| 18 | Apple sign-in sheet | iOS | Signs in; cancel returns silently |
+| 19 | Live-share URL | Desktop Chrome + iOS Safari + Android Chrome (no app) | P5 page renders, polls, then "ended" after finish |
+| 20 | `runeverywhere://bogus/path` | Cold | `+not-found` → EXPLORE RUNS recovers |
+| 21 | Push tap for a since-deleted run | Killed | `run/[id]` not-found EmptyState (no crash) |
 
 Commands: `npx uri-scheme open "<url>" --ios|--android`; push rows via real pushes from a second device (P3 script) or Expo push tool with the `data.url` payload.
 
@@ -185,7 +186,7 @@ Commands: `npx uri-scheme open "<url>" --ios|--android`; push rows via real push
 - `TabBar`: each item `accessibilityRole="tab"` + `accessibilityState={{ selected }}`, labels "Explore"/"Runs"/"Messages"/"Profile"; the FAB `accessibilityLabel="Create run"`. Unread dot → `accessibilityLabel="Messages, new messages"` variant.
 - `RatingStars` interactive: `accessibilityRole="adjustable"`, `accessibilityValue={{ min:1, max:5, now:value }}`, increment/decrement actions.
 - Switches/segments/chips (settings toggles, TypeChips, filter chips): `accessibilityRole="switch"|"radio"` + state; `Input` already carries its label (verify `accessibilityLabel` falls back to the label prop).
-- Lint guard: add an eslint `no-restricted-syntax` (or `react-native/no-raw-text`-style custom rule via `eslint-plugin-react`) flagging `<IconButton` without `accessibilityLabel` — simplest: the required prop makes `typecheck` the guard; note that in `eslint.config.js` comments.
+- Guard: no eslint rule — the required prop makes `npm run typecheck` the enforcement (DoD 7); record that decision in an `eslint.config.js` comment so nobody re-adds a redundant `no-restricted-syntax` rule later.
 - Acceptance: VoiceOver rotor traverses Explore header, run detail, chat composer with meaningful announcements.
 
 **C2. Contrast audit (compute once, record in code comments in `theme.ts`).** WCAG ratios for the locked tokens ([design readme "Decisions locked"](../../run-everywhere-app-design/project/readme.md) — tokens do NOT change):
@@ -225,8 +226,9 @@ Commands: `npx uri-scheme open "<url>" --ios|--android`; push rows via real push
 - Create `metro.config.js` (repo has none): `const { getSentryExpoConfig } = require('@sentry/react-native/metro'); module.exports = getSentryExpoConfig(__dirname);`.
 - `src/app/_layout.tsx`: `Sentry.init({ dsn: process.env.EXPO_PUBLIC_SENTRY_DSN, enabled: !__DEV__, tracesSampleRate: 0.2, sendDefaultPii: false, beforeSend: scrubGeo, beforeBreadcrumb: scrubGeo })` where `scrubGeo` strips `lat`/`lng`/coordinate-looking fields from event extras/breadcrumbs (GPS is sensitive; crash reports must not leak tracks); export root as `Sentry.wrap(RootLayout)`.
 - Secrets: `EXPO_PUBLIC_SENTRY_DSN` in `.env` + EAS env vars (all environments); `SENTRY_AUTH_TOKEN` as an EAS **secret** env var (build-time source-map upload).
-- EAS Update path: after every `eas update`, run `npx @sentry/expo-upload-sourcemaps dist` (baked into the release runbook, F5).
-- Acceptance (DoD 13): a `Sentry.captureException(new Error('p7-test'))` behind a dev-menu tap in a production build shows a **symbolicated** stack for both a store build and an OTA-updated bundle.
+- EAS Update path: after every `eas update`, run `npx sentry-expo-upload-sourcemaps dist` (a bin shipped inside `@sentry/react-native`; baked into the release runbook, F5).
+- **Hidden test-crash trigger** (production builds have no Expo dev menu, and A5 gates `/dev/components` — DoD 13 needs a production-reachable trigger): 7 consecutive taps on the app-version row in `settings/index` call `Sentry.captureException(new Error('p7-test'))` and show a "Test event sent" toast. It ships in the store binary: one handled event, no crash, no visible UI — inert and store-safe.
+- Acceptance (DoD 13): the hidden version-row trigger fired in a production build shows a **symbolicated** stack in Sentry for both a store build and an OTA-updated bundle.
 
 **D5. Startup sanity.** Verify splash hides only after fonts + session resolve (P0/P1 wiring); `npx expo export --platform ios` and inspect bundle size (< 10 MB JS is the expectation; investigate if wildly larger). No further optimization work in v1.
 
@@ -249,7 +251,7 @@ privacyManifests: {
 ```
 (The standard RN/AsyncStorage/Expo set; re-verify reason codes against Apple's current list at execution.) Also in `ios.infoPlist`: `ITSAppUsesNonExemptEncryption: false` (HTTPS-only exemption — kills the export-compliance prompt). Final **purpose-string copy pass** (the E6 table is the single source; paste values here). Acceptance: `npx expo prebuild --clean` → `ios/` contains `PrivacyInfo.xcprivacy` with the four categories; archive validates in EAS build logs.
 
-**E2. App Store privacy nutrition labels** (App Store Connect → App Privacy). Declare exactly (all "linked to identity", none "used for tracking"):
+**E2. App Store privacy nutrition labels** (App Store Connect → App Privacy). Declare exactly (all "linked to identity" **except Diagnostics, declared "not linked"** — see its row; none "used for tracking"):
 
 | Data type | Collected? | Purpose | Notes |
 |---|---|---|---|
@@ -268,7 +270,7 @@ privacyManifests: {
 
 **E4. Reviewer notes + demo video.**
 - `docs/store/reviewer-notes-ios.md` (pasted into App Review notes), covering PLAN.md §6 verbatim requirements: (1) background location = **user-started, bounded run-recording session only** (iOS `UIBackgroundModes: location`; recording stops at FINISH; no passive tracking); (2) **SOS composes an SMS in the OS composer — the user sends it; the app never contacts emergency services and never claims to** (Guideline 1.4.1-adjacent safety claims); (3) live share = tokenized page, 12 h expiry, user-initiated; (4) UGC moderation per 1.2: block + report in-app (point at `user/[id]` overflow), ToS link, safety-team triage; (5) demo account credentials (below); (6) two-account tip: reviewer can see seeded runs in Lisbon region via the demo account. Play version = same content minus 4.8, plus foreground-service rationale.
-- **Demo account**: seed on the hosted project `reviewer@runeverywhere.app` / strong password, onboarded, home city Lisbon, member of one active run with chat history, one completed run with recap/points (mirror `seed.sql` fixtures via SQL editor — hosted has no seed). Email confirmations ON (B4) — pre-confirm this account via the dashboard.
+- **Demo account**: seed on the hosted project `reviewer@runeverywhere.app` / strong password, onboarded, home city Lisbon, member of one active run with chat history, one completed run with recap/points, **plus the invite-visibility run with explicit `invite_code = 'DEVLINK01'`** (hosted twin of P2's Track Repeats fixture, hosted by maya — required by B5 matrix rows 1–4 and Verification step 6, which run on production builds against hosted). Mirror `seed.sql` fixtures via SQL editor — hosted has no seed. Email confirmations ON (B4) — pre-confirm this account via the dashboard.
 - `docs/store/demo-video-script.md` (~90 s, one take per platform, screen-recorded): 1) sign in (demo account) → 2) Explore map, open a run → 3) START RUN → permission prompt (iOS Always / Android notification appears) → 4) lock screen 15 s, show persistent notification / location indicator → 5) unlock, stats advanced → 6) toggle live share + show the browser page on a laptop in frame → 7) press-and-hold SOS → **OS SMS composer opens pre-filled, then CANCEL** (proves compose-only) → 8) FINISH → recap. Upload unlisted (YouTube/Drive) + link in both consoles.
 
 **E5. Guideline 4.8 + account-deletion checklist** (run and record in `privacy-declarations.md`):
@@ -291,7 +293,7 @@ privacyManifests: {
 **E7. Store listings** (`docs/store/listing-copy.md` + assets):
 - Name "Run Everywhere" (check availability in App Store Connect day 1 — fallback "Run Everywhere — Social Running"); subtitle/short description "Find runs near you. Run together."; description drafted from the design readme's voice (confident, no emoji); keywords (running, run club, social, GPS, race, jog, city).
 - Category: Health & Fitness (both). Age rating per E3 questionnaires.
-- Assets: iOS screenshots 6.9" + 6.5" (6–8: Explore map, run detail, chat, live run, recap, rewards — reuse polished A7 captures on device frames), 1024 px icon (exists — verify no alpha); Play: ≥ 4 phone screenshots, 512 px icon, 1024×500 feature graphic (Volt-on-ink wordmark from `uploads/RE logo.svg`).
+- Assets: iOS screenshots 6.9" + 6.5" (6–8: Explore map, run detail, chat, live run, recap, rewards — reuse polished A7 captures on device frames), 1024 px icon (exists — verify no alpha); Play: ≥ 4 phone screenshots, 512 px icon, 1024×500 feature graphic (Volt-on-ink wordmark from `run-everywhere-app-design/project/uploads/RE logo.svg`).
 - Support URL + privacy URL = Netlify site; marketing URL optional.
 
 ### F — Release engineering (EAS Build / Submit / Update)
@@ -322,7 +324,7 @@ privacyManifests: {
 | JS bug fixes, copy/style changes, query/logic fixes, new JS-only screens | Anything touching native modules, config plugins, permissions, `app.config.ts` native keys, Expo SDK upgrades |
 | Empty/error-state copy, a11y label fixes | `expo-updates`/Sentry config changes, icon/splash |
 | — | Any change to the recording task's native option set |
-| Rule: OTA only for fixes, never features, while on the free tier; every OTA followed by `npx @sentry/expo-upload-sourcemaps dist` | Version bump + full store review |
+| Rule: OTA only for fixes, never features, while on the free tier; every OTA followed by `npx sentry-expo-upload-sourcemaps dist` | Version bump + full store review |
 
 **F3. Versioning.** Set `version: '1.0.0'` in `app.config.ts` (from 0.1.0). Build numbers/versionCodes are EAS-remote (`autoIncrement`) — initialize with `eas build:version:set` per platform. Git-tag `v1.0.0` at the submitted commit; subsequent OTAs tag `v1.0.0-ota.N`.
 
@@ -384,13 +386,13 @@ Production builds on devices A (iOS) + B (Android), hosted project, accounts may
 2. **Offline sweep**: sign in, browse Explore/Your Runs/Messages/notifications/profile; airplane mode ON → banner appears < 2 s, all five screens still render cached data; open an unvisited run → `ErrorState` with offline copy; tap JOIN on a cached run → disabled/toast; airplane OFF → banner clears, pull-to-refresh everywhere works.
 3. **Empty sweep** (fresh throwaway account, post-onboarding): Explore with max filters → "NO RUNS MATCH" + CLEAR FILTERS works; Your Runs all tabs, Messages, notifications, blocked, leaderboard (city with no points) — all show the designed empties from A7.
 4. Recording offline: start a run, airplane mode mid-run → recording continues; FINISH offline → "SAVING FAILED — your run is safe on this phone." → reconnect → TRY AGAIN → recap. (P4 salvage path, now exercised via the offline column.)
-5. **Deep-link matrix**: execute all 20 rows of B5 on both devices; check off `docs/store/deeplink-matrix.md`.
+5. **Deep-link matrix**: execute all 21 rows of B5 on both devices; check off `docs/store/deeplink-matrix.md`.
 6. Invite replay: signed-out cold invite link → sign in → run detail (row 3). New-user variant: sign up → onboarding → run detail.
 7. **A11y**: run the five C4 walks (VoiceOver on A, TalkBack on B); verify RatingStars adjusts by swipe, tabs announce selected state, live timer does not spam announcements. Reduce Motion ON → finish a seeded run → recap static; live-share page in Safari with reduced motion → no pulse.
 8. Dynamic type max (C3 settings): screenshot the 10 audit screens — no clipping/overlap.
 9. Units: switch to MI → Explore cards, detail, live console, recap, history all in mi + /mi; switch back.
 10. Perf: 500-run seeded region — pan/zoom Explore, marker cap holds; 200-message chat scrolls clean; airplane-mode avatars render from cache.
-11. Sentry: trigger the hidden test crash on both production builds + once from an OTA-updated `preview` build → three symbolicated events in Sentry.
+11. Sentry: fire the hidden test-crash trigger (7 taps on the `settings/index` version row, D4) on both production builds + once from an OTA-updated `preview` build → three symbolicated events in Sentry.
 12. OTA drill: `eas update --channel preview` a visible copy change → device (preview build) picks it up on second launch; `eas update:republish` the prior group → change reverts.
 13. Store artifacts: IPA privacy manifest present (download build → inspect), Android manifest permission list matches E6, App Privacy + Data Safety forms match `privacy-declarations.md`, reviewer account signs in on a clean install, demo video plays from both consoles.
 14. Betas: Play closed test shows ≥ 12 opted-in testers for ≥ 14 days; pre-launch report clean; TestFlight external build installed by an outside tester.
@@ -420,15 +422,16 @@ Production builds on devices A (iOS) + B (Android), hosted project, accounts may
 - **Offline strategy = in-memory cache only** (`gcTime` 24 h, `networkMode: 'offlineFirst'`, NetInfo-driven `onlineManager`); no disk persistence (`react-query-persist-client`) in v1 — session-scoped offline browsing is enough for a running app and avoids cache-migration bugs.
 - **Mutations never auto-retry** (`retry: 0`): the core RPCs are intentionally non-idempotent from the client's view; users retry via existing inline affordances.
 - **Signed-out deep links are now preserved** (`pendingLink` slot, 30-min TTL) — deliberately reverses P2 Decision #16; one mechanism serves invites and notification cold-starts.
-- **Invite sharing switches to an HTTPS bounce page** on the existing Netlify site (custom schemes aren't tappable in SMS); full universal links / App Links deferred post-v1 (needs owned domain + AASA/assetlinks and re-review).
+- **Invite sharing switches to an HTTPS bounce page** on the existing Netlify site (custom schemes aren't tappable in SMS); codes interpolate cleanly into query string and path segment because P2's `…22` migration made them URL-safe (`[A-Za-z0-9_-]`) — the page inherits that guarantee. Full universal links / App Links deferred post-v1 (needs owned domain + AASA/assetlinks and re-review).
 - **Email confirmations turned ON in production + custom SMTP (Resend free tier)** — closes P1's explicit deferral; reviewer/demo account pre-confirmed via dashboard.
-- **Map pin km-labels stay km** even for `units='mi'` profiles (map-visual system + stored truth); all textual surfaces respect `profiles.units` via `src/lib/format.ts` (closes P4's deferral).
+- **Map pin km-labels stay km** even for `units='mi'` profiles (map-visual system + stored truth); all textual surfaces respect `profiles.units` via P2's `src/lib/format.ts`, which A6 **extends in place** (units-aware signatures, all call sites migrated) rather than forking a second formatting module (closes P4's deferral).
 - **`accessibilityLabel` becomes a required prop on `IconButton`** — the type system, not a checklist, enforces the audit.
 - **Contrast policy**: tokens untouched; `ink400` restricted to large/secondary text, `go` never text-on-light, white-on-Challenge/Social chip text logged as a brand exception (large/bold, redundant with adjacent text). Text-on-Volt measured ≈ 16.7:1 — the directive's AA check passes with headroom.
 - **Dynamic-type caps**: 1.1 on hero metrics, 1.3 on condensed display/buttons, uncapped body — condensed faces clip first; body readability wins.
 - **Reduced motion via reanimated `useReducedMotion()`** for recap/pulses/FAB; press-scale retained; live-share page gets a CSS `prefers-reduced-motion` guard.
 - **Marker guardrail numbers**: ≤ 120 rendered markers, ≤ 200 runs fed to supercluster, `tracksViewChanges` false post-layout — chosen for low-end-Android headroom, tunable in one place.
 - **Sentry**: `@sentry/react-native` with the `@sentry/react-native/expo` config plugin + `getSentryExpoConfig` metro wrapper (verified current 2026-07-04); `enabled: !__DEV__`, `tracesSampleRate 0.2`, PII off, and a `scrubGeo` hook so crash telemetry never carries GPS coordinates.
+- **The Sentry test crash ships in the store binary behind a hidden gesture** (7 taps on the `settings/index` version row, D4): production builds have no Expo dev menu and `/dev/components` is `__DEV__`-gated (A5), so DoD 13 needs a production-reachable trigger — a single handled `captureException` is inert and store-safe.
 - **Privacy declarations**: safety contacts declared as user content, **not** the Contacts category (no address-book access — manual entry per P5); Health & Fitness declared unconditionally (run tracks are fitness data), with Strava/Garmin rows conditional on P6 flags; `NSPrivacyTracking: false`, no ATT.
 - **`ITSAppUsesNonExemptEncryption: false`** — standard HTTPS exemption, removes the export-compliance prompt.
 - **`runtimeVersion: { policy: 'fingerprint' }`** for expo-updates — automatic native-compatibility gating beats manual version discipline for a solo dev.
