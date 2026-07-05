@@ -347,4 +347,5 @@ Setup: hosted project with migrations pushed, all P6 functions deployed, secrets
 - Strava segments/leaderboard data, athlete stats, social graph — never (prohibited uses under the [Strava API policy](https://www.strava.com/legal/api_policy) tiers we hold; imports are shown only to the owning athlete).
 - Store-listing consequences (App Store privacy nutrition labels + privacy manifest entries for HealthKit, review notes, Play data-safety updates) — **P7**, seeded by this phase's purpose strings and scopes.
 - Admin tooling for flags (Studio SQL suffices) and per-user/percentage rollout flags — **P7** if staged rollout needs them.
+- Pro entitlement gating of Strava/Garmin connect (HealthKit stays free) — **P6.5**, layered on this phase's flags: flags stay the kill switch, the entitlement is the paywall. Build `strava-connect`/`garmin-connect` ungated here; P6.5 adds the `is_pro` check.
 - Garmin production-key review follow-through if it slips past week 19 — tracked in `docs/integrations/applications.md`, executed whenever it lands (G is self-contained).

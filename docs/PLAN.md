@@ -23,6 +23,7 @@ Guiding constraint: **one person maintains this.** Every choice below favors pro
 | Push | expo-notifications + Expo Push Service | ~56.0.19 | Free; one API for FCM v1 + APNs ([docs](https://docs.expo.dev/push-notifications/sending-notifications/)). Direct FCM/APNs possible later without client changes. |
 | Auth providers | Supabase email/password + `expo-apple-authentication` + `@react-native-google-signin/google-signin` ^16 | — | Sign in with Apple is mandatory when offering Google login (App Store Guideline 4.8). |
 | Utilities | @gorhom/bottom-sheet ^5 · @react-native-community/datetimepicker · zod ^3 · @mapbox/polyline ^1 · date-fns ^4 · lucide-react-native (design's icon spec) · expo-image · Sentry (free tier) | — | All proven. Native modules are added with `npx expo install` in the phase that needs them. |
+| Payments | RevenueCat (react-native-purchases) | ^10.4 | "RE Pro" subscription (P6.5): receipt validation, entitlements, webhooks handled as a service; free ≤ $2.5k monthly tracked revenue, then 1% ([pricing](https://www.revenuecat.com/pricing/)). |
 | Fonts | Saira + Saira Condensed, static TTFs bundled in `assets/fonts/` | — | Design readme requires local bundling in production (no Google Fonts CDN at runtime). |
 | Build/deploy | EAS Build/Submit/Update — free tier: 15+15 builds/mo, OTA ≤1k MAU ([plans](https://docs.expo.dev/billing/plans/)) | — | CI (GitHub Actions): typecheck + lint + `supabase db lint`. |
 
@@ -50,11 +51,11 @@ Key mechanisms:
 
 Migration `0001_core.sql` (shipped in this scaffold): enums, `profiles` (auth-trigger-created; bands, languages, units, visibility, cached points/level/rating), `runs` (host, type, status, visibility, invite_code, `start_point`, area/city, distance 1–42 km, max_group 2–30, target pace, `starts_at`, closed_loop, points_reward), `run_members` (state machine + intro message), `favorites`, RPCs `join_run` / `respond_to_join_request` / `get_run_by_invite` / `runs_within_radius` / `compute_points_reward`.
 
-Later migrations add: **P3** `conversations`, `conversation_members`, `messages`, `notifications`, `push_tokens` (+ broadcast trigger) · **P4** `run_tracks`, `reviews` (stars 1–5, tags[], note ≤200, `UNIQUE(run_id, reviewer_id, reviewee_id)`), `points_ledger`, `levels` · **P5** `badges`/`user_badges`, `leaderboard_weekly` view (ISO week × city), `safety_contacts` (≤5 trusted + 1 emergency), `live_share_sessions`/`live_locations`, `blocks`, `reports` · **P6** `connected_accounts` (OAuth tokens in Supabase Vault).
+Later migrations add: **P3** `conversations`, `conversation_members`, `messages`, `notifications`, `push_tokens` (+ broadcast trigger) · **P4** `run_tracks`, `reviews` (stars 1–5, tags[], note ≤200, `UNIQUE(run_id, reviewer_id, reviewee_id)`), `points_ledger`, `levels` · **P5** `badges`/`user_badges`, `leaderboard_weekly` view (ISO week × city), `safety_contacts` (≤5 trusted + 1 emergency), `live_share_sessions`/`live_locations`, `blocks`, `reports` · **P6** `connected_accounts` (OAuth tokens in Supabase Vault) · **P6.5** `profiles.pro_until` + flair columns, `revenuecat_events` (webhook mirror of the RevenueCat `pro` entitlement).
 
 ## 4. App structure
 
-Routes (in `src/app/`, template-canonical): `(auth)/` welcome, sign-in/up, forgot-password, `onboarding/` (4 steps) · `(tabs)/` index=Explore, runs, messages, profile — custom TabBar with the center Volt Create FAB · `create/` modal stack (type → location → details → review) · `run/[id]/` (+ request modal, manage, requests, roster) · `live/[runId]` · `recap/[trackId]` · `review/[runId]` · `chat/[conversationId]` · `user/[id]` · `explore/search|filters` · `notifications` · `settings/*` · `invite/[code]` deep link.
+Routes (in `src/app/`, template-canonical): `(auth)/` welcome, sign-in/up, forgot-password, `onboarding/` (4 steps) · `(tabs)/` index=Explore, runs, messages, profile — custom TabBar with the center Volt Create FAB · `create/` modal stack (type → location → details → review) · `run/[id]/` (+ request modal, manage, requests, roster) · `live/[runId]` · `recap/[trackId]` · `review/[runId]` · `chat/[conversationId]` · `user/[id]` · `explore/search|filters` · `notifications` · `paywall` modal (P6.5) · `settings/*` · `invite/[code]` deep link.
 
 Design-system port: tokens in `src/theme/theme.ts` (1:1 from `project/tokens/*.css`); components port their `.d.ts` contracts directly — shipped in scaffold: `Button` (5 variants), `TypeChip`, `RunCard`, `TabBar`; remaining: `IconButton`, `Input`, `Tabs`, `Badge`, `Avatar`, `RatingStars`, `StatBlock`, `MapPin` (custom Marker child), `RouteMarker`. Gallery at `/dev/components`.
 
@@ -71,7 +72,8 @@ Each phase has a detailed, executable implementation plan in [`docs/phases/`](ph
 | [**P4 Live run + points + reviews**](phases/P4-live-run-points-reviews.md) | 10–13 | Background GPS recording (iOS `UIBackgroundModes: location`, Android foreground service), smoothing + D+, live trace/stats, `complete_run` + ledger, animated recap, rate-the-crew, history | Real outdoor run with screen locked; points idempotent; rating aggregates update |
 | [**P5 Gamification + profile + safety**](phases/P5-gamification-profile-safety.md) | 14–16 | Levels/badges/leaderboard, full profiles, report/block, settings, trusted contacts + live-share page + SOS (compose-SMS only) | Leaderboard across week boundary; blocked user disappears everywhere; share URL works in a plain browser |
 | [**P6 Integrations**](phases/P6-integrations.md) | 17–19 | HealthKit first (no external approval), then Strava + Garmin behind feature flags | Recorded run appears in Apple Health; Strava import for test athlete |
-| [**P7 Hardening + stores**](phases/P7-hardening-stores.md) | 20–22 | Empty/error/offline states, deep-link QA, accessibility, privacy manifests, review notes + demo video, EAS Submit, staged rollout | App Store + Play submissions accepted |
+| [**P6.5 Monetization**](phases/P6.5-monetization-revenuecat.md) | 20–21 | "RE Pro" subscription (RevenueCat, monthly + annual): paywall, entitlement webhook → `pro_until`, Pro gates on Strava/Garmin, history depth + GPX export, profile flair. Core loop + safety stay free | Sandbox purchase unlocks Pro on both platforms; expiry re-locks; restore works after reinstall |
+| [**P7 Hardening + stores**](phases/P7-hardening-stores.md) | 22–24 | Empty/error/offline states, deep-link QA, accessibility, privacy manifests, review notes + demo video, EAS Submit, staged rollout | App Store + Play submissions accepted |
 
 ## 6. Risks & mitigations
 
@@ -83,9 +85,10 @@ Each phase has a detailed, executable implementation plan in [`docs/phases/`](ph
 | Garmin production-key review lead time | Apply in P1; same feature-flag pattern |
 | Map vendor/pricing change | Google mobile SDK currently $0 unlimited; single MapView wrapper isolates a MapLibre swap; avoid paid Places API (DB search + native geocoder) |
 | Supabase Realtime quotas (200 free / 500 Pro concurrent) | Broadcast-from-DB pattern; subscribe only to the visible conversation + live run |
+| iOS subscription review (Guideline 3.1.2) | Paywall carries price/term/auto-renew disclosures + ToS/privacy links + restore button; safety features and the core loop are never paywalled; `monetization` feature flag fails open so review trouble can't brick features |
 | Solo burnout | Demoable app every 2–3 weeks; integrations last; zero self-managed servers |
 
 ## 7. Costs (monthly)
 
-- **0–1k MAU:** Supabase Free→Pro $0–25, EAS free, Google Maps $0, Expo Push $0, Sentry free, Apple Developer ~$8 amortized → **≈ $10–35/mo**
-- **10k MAU:** Supabase Pro + usage ≈ $50–90, EAS Starter $19 → **≈ $80–150/mo** (EAS Production $199 only if full-fleet OTA matters)
+- **0–1k MAU:** Supabase Free→Pro $0–25, EAS free, Google Maps $0, Expo Push $0, Sentry free, RevenueCat $0 (≤ $2.5k MTR), Apple Developer ~$8 amortized → **≈ $10–35/mo**
+- **10k MAU:** Supabase Pro + usage ≈ $50–90, EAS Starter $19, RevenueCat 1% of gross subscription revenue past $2.5k MTR → **≈ $80–150/mo + 1% of MTR** (EAS Production $199 only if full-fleet OTA matters)

@@ -1,14 +1,14 @@
-# P7 — Hardening + Stores (Weeks 20–22)
+# P7 — Hardening + Stores (Weeks 22–24)
 
 | | |
 |---|---|
-| **Depends on** | P1 (auth + deep-link reset flow, legal pages on Netlify, `docs/integrations/applications.md`) · P2 (all core-loop routes, `AppMap` wrapper, `qk` query-key schema, invite links) · P3 (notifications pipeline + Android channels + `deepLinkFor` map in `send-push`) · P4 (recording, recap animations, `field-tests.md` protocol, mi-units deferral) · P5 (settings suite incl. `delete-account`, blocks/reports, live-share page, SOS copy) · P6 (HealthKit + Strava/Garmin flags, `connected_accounts` — adjusts privacy declarations; see Preconditions) |
+| **Depends on** | P1 (auth + deep-link reset flow, legal pages on Netlify, `docs/integrations/applications.md`) · P2 (all core-loop routes, `AppMap` wrapper, `qk` query-key schema, invite links) · P3 (notifications pipeline + Android channels + `deepLinkFor` map in `send-push`) · P4 (recording, recap animations, `field-tests.md` protocol, mi-units deferral) · P5 (settings suite incl. `delete-account`, blocks/reports, live-share page, SOS copy) · P6 (HealthKit + Strava/Garmin flags, `connected_accounts` — adjusts privacy declarations; see Preconditions) · P6.5 (RE Pro subscription live in sandbox, `paywall` + `settings/subscription` routes, store products created, `docs/store/` IAP handoff — consumed by E8/H) |
 | **Provides to later phases** | Shipped v1.0.0 in both stores; `EmptyState`/`ErrorState`/`OfflineBanner` components; offline-aware `queryClient`; Sentry crash reporting + source maps; EAS Update channels + OTA policy; release/rollback runbook (`docs/release-runbook.md`); store metadata + reviewer-notes source files under `docs/store/` |
 | **Verify gate ([PLAN.md §5](../PLAN.md))** | "App Store + Play submissions accepted" |
 
 ## Goal
 
-Turn the feature-complete app into a shippable product: a systematic empty/error/offline pass over every route, a deep-link and accessibility QA matrix, performance guardrails, Sentry crash reporting with source maps, and full store compliance (iOS privacy manifest + nutrition labels, Play Data Safety + foreground-service declaration, background-location reviewer notes + demo video, Guideline 4.8/5.1.1(v)). Week 20 is audit + fixes, week 21 is store prep + external betas, week 22 is submission with the whole week reserved for the rejection/resubmission loop. No new product features; the only new components are the shared Empty/Error state pair and the offline banner.
+Turn the feature-complete app into a shippable product: a systematic empty/error/offline pass over every route, a deep-link and accessibility QA matrix, performance guardrails, Sentry crash reporting with source maps, and full store compliance (iOS privacy manifest + nutrition labels, Play Data Safety + foreground-service declaration, background-location reviewer notes + demo video, Guideline 4.8/5.1.1(v)). Week 22 is audit + fixes, week 23 is store prep + external betas, week 24 is submission with the whole week reserved for the rejection/resubmission loop. No new product features; the only new components are the shared Empty/Error state pair and the offline banner.
 
 ## Definition of done
 
@@ -43,7 +43,7 @@ Turn the feature-complete app into a shippable product: a systematic empty/error
 | P6 verify gate passed, or P6 features flagged OFF for launch | Recorded run appears in Apple Health; Strava import works for a test athlete — or both flags off. Either way read `docs/phases/P6-*.md` + `supabase/migrations/0000000000006*.sql` and audit: the connected-apps settings route name, HealthKit purpose strings, `connected_accounts` columns. **Privacy declarations E2/E3 have conditional Health rows — pick per what actually ships** |
 | Migrations ≤ `0000000000006x` local == hosted | `supabase migration list` |
 | Apple Developer Program active; App Store Connect access | developer.apple.com → Membership (P1 precondition) |
-| **Google Play Console account exists and identity-verified — created as early as possible** | play.google.com/console. If it is a *personal* account created after 2023-11-13, production access requires a closed test with **≥ 12 opted-in testers for 14 consecutive days** ([Play policy](https://support.google.com/googleplay/android-developer/answer/14151465)) — the closed test must START on week-20 day 1 (Workstream G1) or the week-22 submission slips |
+| **Google Play Console account exists and identity-verified — created as early as possible** | play.google.com/console. If it is a *personal* account created after 2023-11-13, production access requires a closed test with **≥ 12 opted-in testers for 14 consecutive days** ([Play policy](https://support.google.com/googleplay/android-developer/answer/14151465)) — the closed test must START on week-22 day 1 (Workstream G1) or the week-24 submission slips |
 | 12+ Android testers recruited (friends/run club) with opt-in emails collected | List in `docs/store/beta-testers.md` (emails only, gitignored if preferred) |
 | Sentry account (free tier) with org + project `runeverywhere` created | sentry.io → copy DSN, org slug, project slug |
 | EAS project linked, paid-tier not required | `app.config.ts` `extra.eas.projectId` non-empty; `eas build:list` works |
@@ -53,7 +53,7 @@ Turn the feature-complete app into a shippable product: a systematic empty/error
 
 ## Workstreams
 
-Week 20 = A–D (audit + fixes). Week 21 = E–G (store prep + betas). Week 22 = H–I (submit + reserve).
+Week 22 = A–D (audit + fixes). Week 23 = E–G (store prep + betas). Week 24 = H–I (submit + reserve).
 
 ### A — Empty / error / offline systematization
 
@@ -296,6 +296,8 @@ privacyManifests: {
 - Assets: iOS screenshots 6.9" + 6.5" (6–8: Explore map, run detail, chat, live run, recap, rewards — reuse polished A7 captures on device frames), 1024 px icon (exists — verify no alpha); Play: ≥ 4 phone screenshots, 512 px icon, 1024×500 feature graphic (Volt-on-ink wordmark from `run-everywhere-app-design/project/uploads/RE logo.svg`).
 - Support URL + privacy URL = Netlify site; marketing URL optional.
 
+**E8. Subscription review readiness (P6.5 handoff).** Consume P6.5 G3's `docs/store/` inputs: attach `re_pro_monthly` + `re_pro_annual` to the **first** iOS version submission (subscriptions in review must ride an app version); paste the paywall screenshot into each product's review field; App Privacy gains "Purchases" (purchase history, linked to identity, not tracking — RevenueCat); reviewer notes (E4) gain the IAP paragraph (where the paywall lives, RESTORE PURCHASES location, statement that safety features and the core loop are free); Play: confirm the `re_pro` base plans are active and listed in the Data Safety "financial info → purchase history" answer. Acceptance: App Store Connect shows both products "Waiting for Review" bundled with the version; a fresh reviewer path welcome → paywall → restore is documented in `reviewer-notes-ios.md`.
+
 ### F — Release engineering (EAS Build / Submit / Update)
 
 **F1. `eas.json` — final shape** (extends what exists: `cli.appVersionSource: "remote"`, three profiles, `production.autoIncrement: true` are already there; P1 added `environment` fields — verify):
@@ -315,7 +317,7 @@ privacyManifests: {
   }
 }
 ```
-`play-service-account.json` (Play Console → API access → service account key) is **gitignored**; add the path to `.gitignore` now. First Android submission must be a manual AAB upload in the console (Google requires it before API submissions) — do this with the week-20 closed-test build (G1).
+`play-service-account.json` (Play Console → API access → service account key) is **gitignored**; add the path to `.gitignore` now. First Android submission must be a manual AAB upload in the console (Google requires it before API submissions) — do this with the week-22 closed-test build (G1).
 
 **F2. EAS Update (OTA).** Installed in A1. `eas update:configure` → adds `updates.url = https://u.expo.dev/<projectId>` and set `runtimeVersion: { policy: 'fingerprint' }` in `app.config.ts` (fingerprint auto-invalidates OTA compatibility whenever native config/deps change — safest for a solo dev). Channels map 1:1 to build profiles (`preview`, `production`). **OTA policy** (write into `docs/release-runbook.md`; PLAN.md §1 free tier ≤ 1k MAU):
 
@@ -332,15 +334,15 @@ privacyManifests: {
 
 **F5. `docs/release-runbook.md`** — one page, exact commands: production build (`eas build --profile production --platform all`), submit (`eas submit --platform ios|android --profile production`), OTA (`eas update --channel production --message "..."` + Sentry source-map upload), **rollback**: OTA → `eas update:republish --channel production --group <previous-group-id>` (drill this on `preview` — DoD 18); Android binary → halt staged rollout in console, roll a fixed build; iOS → pause phased release (existing users keep old version), submit a fix (expedited review request only for crashers); DB → migrations are forward-only, never rolled back by OTA — incompatible schema changes require a store-build gate (note prominently).
 
-### G — Betas + pre-launch (week 21, Play clock starts week 20)
+### G — Betas + pre-launch (week 23, Play clock starts week 22)
 
-**G1. Play closed test — START DAY 1 OF WEEK 20** (the 14-day clock gates production access for post-2023 personal accounts — see Preconditions). `eas build --profile production --platform android` → manual AAB upload to the **closed** track → invite the 12+ tester list → confirm ≥ 12 opted in (console shows the count) → keep them opted in continuously through submission. Ship week-20 fixes to this track as new AABs (does not reset the clock; tester opt-in continuity is what counts). Review the **pre-launch report** on each upload: fix all crashes/ANRs; triage accessibility + security warnings into A/C fixes.
+**G1. Play closed test — START DAY 1 OF WEEK 22** (the 14-day clock gates production access for post-2023 personal accounts — see Preconditions). `eas build --profile production --platform android` → manual AAB upload to the **closed** track → invite the 12+ tester list → confirm ≥ 12 opted in (console shows the count) → keep them opted in continuously through submission. Ship week-22 fixes to this track as new AABs (does not reset the clock; tester opt-in continuity is what counts). Review the **pre-launch report** on each upload: fix all crashes/ANRs; triage accessibility + security warnings into A/C fixes.
 
 **G2. TestFlight.** Production-profile iOS build → TestFlight internal (immediate) → **external** group (≥ 10 testers) — external requires **Beta App Review**: attach the E4 notes early; a beta rejection here is a cheap dress rehearsal for App Review. Collect crash feedback via TestFlight + Sentry.
 
 **G3. Beta exit criteria** (before H1): Sentry crash-free sessions ≥ 99.5 % over the final 3 beta days; no open P0/P1 bugs from `docs/store/qa-screens` audit or tester reports; pre-launch report clean.
 
-### H — Submit + resubmission loop (week 22)
+### H — Submit + resubmission loop (week 24)
 
 **H1. Submit.** Final production builds (both platforms, same commit, tagged `v1.0.0`) → `eas submit` → App Store: submit for review with phased release ON; Play: promote the closed-test build to **production, staged rollout 10 %** (raise 10 → 25 → 50 → 100 % over the following days as Sentry/vitals stay clean — post-phase task).
 
@@ -369,7 +371,7 @@ Each rejection: fix → new build only if binary/config changed (metadata/notes 
 
 ## Data model & security
 
-**No schema changes.** P7 owns migration slots `00000000000070`–`00000000000079`; they are expected to stay empty. If a week-20 audit fix genuinely requires SQL (e.g. a missed RLS hole found during QA), it goes in `supabase/migrations/00000000000070_hardening_fixes.sql` and follows all prior conventions (RLS default-deny, `set search_path = ''`, `supabase db lint` + `npm run db:types` after). Hosted-dashboard changes made this phase (email confirmations ON, custom SMTP, reviewer account) are configuration, not schema — record them in `docs/release-runbook.md`. Client-side hardening never weakens the three-tier rule ([PLAN.md §2](../PLAN.md)): retries/offline caching are read-side only; mutations keep `retry: 0` precisely so no RPC double-fires.
+**No schema changes.** P7 owns migration slots `00000000000070`–`00000000000079`; they are expected to stay empty. If a week-22 audit fix genuinely requires SQL (e.g. a missed RLS hole found during QA), it goes in `supabase/migrations/00000000000070_hardening_fixes.sql` and follows all prior conventions (RLS default-deny, `set search_path = ''`, `supabase db lint` + `npm run db:types` after). Hosted-dashboard changes made this phase (email confirmations ON, custom SMTP, reviewer account) are configuration, not schema — record them in `docs/release-runbook.md`. Client-side hardening never weakens the three-tier rule ([PLAN.md §2](../PLAN.md)): retries/offline caching are read-side only; mutations keep `retry: 0` precisely so no RPC double-fires.
 
 ## Design references
 
@@ -402,9 +404,9 @@ Production builds on devices A (iOS) + B (Android), hosted project, accounts may
 
 | Risk | Mitigation |
 |---|---|
-| iOS review rejects background location / safety claims (PLAN.md §6 top store risk) | Reviewer notes + demo video authored before submission (E4); SOS compose-only proven on video; copy grep in H2; week 22 is 100 % rejection reserve |
-| Play 12-tester/14-day rule discovered late → launch slips past week 22 | Precondition + G1 starts the clock on week-20 day 1; testers recruited before the phase; org accounts are exempt (verify account type first — [policy](https://support.google.com/googleplay/android-developer/answer/14151465)) |
-| "Run Everywhere" name taken in App Store Connect | Check day 1 of week 21 (F4); fallback name in E7 |
+| iOS review rejects background location / safety claims (PLAN.md §6 top store risk) | Reviewer notes + demo video authored before submission (E4); SOS compose-only proven on video; copy grep in H2; week 24 is 100 % rejection reserve |
+| Play 12-tester/14-day rule discovered late → launch slips past week 24 | Precondition + G1 starts the clock on week-22 day 1; testers recruited before the phase; org accounts are exempt (verify account type first — [policy](https://support.google.com/googleplay/android-developer/answer/14151465)) |
+| "Run Everywhere" name taken in App Store Connect | Check day 1 of week 23 (F4); fallback name in E7 |
 | Sentry plugin / privacy-manifest / expo-updates option names drift (docs verified 2026-07-04 via web, but APIs move) | D4/E1/F2 each carry a re-verify-at-execution note; `npx expo prebuild --clean` output + EAS build logs are ground truth; sources: [Expo Sentry guide](https://docs.expo.dev/guides/using-sentry/), [Sentry Expo source maps](https://docs.sentry.io/platforms/react-native/sourcemaps/uploading/expo/), [Expo apple-privacy](https://docs.expo.dev/guides/apple-privacy/) |
 | Aggregated third-party privacy manifests miss a required-reason API → ITMS-91053 email post-submission | App-level declarations in E1 cover the standard categories; treat any ITMS warning email as an H2 metadata fix (add the category, rebuild) |
 | Required `accessibilityLabel` on IconButton breaks many call sites at once | It's a compile-time sweep (~25 sites), done in one sitting; typecheck is the checklist |
@@ -449,5 +451,5 @@ Production builds on devices A (iOS) + B (Android), hosted project, accounts may
 - iOS Live Activities, Android widget, app-icon badge counts, push digests/rate limiting — P5/P3 deferrals stay deferred (post-v1 backlog).
 - Message reactions/edit/delete, typing indicators, server-side conversation search — P3 deferrals, post-v1.
 - Leaderboard city-alias normalization, solo free-run recording, km splits, auto-pause, barometric D+ — P4/P5 deferrals, post-v1.
-- In-app purchase/monetization, tablet/iPad layouts (`supportsTablet: false`), web app build — not planned for v1.
+- Tablet/iPad layouts (`supportsTablet: false`), web app build — not planned for v1. (Monetization ships pre-launch in **P6.5**; this phase only submits it — E8.)
 - Marketing site beyond the Netlify utility pages, ASO iteration, post-launch staged-rollout ramp to 100 % — operational follow-up after the phase gate (submissions accepted).

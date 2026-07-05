@@ -369,5 +369,6 @@ Setup: devices A (maya) and B (marco), fresh A3 dev builds, hosted project with 
 - Co-runner live dots, "3 running" presence, live-share pages, SOS, `live_share_sessions`/`live_locations` → **P5** (the Reward Loop live screen's runner dots are P5 polish).
 - Badges (`badges`/`user_badges`, recap BADGES button, "VIEW BADGES"), weekly leaderboard, full profile stats (KM/RUNS/D+ totals, "Other runners say" review display), broadening `reviews` RLS for public profiles → **P5**.
 - HealthKit/Strava/Garmin export of `run_tracks` → **P6**.
+- Pro gating of history depth + GPX export → **P6.5** (build history and `list_past_runs()` ungated here; P6.5 replaces the RPC with a free-tier limit and builds the export on this phase's raw-sample archive).
 - Solo free-run recording without an associated run row; km splits/laps; auto-pause; audio cues; barometric altitude; track re-processing from raw samples; recap screenshot-image sharing; mi units display; review editing → **P7 or backlog**.
 - Play Store background-location/foreground-service data-safety declarations, iOS background-location review notes + demo video → **P7** (seeded by this phase's A1 posture).
