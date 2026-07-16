@@ -339,6 +339,7 @@ Setup: fresh `supabase db reset`; hosted project pushed + both Edge Functions de
 ## Out of scope
 
 - Connected apps rows + `connected_accounts`, HealthKit/Strava/Garmin — **P6**.
+- `settings/subscription` hub row, `paywall`, and Pro flair (accent/ring columns + PRO chip on profiles) — **P6.5**; build `settings/index` and `edit-profile` without them here.
 - Admin/moderation tooling for `reports` (status workflow, safety dashboards) — post-v1; Studio triage until then.
 - Run favorites UI (detail heart, favorites list) — cut from v1 by this plan (Decisions); the core `favorites` table ships dormant.
 - Leaderboard city-alias table / fuzzy normalization, all-time or friends leaderboards — **P7+** if metrics demand.
