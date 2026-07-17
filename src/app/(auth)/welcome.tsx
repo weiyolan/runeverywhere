@@ -1,4 +1,5 @@
 import { router } from 'expo-router';
+import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, Text, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
@@ -12,6 +13,8 @@ export default function WelcomeScreen() {
 
   return (
     <View style={[styles.screen, { paddingTop: insets.top + spacing.sp12, paddingBottom: insets.bottom + spacing.sp6 }]}>
+      {/* Root layout sets `dark`, illegible on the ink-900 hero */}
+      <StatusBar style="light" />
       <View style={styles.hero}>
         <Text style={styles.badge}>SOCIAL RUNNING</Text>
         <Text style={styles.headline}>Run with anyone, anywhere</Text>
