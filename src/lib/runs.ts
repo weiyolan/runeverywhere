@@ -297,6 +297,12 @@ export async function cancelRun(id: string): Promise<RunRow> {
   );
 }
 
+/** Resolve an invite code to its run (invite/[code] deep link, P2 I4). */
+export async function fetchRunByInvite(code: string): Promise<RunRow | null> {
+  const rows = unwrap(await supabase.rpc('get_run_by_invite', { p_code: code }));
+  return rows[0] ?? null;
+}
+
 /** Server-authoritative points preview (Decisions #12 — never client-computed). */
 export async function fetchPointsPreview(distanceKm: number, type: RunRow['type']): Promise<number> {
   return unwrap(
