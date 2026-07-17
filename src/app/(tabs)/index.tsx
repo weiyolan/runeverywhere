@@ -56,9 +56,11 @@ export default function ExploreScreen() {
         />
       </View>
 
-      <Link href="/dev/components" style={styles.devLink}>
-        <Text style={textStyles.caption}>Open component gallery →</Text>
-      </Link>
+      {__DEV__ ? (
+        <Link href="/dev/components" style={styles.devLink}>
+          <Text style={textStyles.caption}>Open component gallery →</Text>
+        </Link>
+      ) : null}
     </ScrollView>
   );
 }

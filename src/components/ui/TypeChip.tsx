@@ -11,9 +11,11 @@ export interface TypeChipProps {
   /** solid = type color fill; soft = tinted background, type-colored text. */
   chipStyle?: 'solid' | 'soft';
   size?: 'sm' | 'md';
+  /** Override label text (rarely needed); colors still come from `type`. */
+  custom?: string;
 }
 
-export function TypeChip({ type, chipStyle = 'solid', size = 'md' }: TypeChipProps) {
+export function TypeChip({ type, chipStyle = 'solid', size = 'md', custom }: TypeChipProps) {
   const t = runType[type];
   const solid = chipStyle === 'solid';
   const fontSize = size === 'sm' ? 10 : 12;
@@ -35,7 +37,7 @@ export function TypeChip({ type, chipStyle = 'solid', size = 'md' }: TypeChipPro
           letterSpacing: letterSpacing(fontSize, tracking.label),
         }}
       >
-        {t.label}
+        {custom ?? t.label}
       </Text>
     </View>
   );

@@ -3,25 +3,51 @@
 -- NOTE: level/badge *tables* land with the Phase 4/5 migrations; this seed
 -- only creates auth users, profiles and runs that exist in migration 0001.
 
--- Two demo users (password: "password123" — local dev only)
+-- Two demo users (password: "password123" — local dev only).
+-- GoTrue's varchar token columns are set to '' (not NULL) and each user gets
+-- a matching auth.identities row — direct auth.users inserts without either
+-- break the password grant on recent GoTrue versions.
 insert into auth.users (
   id, instance_id, aud, role, email, encrypted_password,
-  email_confirmed_at, raw_app_meta_data, raw_user_meta_data, created_at, updated_at
+  email_confirmed_at, raw_app_meta_data, raw_user_meta_data, created_at, updated_at,
+  confirmation_token, recovery_token, email_change,
+  email_change_token_new, email_change_token_current
 )
 values
   (
     '00000000-0000-4000-8000-000000000001', '00000000-0000-0000-0000-000000000000',
     'authenticated', 'authenticated', 'maya@example.com',
     extensions.crypt ('password123', extensions.gen_salt ('bf')),
-    now(), '{"provider":"email","providers":["email"]}', '{"display_name":"Maya Lawson"}', now(), now()
+    now(), '{"provider":"email","providers":["email"]}', '{"display_name":"Maya Lawson"}', now(), now(),
+    '', '', '', '', ''
   ),
   (
     '00000000-0000-4000-8000-000000000002', '00000000-0000-0000-0000-000000000000',
     'authenticated', 'authenticated', 'marco@example.com',
     extensions.crypt ('password123', extensions.gen_salt ('bf')),
-    now(), '{"provider":"email","providers":["email"]}', '{"display_name":"Marco R."}', now(), now()
+    now(), '{"provider":"email","providers":["email"]}', '{"display_name":"Marco R."}', now(), now(),
+    '', '', '', '', ''
   )
 on conflict (id) do nothing;
+
+insert into auth.identities (
+  id, user_id, provider_id, provider, identity_data,
+  last_sign_in_at, created_at, updated_at
+)
+values
+  (
+    '00000000-0000-4000-8000-000000000001', '00000000-0000-4000-8000-000000000001',
+    '00000000-0000-4000-8000-000000000001', 'email',
+    '{"sub":"00000000-0000-4000-8000-000000000001","email":"maya@example.com","email_verified":true}',
+    now(), now(), now()
+  ),
+  (
+    '00000000-0000-4000-8000-000000000002', '00000000-0000-4000-8000-000000000002',
+    '00000000-0000-4000-8000-000000000002', 'email',
+    '{"sub":"00000000-0000-4000-8000-000000000002","email":"marco@example.com","email_verified":true}',
+    now(), now(), now()
+  )
+on conflict (provider_id, provider) do nothing;
 
 update public.profiles
 set home_city = 'Lisbon',
