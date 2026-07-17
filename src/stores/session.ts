@@ -2,43 +2,64 @@ import type { Session } from '@supabase/supabase-js';
 import { create } from 'zustand';
 
 import { supabase } from '@/lib/supabase';
+import type { Database } from '@/types/database.types';
 
 type SessionStatus = 'loading' | 'signedOut' | 'signedIn';
+export type Profile = Database['public']['Tables']['profiles']['Row'];
 
 interface SessionState {
   status: SessionStatus;
   session: Session | null;
-  /** Subscribe to Supabase auth state; resolves to signedOut when unconfigured. */
+  /** Own profile row; null until fetched (or when signed out / dev bypass). */
+  profile: Profile | null;
+  profileStatus: 'idle' | 'loading' | 'ready' | 'error';
+  /** Subscribe to Supabase auth state. */
   init: () => void;
+  /** Refetch own profile (onboarding writes call this explicitly). */
+  refreshProfile: () => Promise<void>;
   /**
    * Scaffold-only escape hatch so the app is navigable before Phase 1 wires
-   * real auth. Remove when sign-in screens talk to Supabase.
+   * real auth. Remove when sign-in screens talk to Supabase (P1.4).
    */
   devSignIn: () => void;
   signOut: () => Promise<void>;
 }
 
-export const useSession = create<SessionState>((set) => ({
+export const useSession = create<SessionState>((set, get) => ({
   status: 'loading',
   session: null,
+  profile: null,
+  profileStatus: 'idle',
 
   init: () => {
-    if (!supabase) {
-      set({ status: 'signedOut', session: null });
-      return;
-    }
     supabase.auth.getSession().then(({ data }) => {
       set({ session: data.session, status: data.session ? 'signedIn' : 'signedOut' });
+      if (data.session) void get().refreshProfile();
     });
     supabase.auth.onAuthStateChange((_event, session) => {
+      const hadSession = get().session != null;
       set({ session, status: session ? 'signedIn' : 'signedOut' });
+      if (session && !hadSession) void get().refreshProfile();
+      if (!session) set({ profile: null, profileStatus: 'idle' });
     });
+  },
+
+  refreshProfile: async () => {
+    const uid = get().session?.user.id;
+    if (!uid) return;
+    set({ profileStatus: 'loading' });
+    const { data, error } = await supabase.from('profiles').select('*').eq('id', uid).single();
+    if (error) {
+      set({ profileStatus: 'error' });
+      return;
+    }
+    set({ profile: data, profileStatus: 'ready' });
   },
 
   devSignIn: () => set({ status: 'signedIn' }),
 
   signOut: async () => {
-    await supabase?.auth.signOut();
-    set({ session: null, status: 'signedOut' });
+    await supabase.auth.signOut();
+    set({ session: null, status: 'signedOut', profile: null, profileStatus: 'idle' });
   },
 }));
