@@ -45,12 +45,19 @@ describe('toRpcParams', () => {
 
     store.getState().setWhen('weekend');
     p = store.getState().toRpcParams();
-    const from = new Date(p.p_from!);
     const to = new Date(p.p_to!);
-    expect(from.getDay()).toBe(6); // Saturday 00:00
-    expect(from.getHours()).toBe(0);
     expect(to.getDay()).toBe(1); // Sunday 24:00 == Monday 00:00 boundary
-    expect(to.getTime() - from.getTime()).toBe(2 * 86_400_000);
+    expect(to.getHours()).toBe(0);
+    const today = new Date().getDay();
+    if (today === 6 || today === 0) {
+      // Mid-weekend: p_from null → server now() bounds the window
+      expect(p.p_from).toBeNull();
+    } else {
+      const from = new Date(p.p_from!);
+      expect(from.getDay()).toBe(6); // Saturday 00:00
+      expect(from.getHours()).toBe(0);
+      expect(to.getTime() - from.getTime()).toBe(2 * 86_400_000);
+    }
   });
 });
 

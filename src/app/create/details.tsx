@@ -4,6 +4,7 @@
  * checks via detailsStepSchema.
  */
 import DateTimePicker from '@react-native-community/datetimepicker';
+import { format } from 'date-fns';
 import { router } from 'expo-router';
 import { useMemo, useState } from 'react';
 import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
@@ -58,7 +59,7 @@ const sameDay = (a: Date, b: Date) =>
 function dayChipLabel(offset: number, d: Date) {
   if (offset === 0) return 'Today';
   if (offset === 1) return 'Tomorrow';
-  return d.toLocaleDateString('en-US', { weekday: 'short' });
+  return format(d, 'EEE');
 }
 
 export default function CreateDetailsScreen() {
@@ -206,9 +207,7 @@ export default function CreateDetailsScreen() {
           <Chip label="Pick time" selected={false} onPress={() => setPicker('time')} />
         </View>
         {startsAt ? (
-          <Text style={textStyles.caption}>
-            Starts {startsAt.toLocaleString([], { weekday: 'short', day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' })}
-          </Text>
+          <Text style={textStyles.caption}>Starts {format(startsAt, 'EEE d MMM · HH:mm')}</Text>
         ) : null}
         {startsAt && fieldError('starts_at') ? (
           <Text style={styles.error}>{fieldError('starts_at')}</Text>

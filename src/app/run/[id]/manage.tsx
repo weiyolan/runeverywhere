@@ -7,7 +7,7 @@ import { useQuery } from '@tanstack/react-query';
 import { router, useLocalSearchParams } from 'expo-router';
 import { ArrowLeft, ChevronRight } from 'lucide-react-native';
 import { useEffect, useState } from 'react';
-import { Alert, Pressable, ScrollView, Share, StyleSheet, Text, View } from 'react-native';
+import { Alert, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { Chip, Stepper, clamp, round1 } from '@/components/create/FormControls';
@@ -19,7 +19,8 @@ import { formatKm, formatPace, formatWhen } from '@/lib/format';
 import { qk } from '@/lib/queryKeys';
 import { useCancelRun, useUpdateRun } from '@/lib/runMutations';
 import { fetchRunDetail, fetchRunMembers } from '@/lib/runs';
-import { detailsStepSchema } from '@/lib/validation/run';
+import { shareRunInvite } from '@/lib/share';
+import { editDetailsSchema } from '@/lib/validation/run';
 import { useSession } from '@/stores/session';
 import type { Database } from '@/types/database.types';
 import {
@@ -111,10 +112,16 @@ export default function ManageRunScreen() {
     starts_at: startsAt,
     closed_loop: closedLoop,
   };
-  const parse = detailsStepSchema.safeParse(draftPatch);
+  const parse = editDetailsSchema.safeParse(draftPatch);
 
   const save = () => {
     if (!parse.success) return;
+    // Lead rule only re-applies when the start time itself moved
+    const startChanged = startsAt.getTime() !== new Date(run.starts_at).getTime();
+    if (startChanged && startsAt.getTime() < Date.now() + 15 * 60 * 1000) {
+      Alert.alert('Too soon', 'A new start time must be at least 15 minutes from now.');
+      return;
+    }
     update.mutate(
       {
         ...parse.data,
@@ -139,10 +146,7 @@ export default function ManageRunScreen() {
       },
     ]);
 
-  const share = () =>
-    Share.share({
-      message: `Join my run “${run.title}” on Run Everywhere → runeverywhere://invite/${run.invite_code}`,
-    });
+  const share = () => shareRunInvite(run);
 
   return (
     <View style={[styles.screen, { paddingTop: insets.top + spacing.sp2 }]}>

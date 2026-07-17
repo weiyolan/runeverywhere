@@ -41,7 +41,7 @@ interface AreaSuggestion {
 
 /** Areas near you, derived client-side from whatever nearby data is cached. */
 function cachedAreaSuggestions(): AreaSuggestion[] {
-  const cached = queryClient.getQueriesData<NearbyRun[]>({ queryKey: ['runs', 'nearby'] });
+  const cached = queryClient.getQueriesData<NearbyRun[]>({ queryKey: qk.runsNearbyAll() });
   const runs = cached.flatMap(([, data]) => data ?? []);
   const byArea = new Map<string, AreaSuggestion>();
   for (const r of runs) {

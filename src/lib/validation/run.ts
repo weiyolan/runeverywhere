@@ -37,6 +37,15 @@ export const detailsStepSchema = z.object({
   closed_loop: z.boolean(),
 });
 
+/**
+ * Host edit (I2): same bounds, but no minimum-lead rule — a host must be able
+ * to fix a typo minutes before the start. The lead rule re-applies only when
+ * the start time itself changes (checked at the call site).
+ */
+export const editDetailsSchema = detailsStepSchema.omit({ starts_at: true }).extend({
+  starts_at: z.date(),
+});
+
 export const publishSchema = locationStepSchema.merge(detailsStepSchema).extend({
   type: z.enum(['discover', 'challenge', 'social']),
   visibility: z.enum(['open', 'approval', 'invite']),

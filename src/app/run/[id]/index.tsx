@@ -3,10 +3,11 @@
  * machine. Exactly one primary action at a time.
  */
 import { useQuery } from '@tanstack/react-query';
+import { format } from 'date-fns';
 import { router, useLocalSearchParams } from 'expo-router';
 import { ArrowLeft, Repeat, Share2, Star } from 'lucide-react-native';
 import { useState } from 'react';
-import { Alert, ScrollView, Share, StyleSheet, Text, View } from 'react-native';
+import { Alert, Pressable, RefreshControl, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { AppMap, AppMarker } from '@/components/map/AppMap';
@@ -22,7 +23,8 @@ import { regionForRadius } from '@/lib/geo';
 import { useRefetchOnFocus } from '@/lib/queryFocus';
 import { qk } from '@/lib/queryKeys';
 import { useCancelJoin, useJoinRun } from '@/lib/runMutations';
-import { fetchRunDetail, fetchRunMembers } from '@/lib/runs';
+import { fetchRunDetail, fetchRunMembers, RunNotFoundError } from '@/lib/runs';
+import { shareRunInvite } from '@/lib/share';
 import { useSession } from '@/stores/session';
 import {
   borderWidth,
@@ -36,8 +38,6 @@ import {
   textStyles,
   typeScale,
 } from '@/theme/theme';
-
-const format2 = (d: Date, opts: Intl.DateTimeFormatOptions) => d.toLocaleString('en-US', opts);
 
 function StatePanel({ tone, title, caption }: { tone: 'go' | 'warn' | 'muted' | 'danger'; title: string; caption?: string }) {
   const bg = { go: colors.goSoft, warn: colors.warnSoft, muted: colors.ink100, danger: colors.dangerSoft }[tone];
@@ -77,10 +77,17 @@ export default function RunDetailScreen() {
   const cancel = useCancelJoin(id);
 
   if (query.isError) {
+    const notFound = query.error instanceof RunNotFoundError;
     return (
       <View style={[styles.stateScreen, { paddingTop: insets.top + spacing.sp12 }]}>
-        <Text style={textStyles.body}>This run is no longer available.</Text>
-        <Button label="Back" variant="secondary" onPress={() => router.back()} />
+        <Text style={textStyles.body}>
+          {notFound ? 'This run is no longer available.' : 'Couldn\u2019t load this run.'}
+        </Text>
+        {notFound ? (
+          <Button label="Back" variant="secondary" onPress={() => router.back()} />
+        ) : (
+          <Button label="Retry" variant="secondary" onPress={() => query.refetch()} />
+        )}
       </View>
     );
   }
@@ -105,10 +112,7 @@ export default function RunDetailScreen() {
   const pendingCount = members.filter((m) => m.status === 'pending').length;
   const canShare = isHost || isApproved;
 
-  const share = () =>
-    Share.share({
-      message: `Join my run “${run.title}” on Run Everywhere → runeverywhere://invite/${run.invite_code}`,
-    });
+  const share = () => shareRunInvite(run);
 
   const joinDirectly = () =>
     join.mutate('', {
@@ -133,11 +137,9 @@ export default function RunDetailScreen() {
             <Button label="Manage run" variant="secondary" full onPress={() => router.push(`/run/${id}/manage`)} />
           </View>
           {pendingCount > 0 ? (
-            <Button
-              label={`${pendingCount} requests`}
-              variant="ghost"
-              onPress={() => router.push(`/run/${id}/requests`)}
-            />
+            <Pressable accessibilityRole="button" onPress={() => router.push(`/run/${id}/requests`)}>
+              <Badge tone="warn">{pendingCount} requests</Badge>
+            </Pressable>
           ) : null}
         </View>
       );
@@ -173,7 +175,7 @@ export default function RunDetailScreen() {
           <Button label="Full" full disabled />
         </View>
       );
-    if (run.visibility === 'approval' && !code)
+    if (run.visibility === 'approval')
       return (
         <View style={styles.footerStack}>
           {declinedCaption}
@@ -195,7 +197,12 @@ export default function RunDetailScreen() {
 
   return (
     <View style={styles.screen}>
-      <ScrollView contentContainerStyle={{ paddingBottom: 140 + insets.bottom }}>
+      <ScrollView
+        contentContainerStyle={{ paddingBottom: 140 + insets.bottom }}
+        refreshControl={
+          <RefreshControl refreshing={query.isRefetching} onRefresh={() => query.refetch()} />
+        }
+      >
         <View style={styles.mapHeader}>
           <AppMap
             style={StyleSheet.absoluteFill}
@@ -251,13 +258,8 @@ export default function RunDetailScreen() {
                 align="left"
               />
             ) : null}
-            <StatBlock value={format2(starts, { weekday: 'short' })} label="Day" size="sm" align="left" />
-            <StatBlock
-              value={format2(starts, { hour: '2-digit', minute: '2-digit', hour12: false })}
-              label="Time"
-              size="sm"
-              align="left"
-            />
+            <StatBlock value={format(starts, 'EEE')} label="Day" size="sm" align="left" />
+            <StatBlock value={format(starts, 'HH:mm')} label="Time" size="sm" align="left" />
           </View>
 
           <Badge tone="volt" solid>+{run.points_reward} PTS</Badge>

@@ -3,7 +3,7 @@
  * params; sort is client-side only and never part of the query key.
  * Survives the explore/filters route round-trip.
  */
-import { addDays, endOfDay, nextSaturday, startOfDay } from 'date-fns';
+import { addDays, endOfDay, nextSaturday, startOfDay, subDays } from 'date-fns';
 import { create } from 'zustand';
 
 import type { RunType } from '@/theme/theme';
@@ -56,9 +56,15 @@ function whenWindow(when: ExploreWhen): { from: string | null; to: string | null
     case 'week':
       return { from: null, to: endOfDay(addDays(now, 7)).toISOString() };
     case 'weekend': {
-      // This weekend while it lasts (Sat counts), else the coming one.
-      const sat = startOfDay(now.getDay() === 6 ? now : nextSaturday(now));
-      return { from: sat.toISOString(), to: addDays(sat, 2).toISOString() };
+      // This weekend while it lasts (Sat/Sun count), else the coming one.
+      // Mid-weekend, p_from stays null (server now()) so already-started
+      // runs never surface and the key stays stable.
+      const day = now.getDay();
+      const sat = startOfDay(day === 6 ? now : day === 0 ? subDays(now, 1) : nextSaturday(now));
+      return {
+        from: day === 6 || day === 0 ? null : sat.toISOString(),
+        to: addDays(sat, 2).toISOString(),
+      };
     }
     default:
       return { from: null, to: null };

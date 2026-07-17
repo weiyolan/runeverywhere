@@ -6,7 +6,7 @@ import BottomSheet, { BottomSheetView } from '@gorhom/bottom-sheet';
 import { useQuery } from '@tanstack/react-query';
 import { Link, router } from 'expo-router';
 import { Search, SlidersHorizontal, Navigation } from 'lucide-react-native';
-import { useMemo, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import {
   FlatList,
   Linking,
@@ -75,6 +75,13 @@ export default function ExploreScreen() {
 
   const mapRef = useRef<AppMapHandle>(null);
   const sheetRef = useRef<BottomSheet>(null);
+
+  // initialRegion is mount-only; when GPS resolves after mount (or the user
+  // recenters the query), animate the map to the active center.
+  useEffect(() => {
+    mapRef.current?.animateToRegion(regionForRadius(center, RADIUS_M), 400);
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- center identity via coords
+  }, [center.lat, center.lng]);
 
   const rpcFilters = filters.toRpcParams();
   const query = useQuery({
@@ -237,6 +244,15 @@ export default function ExploreScreen() {
             </Text>
           </Pressable>
         ) : null}
+        {query.isError && view === 'map' ? (
+          <Pressable
+            accessibilityRole="button"
+            style={[styles.locationBanner, styles.errorBanner]}
+            onPress={() => query.refetch()}
+          >
+            <Text style={styles.locationBannerText}>Couldn&apos;t load runs — tap to retry.</Text>
+          </Pressable>
+        ) : null}
       </View>
 
       {view === 'list' ? (
@@ -377,6 +393,7 @@ const styles = StyleSheet.create({
     paddingVertical: 6,
     paddingHorizontal: spacing.sp3,
   },
+  errorBanner: { backgroundColor: colors.dangerSoft },
   locationBannerText: {
     fontFamily: fonts.bodyMedium,
     fontSize: typeScale.tXs,

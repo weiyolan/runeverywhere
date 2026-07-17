@@ -47,7 +47,14 @@ export default function RunsScreen() {
     myStatus: m.myStatus,
   }));
 
-  const all = [...hosted, ...joined].sort((a, b) => a.run.starts_at.localeCompare(b.run.starts_at));
+  // ALL: upcoming first (soonest on top), past runs sink to the bottom
+  const nowIso = new Date(now).toISOString();
+  const byStart = (a: Item, b: Item) => a.run.starts_at.localeCompare(b.run.starts_at);
+  const union = [...hosted, ...joined];
+  const all = [
+    ...union.filter((i) => i.run.starts_at >= nowIso).sort(byStart),
+    ...union.filter((i) => i.run.starts_at < nowIso).sort(byStart),
+  ];
   const items = tab === 'managed' ? hosted : tab === 'joined' ? joined : all;
 
   const emptyCopy =

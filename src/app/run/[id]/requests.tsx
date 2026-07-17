@@ -6,7 +6,7 @@ import { useQuery } from '@tanstack/react-query';
 import { router, useLocalSearchParams } from 'expo-router';
 import { ArrowLeft } from 'lucide-react-native';
 import { useEffect } from 'react';
-import { Alert, FlatList, Pressable, Share, StyleSheet, Text, View } from 'react-native';
+import { Alert, FlatList, Pressable, StyleSheet, Text, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { Avatar } from '@/components/ui/Avatar';
@@ -16,6 +16,7 @@ import { useRefetchOnFocus } from '@/lib/queryFocus';
 import { qk } from '@/lib/queryKeys';
 import { useRespondToRequest } from '@/lib/runMutations';
 import { fetchRunDetail, fetchRunMembers } from '@/lib/runs';
+import { shareRunInvite } from '@/lib/share';
 import { useSession } from '@/stores/session';
 import {
   borderWidth,
@@ -69,11 +70,7 @@ export default function RunRequestsScreen() {
       },
     );
 
-  const share = () =>
-    detail &&
-    Share.share({
-      message: `Join my run “${detail.run.title}” on Run Everywhere → runeverywhere://invite/${detail.run.invite_code}`,
-    });
+  const share = () => detail && shareRunInvite(detail.run);
 
   return (
     <View style={[styles.screen, { paddingTop: insets.top + spacing.sp2 }]}>

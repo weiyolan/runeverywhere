@@ -9,6 +9,7 @@ import { useEffect } from 'react';
 import { ActivityIndicator, StyleSheet, Text, View } from 'react-native';
 
 import { Button } from '@/components/ui/Button';
+import { qk } from '@/lib/queryKeys';
 import { fetchRunByInvite } from '@/lib/runs';
 import { colors, sizing, spacing, textStyles } from '@/theme/theme';
 
@@ -16,7 +17,7 @@ export default function InviteScreen() {
   const { code } = useLocalSearchParams<{ code: string }>();
 
   const query = useQuery({
-    queryKey: ['invite', code],
+    queryKey: qk.invite(code),
     queryFn: () => fetchRunByInvite(code),
     retry: 1,
   });

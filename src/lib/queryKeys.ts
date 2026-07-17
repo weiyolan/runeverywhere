@@ -19,8 +19,11 @@ export const qk = {
       'nearby',
       { ...p, lat: roundCoord(p.lat), lng: roundCoord(p.lng) },
     ] as const, // invalidate all: ['runs','nearby']
+  runsNearbyAll: () => ['runs', 'nearby'] as const, // invalidation prefix
   runsSearch: (q: string) => ['runs', 'search', q] as const,
+  runsSearchAll: () => ['runs', 'search'] as const, // invalidation prefix
   runsMine: () => ['runs', 'mine'] as const, // hosted + joined for (tabs)/runs
+  invite: (code: string) => ['invite', code] as const, // invite/[code] resolver
   run: (id: string) => ['run', id] as const, // detail bundle: run + host + approvedCount + myMembership
   runMembers: (id: string) => ['run', id, 'members'] as const, // roster + inbox (host/member only)
   pointsPreview: (km: number, type: RunType) => ['points', 'preview', { km, type }] as const,

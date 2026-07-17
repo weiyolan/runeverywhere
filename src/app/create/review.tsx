@@ -41,6 +41,7 @@ export default function CreateReviewScreen() {
   const draft = useCreateRunDraft();
   const publish = useCreateRun();
   const [publishedRunId, setPublishedRunId] = useState<string | null>(null);
+  const [draftError, setDraftError] = useState<string | null>(null);
 
   const type = draft.type ?? 'discover';
   const pointsQuery = useQuery({
@@ -50,7 +51,11 @@ export default function CreateReviewScreen() {
 
   const onPublish = () => {
     const parsed = publishSchema.safeParse(draft);
-    if (!parsed.success) return;
+    if (!parsed.success) {
+      setDraftError(parsed.error.issues[0]?.message ?? 'Check your run details.');
+      return;
+    }
+    setDraftError(null);
     publish.mutate(parsed.data, { onSuccess: (run) => setPublishedRunId(run.id) });
   };
 
@@ -149,6 +154,7 @@ export default function CreateReviewScreen() {
           full
           onPress={() => router.back()}
         />
+        {draftError ? <Text style={styles.error}>{draftError}</Text> : null}
         {publish.isError ? (
           <Text style={styles.error}>
             {publish.error instanceof Error ? publish.error.message : 'Publishing failed — try again.'}

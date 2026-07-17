@@ -65,7 +65,7 @@ export function useJoinRun(runId: string) {
     },
     onError: (_e, _v, ctx) => rollbackRun(runId, ctx?.snapshot),
     onSettled: () =>
-      invalidate(qk.run(runId), qk.runMembers(runId), qk.runsMine(), ['runs', 'nearby'], ['runs', 'search']),
+      invalidate(qk.run(runId), qk.runMembers(runId), qk.runsMine(), qk.runsNearbyAll(), qk.runsSearchAll()),
   });
 }
 
@@ -75,7 +75,7 @@ export function useCancelJoin(runId: string) {
     onMutate: async () => ({ snapshot: await patchMyMembership(runId, 'cancelled') }),
     onError: (_e, _v, ctx) => rollbackRun(runId, ctx?.snapshot),
     onSettled: () =>
-      invalidate(qk.run(runId), qk.runMembers(runId), qk.runsMine(), ['runs', 'nearby'], ['runs', 'search']),
+      invalidate(qk.run(runId), qk.runMembers(runId), qk.runsMine(), qk.runsNearbyAll(), qk.runsSearchAll()),
   });
 }
 
@@ -140,7 +140,7 @@ export function useCreateRun() {
           myMembership: null,
         });
       }
-      invalidate(['runs', 'nearby'], qk.runsMine());
+      invalidate(qk.runsNearbyAll(), qk.runsMine());
     },
   });
 }
@@ -157,9 +157,6 @@ async function patchRun(runId: string, patch: Partial<RunRow>) {
   return snapshot;
 }
 
-const RUN_WRITE_KEYS = () =>
-  [['runs', 'nearby'], ['runs', 'search']] as const;
-
 export function useUpdateRun(runId: string) {
   return useMutation({
     mutationFn: (patch: RunPatch) => updateRun(runId, patch),
@@ -167,7 +164,8 @@ export function useUpdateRun(runId: string) {
       snapshot: await patchRun(runId, { ...patch, starts_at: patch.starts_at ?? undefined }),
     }),
     onError: (_e, _v, ctx) => rollbackRun(runId, ctx?.snapshot),
-    onSettled: () => invalidate(qk.run(runId), ...RUN_WRITE_KEYS(), qk.runsMine()),
+    onSettled: () =>
+      invalidate(qk.run(runId), qk.runsNearbyAll(), qk.runsSearchAll(), qk.runsMine()),
   });
 }
 
@@ -176,6 +174,7 @@ export function useCancelRun(runId: string) {
     mutationFn: () => cancelRun(runId),
     onMutate: async () => ({ snapshot: await patchRun(runId, { status: 'cancelled' }) }),
     onError: (_e, _v, ctx) => rollbackRun(runId, ctx?.snapshot),
-    onSettled: () => invalidate(qk.run(runId), ...RUN_WRITE_KEYS(), qk.runsMine()),
+    onSettled: () =>
+      invalidate(qk.run(runId), qk.runsNearbyAll(), qk.runsSearchAll(), qk.runsMine()),
   });
 }
