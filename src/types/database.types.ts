@@ -247,6 +247,24 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      cancel_join: {
+        Args: { p_run_id: string }
+        Returns: {
+          decided_at: string | null
+          decided_by: string | null
+          intro_message: string
+          requested_at: string
+          run_id: string
+          status: Database["public"]["Enums"]["member_status"]
+          user_id: string
+        }
+        SetofOptions: {
+          from: "*"
+          to: "run_members"
+          isOneToOne: true
+          isSetofReturn: false
+        }
+      }
       compute_points_reward: {
         Args: {
           p_distance_km: number
@@ -307,6 +325,24 @@ export type Database = {
           isSetofReturn: false
         }
       }
+      remove_member: {
+        Args: { p_run_id: string; p_user_id: string }
+        Returns: {
+          decided_at: string | null
+          decided_by: string | null
+          intro_message: string
+          requested_at: string
+          run_id: string
+          status: Database["public"]["Enums"]["member_status"]
+          user_id: string
+        }
+        SetofOptions: {
+          from: "*"
+          to: "run_members"
+          isOneToOne: true
+          isSetofReturn: false
+        }
+      }
       respond_to_join_request: {
         Args: { p_approve: boolean; p_run_id: string; p_user_id: string }
         Returns: {
@@ -325,6 +361,10 @@ export type Database = {
           isSetofReturn: false
         }
       }
+      run_approved_count: {
+        Args: { p_run_id: string }
+        Returns: number
+      }
       runs_within_radius: {
         Args: {
           p_closed_loop?: boolean
@@ -335,6 +375,19 @@ export type Database = {
           p_radius_m?: number
           p_to?: string
           p_types?: Database["public"]["Enums"]["run_type"][]
+        }
+        Returns: {
+          approved_count: number
+          distance_m: number
+          run: Database["public"]["Tables"]["runs"]["Row"]
+        }[]
+      }
+      search_runs: {
+        Args: {
+          p_lat: number
+          p_limit?: number
+          p_lng: number
+          p_query: string
         }
         Returns: {
           approved_count: number

@@ -27,6 +27,13 @@ values
     extensions.crypt ('password123', extensions.gen_salt ('bf')),
     now(), '{"provider":"email","providers":["email"]}', '{"display_name":"Marco R."}', now(), now(),
     '', '', '', '', ''
+  ),
+  (
+    '00000000-0000-4000-8000-000000000003', '00000000-0000-0000-0000-000000000000',
+    'authenticated', 'authenticated', 'nadia@example.com',
+    extensions.crypt ('password123', extensions.gen_salt ('bf')),
+    now(), '{"provider":"email","providers":["email"]}', '{"display_name":"Nadia K."}', now(), now(),
+    '', '', '', '', ''
   )
 on conflict (id) do nothing;
 
@@ -46,6 +53,12 @@ values
     '00000000-0000-4000-8000-000000000002', 'email',
     '{"sub":"00000000-0000-4000-8000-000000000002","email":"marco@example.com","email_verified":true}',
     now(), now(), now()
+  ),
+  (
+    '00000000-0000-4000-8000-000000000003', '00000000-0000-4000-8000-000000000003',
+    '00000000-0000-4000-8000-000000000003', 'email',
+    '{"sub":"00000000-0000-4000-8000-000000000003","email":"nadia@example.com","email_verified":true}',
+    now(), now(), now()
   )
 on conflict (provider_id, provider) do nothing;
 
@@ -56,7 +69,11 @@ set home_city = 'Lisbon',
     languages = '{EN,PT}',
     onboarded_at = now(),
     tos_accepted_at = now()
-where id in ('00000000-0000-4000-8000-000000000001', '00000000-0000-4000-8000-000000000002');
+where id in (
+  '00000000-0000-4000-8000-000000000001',
+  '00000000-0000-4000-8000-000000000002',
+  '00000000-0000-4000-8000-000000000003'
+);
 
 -- Three fixture runs around Lisbon (Alfama, Monsanto, Belém)
 insert into public.runs (
@@ -86,3 +103,39 @@ values
     'Belém', 'Lisbon', 'PT', 5.2, 12, 390, now() + interval '1 day', true
   )
 on conflict (id) do nothing;
+
+-- Invite-only run with a deterministic code for deep-link testing
+-- (runeverywhere://invite/DEVLINK01). Hidden from Explore/search by RLS.
+insert into public.runs (
+  id, host_id, type, visibility, invite_code, title, goal, start_point,
+  area_name, city, country_code, distance_km, max_group,
+  target_pace_s_per_km, starts_at, closed_loop
+)
+values
+  (
+    '10000000-0000-4000-8000-000000000004', '00000000-0000-4000-8000-000000000001',
+    'challenge', 'invite', 'DEVLINK01', 'Track Repeats',
+    '6×800m on the track — bring spikes if you have them.',
+    extensions.st_setsrid (extensions.st_makepoint (-9.1650, 38.7420), 4326)::extensions.geography,
+    'Campolide', 'Lisbon', 'PT', 8.0, 4, 240, now() + interval '4 days', true
+  )
+on conflict (id) do nothing;
+
+-- Membership fixtures: a pending inbox item for marco (Old Town Loop), an
+-- approved roster row on Sunset 5K, and a second pending member there so the
+-- capacity smoke case has an approved AND a pending non-host member at once.
+insert into public.run_members (run_id, user_id, status, intro_message, decided_at, decided_by)
+values
+  (
+    '10000000-0000-4000-8000-000000000001', '00000000-0000-4000-8000-000000000001',
+    'pending', 'New in Lisbon this week and keen to explore with locals.', null, null
+  ),
+  (
+    '10000000-0000-4000-8000-000000000003', '00000000-0000-4000-8000-000000000002',
+    'approved', '', now(), '00000000-0000-4000-8000-000000000001'
+  ),
+  (
+    '10000000-0000-4000-8000-000000000003', '00000000-0000-4000-8000-000000000003',
+    'pending', 'Visiting for the weekend — easy pace suits me.', null, null
+  )
+on conflict (run_id, user_id) do nothing;
