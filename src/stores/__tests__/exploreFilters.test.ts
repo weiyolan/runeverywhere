@@ -1,4 +1,4 @@
-import { beforeEach, describe, expect, it } from 'vitest';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 import { useExploreFilters } from '@/stores/exploreFilters';
 
@@ -44,19 +44,28 @@ describe('toRpcParams', () => {
     expect(days).toBeLessThan(8.1);
 
     store.getState().setWhen('weekend');
-    p = store.getState().toRpcParams();
-    const to = new Date(p.p_to!);
-    expect(to.getDay()).toBe(1); // Sunday 24:00 == Monday 00:00 boundary
-    expect(to.getHours()).toBe(0);
-    const today = new Date().getDay();
-    if (today === 6 || today === 0) {
-      // Mid-weekend: p_from null → server now() bounds the window
-      expect(p.p_from).toBeNull();
-    } else {
+    // Weekday: window is the coming Sat 00:00 → Mon 00:00 (both local, so a
+    // DST shift inside the window is fine — no exact-duration assertion)
+    vi.useFakeTimers();
+    try {
+      vi.setSystemTime(new Date(2026, 6, 15, 12)); // Wednesday
+      p = store.getState().toRpcParams();
       const from = new Date(p.p_from!);
+      const to = new Date(p.p_to!);
       expect(from.getDay()).toBe(6); // Saturday 00:00
       expect(from.getHours()).toBe(0);
-      expect(to.getTime() - from.getTime()).toBe(2 * 86_400_000);
+      expect(to.getDay()).toBe(1); // Sunday 24:00 == Monday 00:00 boundary
+      expect(to.getHours()).toBe(0);
+      expect(to.getTime()).toBeGreaterThan(from.getTime());
+
+      // Mid-weekend: p_from null → server now() bounds the window
+      vi.setSystemTime(new Date(2026, 6, 19, 12)); // Sunday
+      p = store.getState().toRpcParams();
+      expect(p.p_from).toBeNull();
+      expect(new Date(p.p_to!).getDay()).toBe(1); // still this weekend's Monday
+      expect(new Date(p.p_to!).getDate()).toBe(20);
+    } finally {
+      vi.useRealTimers();
     }
   });
 });

@@ -76,12 +76,15 @@ export default function ExploreScreen() {
   const mapRef = useRef<AppMapHandle>(null);
   const sheetRef = useRef<BottomSheet>(null);
 
-  // initialRegion is mount-only; when GPS resolves after mount (or the user
-  // recenters the query), animate the map to the active center.
+  // initialRegion is mount-only; when GPS resolves after mount, bring the map
+  // to the real location. Only while the user hasn't picked their own query
+  // center — "Search this area" must never get snapped away from.
   useEffect(() => {
-    mapRef.current?.animateToRegion(regionForRadius(center, RADIUS_M), 400);
-    // eslint-disable-next-line react-hooks/exhaustive-deps -- center identity via coords
-  }, [center.lat, center.lng]);
+    if (!queryCenter && location.coords) {
+      mapRef.current?.animateToRegion(regionForRadius(location.coords, RADIUS_M), 400);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- fire on GPS coords only
+  }, [location.coords?.lat, location.coords?.lng]);
 
   const rpcFilters = filters.toRpcParams();
   const query = useQuery({
