@@ -1,6 +1,8 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { createClient, type SupabaseClient } from '@supabase/supabase-js';
 
+import type { Database } from '@/types/database.types';
+
 const url = process.env.EXPO_PUBLIC_SUPABASE_URL;
 const anonKey = process.env.EXPO_PUBLIC_SUPABASE_ANON_KEY;
 
@@ -9,9 +11,9 @@ const anonKey = process.env.EXPO_PUBLIC_SUPABASE_ANON_KEY;
  * so the scaffold runs without a backend. Callers must handle the null case
  * until Phase 1 wires real auth.
  */
-export const supabase: SupabaseClient | null =
+export const supabase: SupabaseClient<Database> | null =
   url && anonKey
-    ? createClient(url, anonKey, {
+    ? createClient<Database>(url, anonKey, {
         auth: {
           storage: AsyncStorage,
           autoRefreshToken: true,
