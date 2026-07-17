@@ -4,7 +4,7 @@ import { Button } from '@/components/ui/Button';
 import { RunCard } from '@/components/ui/RunCard';
 import { TabBar } from '@/components/ui/TabBar';
 import { TypeChip } from '@/components/ui/TypeChip';
-import { colors, sizing, spacing, textStyles } from '@/theme/theme';
+import { colors, radius, sizing, spacing, textStyles } from '@/theme/theme';
 
 const SWATCHES = [
   colors.volt,
@@ -125,5 +125,5 @@ const styles = StyleSheet.create({
   /* TabBar styles its own ink background; let it span the screen width. */
   fullBleed: { marginHorizontal: -sizing.gutter },
   swatch: { alignItems: 'center', gap: 2 },
-  swatchSquare: { width: 24, height: 24, borderRadius: 4 },
+  swatchSquare: { width: 24, height: 24, borderRadius: radius.xs },
 });

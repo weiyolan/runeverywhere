@@ -17,7 +17,7 @@ P0 is the scaffold that already exists on `main`. This plan is therefore an **au
 3. `npm run lint` exits 0 with `--max-warnings 0` semantics (local script and CI identical).
 4. `supabase start` then `supabase db reset` apply `00000000000001_core.sql`, the new `00000000000002_points_reward_on_all_writes.sql` and `00000000000003_profile_caches_server_only.sql`, and `seed.sql` without error.
 5. Seed logins work: a password-grant token request for `maya@example.com` / `password123` (and `marco@example.com`) against the local Auth API returns an `access_token`.
-6. `src/types/database.types.ts` exists, is committed, and `supabase gen types typescript --local | diff - src/types/database.types.ts` is clean.
+6. `src/types/database.types.ts` exists, is committed, and `supabase gen types typescript --local --schema public | diff - src/types/database.types.ts` is clean (`--schema public` per decision 17).
 7. `src/lib/supabase.ts` exports `SupabaseClient<Database> | null` (typed client).
 8. Direct `UPDATE public.runs SET points_reward = 9999` is neutralized: the value re-computes to `compute_points_reward(distance_km, type)` on every insert/update.
 9. Direct `UPDATE public.profiles SET points_total = 9999` (likewise `level`, `rating_avg`, `rating_count`) as an authenticated user is rejected with `42501 permission denied` — column-level UPDATE on the four cache columns is revoked from `authenticated` (B5 probe via PostgREST `PATCH`); a `bio` update by the same user still succeeds.
@@ -140,7 +140,7 @@ Visual deltas between the RN RunCard and the design `RunCard.jsx` (stat glyphs, 
    Acceptance: typecheck passes; `supabase!.from('runs')` in a scratch expression autocompletes typed columns (spot-check in editor, then delete).
 
 3. **Add a drift-check script.**
-   File: `package.json` → `"db:types:check": "supabase gen types typescript --local | diff - src/types/database.types.ts"`.
+   File: `package.json` → `"db:types:check": "supabase gen types typescript --local --schema public | diff - src/types/database.types.ts"` (`--schema public` on both `db:types` and `db:types:check`, per decision 17).
    Acceptance: `npm run db:types:check` exits 0 against the running local stack; exits non-zero after any schema edit (test by adding a throwaway column in Studio, then `supabase db reset` to restore).
 
 4. **Migration `00000000000002_points_reward_on_all_writes.sql` — close the points-tamper hole.**
@@ -249,7 +249,7 @@ Visual deltas between the RN RunCard and the design `RunCard.jsx` (stat glyphs, 
    - run: supabase start                 # full stack: migrations + seed apply here
    - run: supabase db lint --level warning
    - name: Generated types are committed and current
-     run: supabase gen types typescript --local | diff - src/types/database.types.ts
+     run: npm run db:types:check   # --schema public, same command as local (decision 17)
    - name: Seed logins work
      run: |
        ANON=$(supabase status -o env | grep ANON_KEY | cut -d= -f2 | tr -d '"')
@@ -368,6 +368,7 @@ Automated gates (all must pass, locally and in CI):
 14. **Gallery route ships in production builds but unlinked** (`__DEV__` gate on the Explore link only) — matches PLAN §4 "Gallery at /dev/components" and the component's "not linked in production UI" comment without route-level build gymnastics.
 15. **Seed-login verification is done via the Auth REST password grant (curl)** since no sign-in UI exists until P1 — this also becomes the standing CI probe.
 16. **`devSignIn` escape hatch and auth/create stub screens remain untouched** — their removal/implementation is P1/P2 scope by design (comments in the files say so).
+17. **Type generation is pinned to `--schema public`** in `db:types`, `db:types:check`, and the D2 CI drift step. `config.toml` exposes `public, storage, graphql_public` to the API; without the flag, generated output embeds the storage-api schema bundled with the CLI, so the drift gate would flap on CLI upgrades that touch storage internals the app never queries. The app consumes only `public` tables/RPCs (storage goes through the supabase-js storage client, untyped by design).
 
 ## Out of scope (deferred)
 

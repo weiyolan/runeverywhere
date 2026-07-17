@@ -12,6 +12,7 @@ import {
   borderWidth,
   colors,
   fonts,
+  lineHeight,
   radius,
   runType,
   semantic,
@@ -168,7 +169,7 @@ export function RunCard({
               {attendees?.length ? (
                 <View style={styles.attendees}>
                   {attendees.slice(0, MAX_ATTENDEES).map((a, i) => (
-                    <View key={a.name} style={[styles.attendee, i > 0 && styles.attendeeOverlap]}>
+                    <View key={i} style={[styles.attendee, i > 0 && styles.attendeeOverlap]}>
                       {a.src ? (
                         <Image source={{ uri: a.src }} style={styles.attendeePhoto} />
                       ) : (
@@ -225,7 +226,7 @@ const styles = StyleSheet.create({
   },
   titleFeature: {
     fontSize: 26,
-    lineHeight: 26 * 1.15,
+    lineHeight: 26 * lineHeight.snug,
   },
   goal: {
     fontFamily: fonts.body,
@@ -284,7 +285,7 @@ const styles = StyleSheet.create({
     height: 16,
     borderRadius: radius.pill,
     backgroundColor: colors.go,
-    borderWidth: 2,
+    borderWidth: borderWidth.bold,
     borderColor: semantic.bgSurface,
     alignItems: 'center',
     justifyContent: 'center',
@@ -320,7 +321,7 @@ const styles = StyleSheet.create({
     width: 28,
     height: 28,
     borderRadius: radius.pill,
-    borderWidth: 2,
+    borderWidth: borderWidth.bold,
     borderColor: semantic.bgSurface,
     backgroundColor: colors.volt,
     alignItems: 'center',
