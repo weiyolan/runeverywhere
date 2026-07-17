@@ -1,26 +1,55 @@
+/**
+ * Create step 1/4 (P2 G3) — pick the run type; selecting auto-advances.
+ */
 import { router } from 'expo-router';
-import { StyleSheet, Text, View } from 'react-native';
+import { Pressable, StyleSheet, Text, View } from 'react-native';
 
-import { Button } from '@/components/ui/Button';
+import { WizardHeader } from '@/components/create/WizardHeader';
 import { TypeChip } from '@/components/ui/TypeChip';
-import { colors, sizing, spacing, textStyles } from '@/theme/theme';
+import { useCreateRunDraft } from '@/stores/createRun';
+import {
+  borderWidth,
+  colors,
+  fonts,
+  radius,
+  runType,
+  semantic,
+  sizing,
+  spacing,
+  typeScale,
+  type RunType,
+} from '@/theme/theme';
 
-/** Step 1/4 — pick a run type. Full wizard lands in Phase 2. */
+const BLURBS: Record<RunType, string> = {
+  discover: 'Explore a city or route — sightsee on foot at an easy effort.',
+  challenge: 'Race pace or hard effort — push together, regroup at the top.',
+  social: 'Easy, chatty meet-up or recovery — all paces welcome.',
+};
+
 export default function CreateTypeScreen() {
+  const draft = useCreateRunDraft();
+
+  const pick = (type: RunType) => {
+    draft.set({ type });
+    router.push('/create/location');
+  };
+
   return (
     <View style={styles.screen}>
-      <Text style={textStyles.eyebrow}>STEP 1 / 4</Text>
-      <Text style={textStyles.screenTitle}>What kind of run?</Text>
-
-      <View style={styles.types}>
-        <TypeChip type="discover" />
-        <TypeChip type="challenge" />
-        <TypeChip type="social" />
-      </View>
-      <Text style={textStyles.caption}>The 4-step create wizard lands in Phase 2.</Text>
-
-      <View style={styles.footer}>
-        <Button label="Close" variant="secondary" full onPress={() => router.back()} />
+      <WizardHeader step={1} title="What kind of run?" />
+      <View style={styles.cards}>
+        {(Object.keys(BLURBS) as RunType[]).map((t) => (
+          <Pressable
+            key={t}
+            accessibilityRole="button"
+            accessibilityState={{ selected: draft.type === t }}
+            onPress={() => pick(t)}
+            style={[styles.card, draft.type === t && { borderColor: runType[t].main }]}
+          >
+            <TypeChip type={t} />
+            <Text style={styles.blurb}>{BLURBS[t]}</Text>
+          </Pressable>
+        ))}
       </View>
     </View>
   );
@@ -31,9 +60,20 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: colors.paper2,
     paddingHorizontal: sizing.gutter,
-    paddingTop: spacing.sp8,
-    gap: spacing.sp3,
   },
-  types: { flexDirection: 'row', gap: spacing.sp2, marginVertical: spacing.sp4 },
-  footer: { marginTop: 'auto', paddingBottom: spacing.sp8 },
+  cards: { gap: spacing.sp3, marginTop: spacing.sp5 },
+  card: {
+    backgroundColor: semantic.bgSurface,
+    borderRadius: radius.md,
+    borderWidth: borderWidth.bold,
+    borderColor: colors.ink200,
+    padding: spacing.sp4,
+    gap: spacing.sp2,
+  },
+  blurb: {
+    fontFamily: fonts.body,
+    fontSize: typeScale.tSm,
+    lineHeight: typeScale.tSm * 1.45,
+    color: semantic.textSecondary,
+  },
 });
