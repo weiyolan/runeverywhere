@@ -7,7 +7,7 @@
 -- unique constraint holds).
 alter table public.runs
   alter column invite_code
-  set default translate(encode(gen_random_bytes(9), 'base64'), '+/', '-_');
+  set default translate(encode(extensions.gen_random_bytes(9), 'base64'), '+/', '-_');
 
 update public.runs
 set invite_code = translate(invite_code, '+/', '-_')
