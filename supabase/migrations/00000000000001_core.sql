@@ -5,6 +5,7 @@
 
 create extension if not exists postgis with schema extensions;
 create extension if not exists pg_trgm with schema extensions;
+create extension if not exists pgcrypto with schema extensions;
 
 -- ---------------------------------------------------------------------------
 -- Enums
@@ -81,7 +82,7 @@ create table public.runs (
   type public.run_type not null,
   status public.run_status not null default 'published',
   visibility public.run_visibility not null default 'approval',
-  invite_code text unique default encode(gen_random_bytes(9), 'base64'),
+  invite_code text unique default encode(extensions.gen_random_bytes(9), 'base64'),
   title text not null check (char_length(title) between 1 and 40),
   goal text not null default '' check (char_length(goal) <= 200),
   start_point extensions.geography (point, 4326) not null,
