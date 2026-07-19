@@ -2,6 +2,7 @@ import { Search, Share2, SlidersHorizontal, X } from 'lucide-react-native';
 import { useState } from 'react';
 import { ScrollView, StyleSheet, Text, View } from 'react-native';
 
+import { BadgeTile } from '@/components/BadgeTile';
 import { MapPin } from '@/components/map/MapPin';
 import { RouteMarker } from '@/components/map/RouteMarker';
 import { Avatar } from '@/components/ui/Avatar';
@@ -108,6 +109,16 @@ export default function ComponentGallery() {
         <Badge tone="warn" solid>Pending</Badge>
         <Badge tone="danger" solid>Full</Badge>
         <Badge tone="volt" solid>+220 PTS</Badge>
+      </View>
+
+      <Text style={textStyles.sectionHeader}>Badge tiles</Text>
+      <View style={[styles.group, styles.row]}>
+        <BadgeTile
+          badge={{ code: 'first_run', name: 'FIRST STEPS', description: 'Finish your first run', icon: 'footprints', color: 'go', sort: 1, active: true, earned_at: new Date().toISOString() }}
+        />
+        <BadgeTile
+          badge={{ code: 'hundred_k', name: '100K CLUB', description: 'Log 100 km total', icon: 'trophy', color: 'go', sort: 7, active: true, earned_at: null }}
+        />
       </View>
 
       <Text style={textStyles.sectionHeader}>Rating stars</Text>

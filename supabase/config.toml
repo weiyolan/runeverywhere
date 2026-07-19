@@ -36,3 +36,11 @@ file_size_limit = "10MiB"
 
 [edge_runtime]
 enabled = true
+
+# P5 Edge Functions: the live-share page is public (token is the auth);
+# delete-account requires the caller's JWT.
+[functions.live-share-page]
+verify_jwt = false
+
+[functions.delete-account]
+verify_jwt = true

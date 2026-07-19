@@ -40,6 +40,8 @@ import {
   MESSAGES_PAGE_SIZE,
   type MessageWithSender,
 } from '@/lib/chat';
+import { ReportSheet } from '@/components/ReportSheet';
+import { useBlocks } from '@/hooks/useBlocks';
 import { subscribeToConversation } from '@/lib/realtime';
 import { qk } from '@/lib/queryKeys';
 import { supabase } from '@/lib/supabase';
@@ -83,11 +85,17 @@ export default function ChatScreen() {
   const queryClient = useQueryClient();
   const uid = useSession((s) => s.session?.user.id);
   const setActiveConversationId = useChatStore((s) => s.setActiveConversationId);
+  const { blockedIds } = useBlocks();
 
   const [draft, setDraft] = useState('');
   const [meetingModal, setMeetingModal] = useState(false);
   const [meetingDraft, setMeetingDraft] = useState('');
   const [savingMeeting, setSavingMeeting] = useState(false);
+  const [reportTarget, setReportTarget] = useState<{
+    userId: string;
+    name: string;
+    messageId: string;
+  } | null>(null);
 
   // Conversation metadata from the list RPC (usually a cache hit).
   const conversations = useQuery({ queryKey: qk.conversations(), queryFn: listConversations });
@@ -159,6 +167,8 @@ export default function ChatScreen() {
         void queryClient.invalidateQueries({ queryKey: qk.notificationsUnread() });
       });
       const unsubscribe = subscribeToConversation(conversationId, (record) => {
+        // Broadcast auth is topic-level; blocked senders are dropped here (P5).
+        if (record.sender_id && blockedIds.has(record.sender_id)) return;
         appendToCache(record);
         if (record.kind === 'meeting_point') {
           void queryClient.invalidateQueries({
@@ -171,7 +181,7 @@ export default function ChatScreen() {
         unsubscribe();
         setActiveConversationId(null);
       };
-    }, [conversationId, appendToCache, queryClient, setActiveConversationId]),
+    }, [conversationId, appendToCache, blockedIds, queryClient, setActiveConversationId]),
   );
 
   const submit = async (body: string, existingId?: string) => {
@@ -270,8 +280,15 @@ export default function ChatScreen() {
           </View>
         ) : null}
         <Pressable
-          disabled={item.localStatus !== 'failed'}
-          onPress={() => void submit(item.body, item.id)}
+          disabled={item.localStatus !== 'failed' && mine}
+          onPress={
+            item.localStatus === 'failed' ? () => void submit(item.body, item.id) : undefined
+          }
+          onLongPress={
+            !mine && item.sender_id
+              ? () => setReportTarget({ userId: item.sender_id!, name: senderName, messageId: item.id })
+              : undefined
+          }
           style={[
             styles.bubble,
             mine ? styles.bubbleMine : styles.bubbleTheirs,
@@ -442,6 +459,18 @@ export default function ChatScreen() {
             </View>
           </View>
         </Modal>
+
+        {/* Report a message (P5 G5) */}
+        {reportTarget ? (
+          <ReportSheet
+            visible
+            onClose={() => setReportTarget(null)}
+            subjectUserId={reportTarget.userId}
+            subjectName={reportTarget.name}
+            messageId={reportTarget.messageId}
+            onBlocked={() => router.back()}
+          />
+        ) : null}
       </View>
     </KeyboardAvoidingView>
   );

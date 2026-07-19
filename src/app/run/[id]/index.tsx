@@ -5,13 +5,14 @@
 import { useQuery } from '@tanstack/react-query';
 import { format } from 'date-fns';
 import { router, useLocalSearchParams } from 'expo-router';
-import { ArrowLeft, Repeat, Share2, Star } from 'lucide-react-native';
+import { ArrowLeft, MoreHorizontal, Repeat, Share2, Star } from 'lucide-react-native';
 import { useState } from 'react';
 import { Alert, Pressable, RefreshControl, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { AppMap, AppMarker } from '@/components/map/AppMap';
 import { RouteMarker } from '@/components/map/RouteMarker';
+import { ReportSheet } from '@/components/ReportSheet';
 import { CompletedRunDetail } from '@/components/run/CompletedRunDetail';
 import { useStartRun } from '@/components/run/StartRunGate';
 import { Avatar } from '@/components/ui/Avatar';
@@ -58,6 +59,7 @@ export default function RunDetailScreen() {
   const { id, code } = useLocalSearchParams<{ id: string; code?: string }>();
   const uid = useSession((s) => s.session?.user.id);
   const [now] = useState(() => Date.now());
+  const [reportOpen, setReportOpen] = useState(false);
 
   const query = useQuery({
     queryKey: qk.run(id),
@@ -240,11 +242,21 @@ export default function RunDetailScreen() {
             <IconButton accessibilityLabel="Back" onPress={() => router.back()}>
               <ArrowLeft size={20} />
             </IconButton>
-            {canShare ? (
-              <IconButton accessibilityLabel="Share invite link" onPress={share}>
-                <Share2 size={20} />
-              </IconButton>
-            ) : null}
+            <View style={styles.mapButtonsRight}>
+              {canShare ? (
+                <IconButton accessibilityLabel="Share invite link" onPress={share}>
+                  <Share2 size={20} />
+                </IconButton>
+              ) : null}
+              {!isHost ? (
+                <IconButton
+                  accessibilityLabel="Report or block the host"
+                  onPress={() => setReportOpen(true)}
+                >
+                  <MoreHorizontal size={20} />
+                </IconButton>
+              ) : null}
+            </View>
           </View>
         </View>
 
@@ -329,6 +341,14 @@ export default function RunDetailScreen() {
 
       <View style={[styles.footer, { paddingBottom: insets.bottom + spacing.sp4 }]}>{footer}</View>
       {explainer}
+      <ReportSheet
+        visible={reportOpen}
+        onClose={() => setReportOpen(false)}
+        subjectUserId={run.host_id}
+        subjectName={host?.display_name ?? 'the host'}
+        runId={id}
+        onBlocked={() => router.back()}
+      />
     </View>
   );
 }
@@ -352,6 +372,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
   },
+  mapButtonsRight: { flexDirection: 'row', gap: spacing.sp2 },
   body: { paddingHorizontal: sizing.gutter, paddingTop: spacing.sp4, gap: spacing.sp3 },
   badgeRow: { flexDirection: 'row', alignItems: 'center', gap: spacing.sp2 },
   title: {

@@ -259,3 +259,104 @@ values (
   5, '{"Great pace","Good vibes"}', 'Lovely easy pace and great route picks.'
 )
 on conflict (run_id, reviewer_id, reviewee_id) do nothing;
+
+-- ---------------------------------------------------------------------------
+-- P5 fixtures (H1): rita in Porto, week-boundary ledger rows, badges, one
+-- trusted + one emergency contact for maya.
+-- ---------------------------------------------------------------------------
+insert into auth.users (
+  id, instance_id, aud, role, email, encrypted_password,
+  email_confirmed_at, raw_app_meta_data, raw_user_meta_data, created_at, updated_at,
+  confirmation_token, recovery_token, email_change,
+  email_change_token_new, email_change_token_current
+)
+values (
+  '00000000-0000-4000-8000-000000000004', '00000000-0000-0000-0000-000000000000',
+  'authenticated', 'authenticated', 'rita@example.com',
+  extensions.crypt ('password123', extensions.gen_salt ('bf')),
+  now(), '{"provider":"email","providers":["email"]}', '{"display_name":"Rita M."}', now(), now(),
+  '', '', '', '', ''
+)
+on conflict (id) do nothing;
+
+insert into auth.identities (
+  id, user_id, provider_id, provider, identity_data,
+  last_sign_in_at, created_at, updated_at
+)
+values (
+  '00000000-0000-4000-8000-000000000004', '00000000-0000-4000-8000-000000000004',
+  '00000000-0000-4000-8000-000000000004', 'email',
+  '{"sub":"00000000-0000-4000-8000-000000000004","email":"rita@example.com","email_verified":true}',
+  now(), now(), now()
+)
+on conflict (provider_id, provider) do nothing;
+
+update public.profiles
+set home_city = 'Porto',
+    home_point = extensions.st_setsrid (extensions.st_makepoint (-8.6110, 41.1496), 4326)::extensions.geography,
+    pace_band = 'quick',
+    languages = '{PT,EN}',
+    onboarded_at = now(),
+    tos_accepted_at = now()
+where id = '00000000-0000-4000-8000-000000000004';
+
+-- A completed Porto run hosted by rita (week-boundary leaderboard fixture).
+insert into public.runs (
+  id, host_id, type, visibility, status, title, goal, start_point, area_name,
+  city, country_code, distance_km, max_group, target_pace_s_per_km, starts_at,
+  closed_loop
+)
+values (
+  '10000000-0000-4000-8000-000000000006', '00000000-0000-4000-8000-000000000004',
+  'discover', 'open', 'completed', 'Douro Sunrise',
+  'Riverside out-and-back before work.',
+  extensions.st_setsrid (extensions.st_makepoint (-8.6110, 41.1496), 4326)::extensions.geography,
+  'Ribeira', 'Porto', 'PT', 6.0, 8, 330, now() - interval '3 days', false
+)
+on conflict (id) do nothing;
+
+insert into public.run_tracks (
+  run_id, user_id, polyline, distance_m, duration_s, elevation_gain_m,
+  avg_pace_s_per_km, started_at, ended_at
+)
+values (
+  '10000000-0000-4000-8000-000000000006', '00000000-0000-4000-8000-000000000004',
+  'g_ekFrodw@oFkMcGwLcGkM_DsNjCsNbGjMbG~MnF~Mf@~MSjM',
+  6000, 2000, 15, 333,
+  now() - interval '3 days', now() - interval '3 days' + interval '34 minutes'
+)
+on conflict (run_id, user_id) do nothing;
+
+-- Ledger rows straddling the ISO Monday: rita this week (Porto) + last week;
+-- maya/marco already have this-week rows from the River Loop fixture, add a
+-- last-week Lisbon row for marco so LAST WEEK isn't empty.
+insert into public.points_ledger (user_id, run_id, reason, points, created_at)
+values
+  (
+    '00000000-0000-4000-8000-000000000004', '10000000-0000-4000-8000-000000000006',
+    'finished', 68, date_trunc('week', now() at time zone 'utc') + interval '1 day'
+  ),
+  (
+    '00000000-0000-4000-8000-000000000004', '10000000-0000-4000-8000-000000000006',
+    'on_time', 10, date_trunc('week', now() at time zone 'utc') - interval '3 days'
+  ),
+  (
+    -- Keyed to Old Town Loop, NOT River Loop: the safety/points smokes award
+    -- marco's River Loop rate_crew live and must find the slot empty.
+    '00000000-0000-4000-8000-000000000002', '10000000-0000-4000-8000-000000000001',
+    'rate_crew', 10, date_trunc('week', now() at time zone 'utc') - interval '2 days'
+  )
+on conflict (user_id, run_id, reason) do nothing;
+
+-- Safety contacts for maya: one emergency + one trusted.
+insert into public.safety_contacts (id, user_id, name, phone, label, is_emergency)
+values
+  (
+    '30000000-0000-4000-8000-000000000001', '00000000-0000-4000-8000-000000000001',
+    'Ana Lawson', '+351 912 000 001', 'Sister', true
+  ),
+  (
+    '30000000-0000-4000-8000-000000000002', '00000000-0000-4000-8000-000000000001',
+    'Tomás P.', '+351 912 000 002', 'Partner', false
+  )
+on conflict (id) do nothing;

@@ -5,7 +5,7 @@
  */
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { router, useLocalSearchParams } from 'expo-router';
-import { Pause, Play, Square } from 'lucide-react-native';
+import { Pause, Play, Radio, Share2, Square } from 'lucide-react-native';
 import { useEffect, useRef, useState } from 'react';
 import {
   ActivityIndicator,
@@ -27,6 +27,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { AppMap, AppMarker, type AppMapHandle } from '@/components/map/AppMap';
 import { Button } from '@/components/ui/Button';
+import { IconButton } from '@/components/ui/IconButton';
 import { AppPolyline } from '@/components/map/AppMap';
 import { StatBlock } from '@/components/ui/StatBlock';
 import { formatPace } from '@/lib/format';
@@ -43,8 +44,16 @@ import {
   resumeRecording,
 } from '@/lib/recording/recorder';
 import { fetchRunDetail } from '@/lib/runs';
+import {
+  composeSms,
+  endLiveShare,
+  listContacts,
+  liveShareUrl,
+  startLiveShare,
+} from '@/lib/safety';
 import { completeRun, uploadRawSamples } from '@/lib/tracks';
 import { useLiveRun } from '@/stores/liveRun';
+import { useSession } from '@/stores/session';
 import {
   colors,
   fonts,
@@ -78,10 +87,81 @@ export default function LiveRunScreen() {
   const mapRef = useRef<AppMapHandle>(null);
 
   const live = useLiveRun();
+  const profile = useSession((s) => s.profile);
   const [elapsedMs, setElapsedMs] = useState(0);
   const [salvageMode, setSalvageMode] = useState(salvage === '1');
   const [finishError, setFinishError] = useState(false);
   const [confirmSheet, setConfirmSheet] = useState(false);
+  const [sosHold, setSosHold] = useState(false);
+  const sosTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  const contacts = useQuery({ queryKey: ['safety-contacts'], queryFn: listContacts }).data;
+
+  const enableShare = async (auto = false) => {
+    try {
+      const session = await startLiveShare(runId ?? undefined);
+      useLiveRun.setState({ shareSessionId: session.id, shareToken: session.token });
+    } catch {
+      if (!auto) Alert.alert('Could not start live sharing.');
+    }
+  };
+
+  // Auto-share when the profile toggle is on (P5 G4).
+  useEffect(() => {
+    if (profile?.live_share_auto && !useLiveRun.getState().shareSessionId && !salvageMode) {
+      void enableShare(true);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [profile?.live_share_auto, salvageMode]);
+
+  const shareLink = () => {
+    const token = useLiveRun.getState().shareToken;
+    if (!token) return;
+    const phones = (contacts ?? []).map((c) => c.phone);
+    void composeSms(
+      phones,
+      `I'm running with Run Everywhere — follow me live: ${liveShareUrl(token)}`,
+    );
+  };
+
+  const triggerSos = async () => {
+    let token = useLiveRun.getState().shareToken;
+    if (!token) {
+      try {
+        const session = await startLiveShare(runId ?? undefined);
+        useLiveRun.setState({ shareSessionId: session.id, shareToken: session.token });
+        token = session.token;
+      } catch {
+        // Compose without a live link rather than failing the SOS.
+      }
+    }
+    const all = contacts ?? [];
+    if (all.length === 0) {
+      Alert.alert('No safety contacts', 'Add contacts in Settings → Safety first.', [
+        { text: 'OK' },
+        { text: 'OPEN SETTINGS', onPress: () => router.push('/settings/safety') },
+      ]);
+      return;
+    }
+    const point = useLiveRun.getState().coords.at(-1);
+    const mapsLink = point ? `https://maps.google.com/?q=${point.lat},${point.lng}` : '';
+    const message = `SOS — I need help. ${mapsLink ? `I'm at ${mapsLink}. ` : ''}${
+      token ? `Follow live: ${liveShareUrl(token)}` : ''
+    }`.trim();
+    void composeSms(all.map((c) => c.phone), message);
+  };
+
+  const startSosHold = () => {
+    setSosHold(true);
+    sosTimer.current = setTimeout(() => {
+      setSosHold(false);
+      void triggerSos();
+    }, 1500);
+  };
+  const cancelSosHold = () => {
+    setSosHold(false);
+    if (sosTimer.current) clearTimeout(sosTimer.current);
+  };
 
   const detail = useQuery({
     queryKey: qk.run(runId ?? ''),
@@ -168,6 +248,7 @@ export default function LiveRunScreen() {
         }
       }
 
+      if (useLiveRun.getState().shareSessionId) await endLiveShare().catch(() => {});
       const { clear } = await import('@/lib/recording/buffer');
       await clear();
       useLiveRun.getState().reset();
@@ -195,6 +276,7 @@ export default function LiveRunScreen() {
   };
 
   const discard = async () => {
+    if (useLiveRun.getState().shareSessionId) await endLiveShare().catch(() => {});
     await discardRecording();
     router.replace(runId ? `/run/${runId}` : '/(tabs)');
   };
@@ -247,6 +329,28 @@ export default function LiveRunScreen() {
             {acquiring ? 'ACQUIRING GPS…' : paused ? 'PAUSED' : 'LIVE · RECORDING'}
           </Text>
         </View>
+        {live.shareSessionId ? (
+          <View style={styles.shareRow}>
+            <View style={[styles.livePill, styles.sharePill]}>
+              <Radio size={12} color={colors.go} />
+              <Text style={styles.livePillText}>SHARING LIVE</Text>
+            </View>
+            <IconButton
+              variant="surface"
+              size="sm"
+              round
+              accessibilityLabel="Send live link"
+              onPress={shareLink}
+            >
+              <Share2 size={16} />
+            </IconButton>
+          </View>
+        ) : (
+          <Pressable style={styles.shareEnable} onPress={() => void enableShare()}>
+            <Radio size={12} color={colors.ink500} />
+            <Text style={styles.shareEnableText}>SHARE LIVE</Text>
+          </Pressable>
+        )}
         {!live.backgroundGranted ? (
           <Pressable style={styles.warnBanner} onPress={() => void Linking.openSettings()}>
             <Text style={styles.warnText}>
@@ -254,6 +358,17 @@ export default function LiveRunScreen() {
             </Text>
           </Pressable>
         ) : null}
+        <Pressable
+          accessibilityRole="button"
+          accessibilityLabel="Hold for SOS"
+          style={[styles.sosButton, sosHold && styles.sosButtonHeld]}
+          onPressIn={startSosHold}
+          onPressOut={cancelSosHold}
+        >
+          <Text style={[styles.sosText, sosHold && { color: colors.paper }]}>
+            {sosHold ? 'HOLD…' : 'SOS'}
+          </Text>
+        </Pressable>
       </View>
 
       {/* Bottom console */}
@@ -431,6 +546,37 @@ const styles = StyleSheet.create({
     height: 36,
   },
   liveDot: { width: 8, height: 8, borderRadius: 4 },
+  shareRow: { flexDirection: 'row', alignItems: 'center', gap: spacing.sp2 },
+  sharePill: { gap: 6 },
+  shareEnable: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 6,
+    backgroundColor: colors.paper,
+    borderRadius: radius.pill,
+    paddingHorizontal: spacing.sp3,
+    height: 30,
+    ...shadows.sm,
+  },
+  shareEnableText: {
+    fontFamily: fonts.displayExtra,
+    fontSize: typeScale.t2xs,
+    letterSpacing: letterSpacing(typeScale.t2xs, tracking.label),
+    color: colors.ink500,
+  },
+  sosButton: {
+    backgroundColor: colors.dangerSoft,
+    borderRadius: radius.pill,
+    paddingHorizontal: spacing.sp4,
+    height: 34,
+    justifyContent: 'center',
+  },
+  sosButtonHeld: { backgroundColor: colors.danger },
+  sosText: {
+    fontFamily: fonts.displayBlack,
+    fontSize: typeScale.tSm,
+    color: colors.danger,
+  },
   livePillText: {
     fontFamily: fonts.displayExtra,
     fontSize: typeScale.tXs,

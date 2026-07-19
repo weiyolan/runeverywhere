@@ -33,4 +33,12 @@ export const qk = {
   conversationMessages: (id: string) => ['conversation', id, 'messages'] as const,
   notifications: () => ['notifications'] as const,
   notificationsUnread: () => ['notifications', 'unread-count'] as const,
+  // P5
+  profileStats: (id: string) => ['profile', id, 'stats'] as const,
+  badges: (userId: string) => ['badges', userId] as const,
+  reviews: (revieweeId: string) => ['reviews', revieweeId] as const,
+  leaderboard: (isoWeek: string, city: string) => ['leaderboard', isoWeek, city] as const,
+  blocks: () => ['blocks'] as const,
+  safetyContacts: () => ['safety-contacts'] as const,
+  levels: () => ['levels'] as const,
 };

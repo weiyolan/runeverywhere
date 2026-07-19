@@ -25,6 +25,10 @@ const MAX_SESSION_MS = 12 * 60 * 60 * 1000;
 /** Trailing accepted points kept in memory for the pace window. */
 let paceWindow: TrackPoint[] = [];
 
+/** Live-share throttle (P5 G4): upsert the latest point ≤ every 20 s. */
+let lastShareWriteMs = 0;
+const SHARE_INTERVAL_MS = 20000;
+
 function toTrackPoint(loc: Location.LocationObject): TrackPoint {
   return {
     t: loc.timestamp,
@@ -75,6 +79,22 @@ TaskManager.defineTask(LOCATION_TASK, async ({ data, error }) => {
       meta = await appendSamples({ ...meta, track, movingMs, startedAt }, accepted);
       await writeMeta(meta);
       paceWindow = [...paceWindow, ...accepted].slice(-60);
+    }
+
+    // Live share: swallow failures — the next tick retries; never block
+    // recording (P5 G4).
+    const share = useLiveRun.getState().shareSessionId;
+    const newest = accepted[accepted.length - 1];
+    if (share && newest && Date.now() - lastShareWriteMs >= SHARE_INTERVAL_MS) {
+      lastShareWriteMs = Date.now();
+      const { upsertLiveLocation } = await import('@/lib/safety');
+      upsertLiveLocation(share, {
+        lat: newest.lat,
+        lng: newest.lng,
+        accuracyM: newest.acc,
+        distanceKm: Math.round((track.distanceM / 1000) * 100) / 100,
+        elapsedS: startedAt != null ? Math.round((Date.now() - startedAt) / 1000) : undefined,
+      }).catch(() => {});
     }
 
     useLiveRun.setState((s) => ({

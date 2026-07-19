@@ -52,3 +52,73 @@ export async function setHomeLocation(lat: number, lng: number, city: string) {
   if (error) throw error;
   return data;
 }
+
+// --- P5 profile reads -------------------------------------------------------
+
+export type ProfileRow = Database['public']['Tables']['profiles']['Row'];
+export type BadgeRow = Database['public']['Tables']['badges']['Row'];
+export type LevelRow = Database['public']['Tables']['levels']['Row'];
+
+export interface BadgeWithEarned extends BadgeRow {
+  earned_at: string | null;
+}
+
+export interface ReviewWithAuthor {
+  id: string;
+  stars: number;
+  tags: string[];
+  note: string;
+  created_at: string;
+  reviewer: { id: string; display_name: string; avatar_url: string | null } | null;
+  run: { title: string } | null;
+}
+
+/** Null when the row is unreadable (hidden / blocked-by-them / deleted). */
+export async function fetchProfile(id: string): Promise<ProfileRow | null> {
+  const { data, error } = await supabase.from('profiles').select('*').eq('id', id).maybeSingle();
+  if (error) throw error;
+  return data;
+}
+
+export async function fetchProfileStats(id: string) {
+  const { data, error } = await supabase.rpc('get_profile_stats', { p_user_id: id });
+  if (error) throw error;
+  return data[0] ?? null;
+}
+
+export async function canViewProfile(id: string): Promise<boolean> {
+  const { data, error } = await supabase.rpc('can_view_profile', { p_profile_id: id });
+  if (error) throw error;
+  return data;
+}
+
+/** Full catalog left-joined with the user's earned rows. */
+export async function fetchBadges(userId: string): Promise<BadgeWithEarned[]> {
+  const [catalogRes, earnedRes] = await Promise.all([
+    supabase.from('badges').select('*').eq('active', true).order('sort'),
+    supabase.from('user_badges').select('badge_code, earned_at').eq('user_id', userId),
+  ]);
+  if (catalogRes.error) throw catalogRes.error;
+  if (earnedRes.error) throw earnedRes.error;
+  const earned = new Map(earnedRes.data.map((b) => [b.badge_code, b.earned_at]));
+  return catalogRes.data.map((b) => ({ ...b, earned_at: earned.get(b.code) ?? null }));
+}
+
+export async function fetchReviews(revieweeId: string): Promise<ReviewWithAuthor[]> {
+  const { data, error } = await supabase
+    .from('reviews')
+    .select(
+      'id, stars, tags, note, created_at, reviewer:profiles!reviews_reviewer_id_fkey(id, display_name, avatar_url), run:runs(title)',
+    )
+    .eq('reviewee_id', revieweeId)
+    .order('created_at', { ascending: false })
+    .limit(20);
+  if (error) throw error;
+  return data as unknown as ReviewWithAuthor[];
+}
+
+export async function fetchLevels(): Promise<LevelRow[]> {
+  const { data, error } = await supabase.from('levels').select('*').order('level');
+  if (error) throw error;
+  return data;
+}

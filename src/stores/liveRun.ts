@@ -21,6 +21,9 @@ interface LiveRunState {
   /** Decimated polyline for the map (max ~1000 points). */
   coords: LatLng[];
   backgroundGranted: boolean;
+  /** Active live-share session (P5 G4); null when not sharing. */
+  shareSessionId: string | null;
+  shareToken: string | null;
   set: (patch: Partial<LiveRunState>) => void;
   appendCoords: (points: LatLng[]) => void;
   reset: () => void;
@@ -36,6 +39,8 @@ const initial = {
   currentPace: null,
   coords: [] as LatLng[],
   backgroundGranted: true,
+  shareSessionId: null as string | null,
+  shareToken: null as string | null,
 };
 
 export const useLiveRun = create<LiveRunState>((set) => ({

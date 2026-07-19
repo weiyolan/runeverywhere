@@ -143,6 +143,9 @@ export default function RootLayout() {
               <Stack.Screen name="live/[runId]" options={{ gestureEnabled: false }} />
               <Stack.Screen name="recap/[trackId]" options={{ gestureEnabled: false }} />
               <Stack.Screen name="review/[runId]" />
+              <Stack.Screen name="user/[id]" />
+              <Stack.Screen name="rewards" />
+              <Stack.Screen name="settings" />
               <Stack.Screen name="invite/[code]" />
               <Stack.Screen name="dev/components" options={{ headerShown: true, title: 'Components' }} />
             </Stack>
