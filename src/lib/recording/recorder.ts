@@ -5,6 +5,8 @@
  */
 import * as Location from 'expo-location';
 
+import { colors } from '@/theme/theme';
+
 import * as buffer from '@/lib/recording/buffer';
 import { LOCATION_TASK, flushBuffer, resetPaceWindow } from '@/lib/recording/locationTask';
 import { ensureRecordingPermissions } from '@/lib/recording/permissions';
@@ -38,7 +40,7 @@ export async function startRecording(runId: string) {
     foregroundService: {
       notificationTitle: 'Run Everywhere — recording',
       notificationBody: 'Tracking your run. Tap to return.',
-      notificationColor: '#CCFF00',
+      notificationColor: colors.volt,
       killServiceOnDestroy: false,
     },
   });
@@ -116,7 +118,7 @@ export async function resumeSalvaged() {
     foregroundService: {
       notificationTitle: 'Run Everywhere — recording',
       notificationBody: 'Tracking your run. Tap to return.',
-      notificationColor: '#CCFF00',
+      notificationColor: colors.volt,
       killServiceOnDestroy: false,
     },
   });

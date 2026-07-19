@@ -57,7 +57,7 @@ export default function UserProfileScreen() {
     enabled: id != null,
   });
   const viewable = useQuery({
-    queryKey: [...qk.profile(id ?? ''), 'can-view'],
+    queryKey: qk.profileCanView(id ?? ''),
     queryFn: () => canViewProfile(id!),
     enabled: id != null,
   }).data;

@@ -79,15 +79,19 @@ export function ReportSheet({
     }
   };
 
+  // Blocking severs server-side; every surface the A3 table names refetches.
   const invalidateAfterBlock = () => {
     void queryClient.invalidateQueries({ queryKey: qk.blocks() });
-    void queryClient.invalidateQueries({ queryKey: ['runs'] });
+    void queryClient.invalidateQueries({ queryKey: qk.runsNearbyAll() });
+    void queryClient.invalidateQueries({ queryKey: qk.runsSearchAll() });
+    void queryClient.invalidateQueries({ queryKey: qk.runsMine() });
+    void queryClient.invalidateQueries({ queryKey: qk.runsPast() });
     void queryClient.invalidateQueries({ queryKey: qk.conversations() });
-    void queryClient.invalidateQueries({ queryKey: ['conversation'] });
+    void queryClient.invalidateQueries({ queryKey: ['conversation'] }); // all chat streams
     void queryClient.invalidateQueries({ queryKey: qk.notifications() });
-    void queryClient.invalidateQueries({ queryKey: ['leaderboard'] });
-    void queryClient.invalidateQueries({ queryKey: ['reviews'] });
-    void queryClient.invalidateQueries({ queryKey: ['run'] });
+    void queryClient.invalidateQueries({ queryKey: ['leaderboard'] }); // every week/city
+    void queryClient.invalidateQueries({ queryKey: ['reviews'] }); // every reviewee
+    void queryClient.invalidateQueries({ queryKey: ['run'] }); // run details + members
   };
 
   const confirmBlock = () =>

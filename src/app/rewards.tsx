@@ -254,7 +254,7 @@ const styles = StyleSheet.create({
     padding: spacing.sp3,
   },
   rowMe: {
-    backgroundColor: '#F4FBCB',
+    backgroundColor: colors.voltSoft,
     borderColor: colors.voltPress,
   },
   rank: {

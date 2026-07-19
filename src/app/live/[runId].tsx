@@ -95,7 +95,7 @@ export default function LiveRunScreen() {
   const [sosHold, setSosHold] = useState(false);
   const sosTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
-  const contacts = useQuery({ queryKey: ['safety-contacts'], queryFn: listContacts }).data;
+  const contacts = useQuery({ queryKey: qk.safetyContacts(), queryFn: listContacts }).data;
 
   const enableShare = async (auto = false) => {
     try {

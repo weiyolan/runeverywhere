@@ -44,7 +44,7 @@ export default function RunsScreen() {
   const { notificationsUnread } = useUnreadBadges();
   const { startRun, explainer } = useStartRun();
 
-  const pastQuery = useQuery({ queryKey: ['runs', 'past'], queryFn: listPastRuns });
+  const pastQuery = useQuery({ queryKey: qk.runsPast(), queryFn: listPastRuns });
   const past = pastQuery.data ?? [];
 
   // Completed runs live in PAST — keep them out of the upcoming lists.

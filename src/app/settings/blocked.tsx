@@ -25,7 +25,7 @@ import {
 export default function BlockedScreen() {
   const insets = useSafeAreaInsets();
   const queryClient = useQueryClient();
-  const query = useQuery({ queryKey: [...qk.blocks(), 'list'], queryFn: listBlocked });
+  const query = useQuery({ queryKey: qk.blockedList(), queryFn: listBlocked });
 
   const handleUnblock = async (userId: string) => {
     await unblock(userId);

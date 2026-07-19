@@ -21,6 +21,7 @@ import { formatPace } from '@/lib/format';
 import { regionForRadius } from '@/lib/geo';
 import { decodeTrack } from '@/lib/recording/geo';
 import { fetchCrew } from '@/lib/reviews';
+import { qk } from '@/lib/queryKeys';
 import type { RunDetail } from '@/lib/runs';
 import { fetchRunAwards } from '@/lib/tracks';
 import { supabase } from '@/lib/supabase';
@@ -42,7 +43,7 @@ export function CompletedRunDetail({ detail }: { detail: RunDetail }) {
   const { run } = detail;
 
   const myTrack = useQuery({
-    queryKey: ['run', run.id, 'my-track'],
+    queryKey: qk.runMyTrack(run.id),
     queryFn: async () => {
       const { data, error } = await supabase
         .from('run_tracks')
@@ -55,12 +56,12 @@ export function CompletedRunDetail({ detail }: { detail: RunDetail }) {
   }).data;
 
   const awards = useQuery({
-    queryKey: ['run', run.id, 'awards'],
+    queryKey: qk.runAwards(run.id),
     queryFn: () => fetchRunAwards(run.id),
   }).data;
 
   const crew = useQuery({
-    queryKey: ['run', run.id, 'crew'],
+    queryKey: qk.runCrew(run.id),
     queryFn: () => fetchCrew(run.id),
   }).data;
 

@@ -53,7 +53,7 @@ export default function ReviewScreen() {
   }).data;
 
   const crewQuery = useQuery({
-    queryKey: ['run', runId ?? '', 'crew'],
+    queryKey: qk.runCrew(runId ?? ''),
     queryFn: () => fetchCrew(runId!),
     enabled: runId != null,
   });
@@ -79,7 +79,7 @@ export default function ReviewScreen() {
         note: note.trim(),
       });
       await crewQuery.refetch();
-      void queryClient.invalidateQueries({ queryKey: ['run', runId, 'awards'] });
+      void queryClient.invalidateQueries({ queryKey: qk.runAwards(runId) });
       void queryClient.invalidateQueries({ queryKey: qk.run(runId) });
       setTarget(null);
       if (res.rate_crew_awarded) {

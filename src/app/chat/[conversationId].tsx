@@ -103,7 +103,7 @@ export default function ChatScreen() {
   const isRun = convo?.kind === 'run';
 
   const hostQuery = useQuery({
-    queryKey: ['run', convo?.run_id ?? 'none', 'host'],
+    queryKey: qk.runHost(convo?.run_id ?? 'none'),
     enabled: convo?.run_id != null,
     queryFn: async () => {
       const { data, error } = await supabase
@@ -118,7 +118,7 @@ export default function ChatScreen() {
   const hostId = hostQuery.data?.host_id;
 
   const meetingQuery = useQuery({
-    queryKey: [...qk.conversationMessages(conversationId ?? ''), 'meeting-point'],
+    queryKey: qk.meetingPoint(conversationId ?? ''),
     queryFn: () => latestMeetingPoint(conversationId!),
     enabled: isRun && conversationId != null,
   });
@@ -172,7 +172,7 @@ export default function ChatScreen() {
         appendToCache(record);
         if (record.kind === 'meeting_point') {
           void queryClient.invalidateQueries({
-            queryKey: [...qk.conversationMessages(conversationId), 'meeting-point'],
+            queryKey: qk.meetingPoint(conversationId),
           });
         }
         void markConversationRead(conversationId);
@@ -230,7 +230,7 @@ export default function ChatScreen() {
     try {
       await sendMessage({ id: Crypto.randomUUID(), conversationId, body, kind: 'meeting_point' });
       await queryClient.invalidateQueries({
-        queryKey: [...qk.conversationMessages(conversationId), 'meeting-point'],
+        queryKey: qk.meetingPoint(conversationId),
       });
       await queryClient.invalidateQueries({ queryKey: qk.conversationMessages(conversationId) });
       setMeetingModal(false);

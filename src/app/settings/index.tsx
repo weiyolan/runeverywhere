@@ -19,7 +19,7 @@ export default function SettingsScreen() {
   const session = useSession((s) => s.session);
   const signOut = useSession((s) => s.signOut);
 
-  const blocked = useQuery({ queryKey: [...qk.blocks(), 'list'], queryFn: listBlocked }).data;
+  const blocked = useQuery({ queryKey: qk.blockedList(), queryFn: listBlocked }).data;
 
   return (
     <View style={[styles.screen, { paddingTop: insets.top + spacing.sp3 }]}>

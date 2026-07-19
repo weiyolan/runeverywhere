@@ -184,7 +184,7 @@ export default function RecapScreen() {
   }, [result]);
 
   const track = useQuery({
-    queryKey: ['track', trackId ?? ''],
+    queryKey: qk.track(trackId ?? ''),
     queryFn: () => fetchTrack(trackId!),
     enabled: trackId != null,
   }).data;
@@ -198,13 +198,13 @@ export default function RecapScreen() {
   }).data;
 
   const awardsQuery = useQuery({
-    queryKey: ['run', runId ?? 'none', 'awards'],
+    queryKey: qk.runAwards(runId ?? 'none'),
     queryFn: () => fetchRunAwards(runId!),
     enabled: runId != null && passed == null,
   });
 
   const crewQuery = useQuery({
-    queryKey: ['run', runId ?? 'none', 'crew'],
+    queryKey: qk.runCrew(runId ?? 'none'),
     queryFn: () => fetchCrew(runId!),
     enabled: runId != null,
   });
