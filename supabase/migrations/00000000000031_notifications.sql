@@ -145,8 +145,8 @@ begin
   select display_name into v_runner from public.profiles where id = new.user_id;
 
   if (tg_op = 'INSERT' and new.status = 'pending')
-     or (tg_op = 'UPDATE' and old.status = 'declined' and new.status = 'pending') then
-    -- New request, or re-request after decline (join_run's upsert path).
+     or (tg_op = 'UPDATE' and old.status in ('declined', 'cancelled') and new.status = 'pending') then
+    -- New request, or re-request after decline/cancel (join_run revives both).
     insert into public.notifications (user_id, kind, title, body, run_id, actor_id)
     values (
       v_run.host_id, 'join_request',

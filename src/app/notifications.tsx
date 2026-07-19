@@ -76,10 +76,11 @@ export default function NotificationsScreen() {
   const queryClient = useQueryClient();
   const [permissionCard, setPermissionCard] = useState(false);
 
-  // Opt-in card when push permission was never asked (P3 E3 prompt timing).
+  // Opt-in card when push permission was never asked — or previously denied,
+  // in which case TURN ON deep-links to OS settings (P3 E3 prompt timing).
   useEffect(() => {
     void Notifications.getPermissionsAsync().then((perm) =>
-      setPermissionCard(perm.status === 'undetermined'),
+      setPermissionCard(perm.status === 'undetermined' || perm.status === 'denied'),
     );
   }, []);
 

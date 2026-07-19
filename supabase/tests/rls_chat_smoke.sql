@@ -274,4 +274,32 @@ begin
 end $$;
 rollback;
 
+-- 10. Re-request after cancel notifies the host again (B4 widened branch) --
+begin;
+set local role authenticated;
+select set_config('request.jwt.claims', '{"sub":"00000000-0000-4000-8000-000000000003","role":"authenticated"}', true);
+do $$
+declare v public.run_members;
+begin
+  v := public.join_run('10000000-0000-4000-8000-000000000001', 'first ask');
+  v := public.cancel_join('10000000-0000-4000-8000-000000000001');
+  v := public.join_run('10000000-0000-4000-8000-000000000001', 'second ask');
+  if v.status <> 'pending' then
+    raise exception 'SMOKE FAIL 10: re-request after cancel not pending';
+  end if;
+end $$;
+select set_config('request.jwt.claims', '{"sub":"00000000-0000-4000-8000-000000000002","role":"authenticated"}', true);
+do $$
+declare v_count int;
+begin
+  select count(*) into v_count from public.notifications
+  where user_id = '00000000-0000-4000-8000-000000000002'
+    and kind = 'join_request'
+    and actor_id = '00000000-0000-4000-8000-000000000003';
+  if v_count < 2 then
+    raise exception 'SMOKE FAIL 10: cancel-then-re-request produced % join_request notifications (want 2)', v_count;
+  end if;
+end $$;
+rollback;
+
 select 'rls_chat_smoke: all cases passed' as result;

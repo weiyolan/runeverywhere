@@ -260,4 +260,20 @@ begin
 end $$;
 rollback;
 
+-- 10. get_profile_stats: no row at all for unviewable profiles ---------------
+begin;
+update public.profiles set visibility = 'hidden' where id = '00000000-0000-4000-8000-000000000002';
+set local role authenticated;
+select set_config('request.jwt.claims', '{"sub":"00000000-0000-4000-8000-000000000004","role":"authenticated"}', true);
+do $$
+begin
+  if exists (select 1 from public.get_profile_stats('00000000-0000-4000-8000-000000000002')) then
+    raise exception 'SMOKE FAIL 10: stats row returned for a hidden profile';
+  end if;
+  if not exists (select 1 from public.get_profile_stats('00000000-0000-4000-8000-000000000001')) then
+    raise exception 'SMOKE FAIL 10: stats row missing for an everyone profile';
+  end if;
+end $$;
+rollback;
+
 select 'rls_safety_smoke: all cases passed' as result;

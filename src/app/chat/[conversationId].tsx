@@ -117,6 +117,22 @@ export default function ChatScreen() {
   });
   const hostId = hostQuery.data?.host_id;
 
+  // DM header subtitle = peer's home city (P3 D6).
+  const peerId = !isRun ? convo?.peer_ids[0] : undefined;
+  const peerCity = useQuery({
+    queryKey: qk.profile(peerId ?? 'none'),
+    enabled: peerId != null,
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('profiles')
+        .select('*')
+        .eq('id', peerId!)
+        .maybeSingle();
+      if (error) throw error;
+      return data;
+    },
+  }).data?.home_city;
+
   const meetingQuery = useQuery({
     queryKey: qk.meetingPoint(conversationId ?? ''),
     queryFn: () => latestMeetingPoint(conversationId!),
@@ -332,7 +348,7 @@ export default function ChatScreen() {
               {isRun
                 ? `You + ${Math.max((convo?.member_count ?? 1) - 1, 0)} going` +
                   (convo?.starts_at ? ` · ${format(new Date(convo.starts_at), 'EEE HH:mm')}` : '')
-                : 'Direct message'}
+                : peerCity ?? 'Runner'}
             </Text>
           </View>
           {isRun && convo?.run_id ? (

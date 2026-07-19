@@ -25,6 +25,10 @@ export async function ensureAndroidChannels() {
     name: 'Run reminders',
     importance: Notifications.AndroidImportance.HIGH,
   });
+  await Notifications.setNotificationChannelAsync('rewards', {
+    name: 'Rewards & leaderboard',
+    importance: Notifications.AndroidImportance.DEFAULT,
+  });
 }
 
 /** Foreground suppression: the visible chat swallows its own banners. */

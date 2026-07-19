@@ -3,12 +3,13 @@ import { useQuery } from '@tanstack/react-query';
 import Constants from 'expo-constants';
 import { router } from 'expo-router';
 import { ArrowLeft } from 'lucide-react-native';
-import { ScrollView, StyleSheet, Text, View } from 'react-native';
+import { Platform, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { SettingsRow, SettingsSection } from '@/components/settings/SettingsRow';
 import { Badge } from '@/components/ui/Badge';
 import { IconButton } from '@/components/ui/IconButton';
+import { FLAGS } from '@/lib/featureFlags';
 import { qk } from '@/lib/queryKeys';
 import { listBlocked } from '@/lib/safety';
 import { useSession } from '@/stores/session';
@@ -20,6 +21,12 @@ export default function SettingsScreen() {
   const signOut = useSession((s) => s.signOut);
 
   const blocked = useQuery({ queryKey: qk.blockedList(), queryFn: listBlocked }).data;
+
+  // P6 C4: section renders only when a platform-visible integration flag is
+  // on — Android with only healthkit enabled must not link to a zero-row
+  // screen. All flags are currently off (src/lib/featureFlags.ts).
+  const integrationsVisible =
+    FLAGS.strava || FLAGS.garmin || (Platform.OS === 'ios' && FLAGS.healthkit);
 
   return (
     <View style={[styles.screen, { paddingTop: insets.top + spacing.sp3 }]}>
@@ -39,6 +46,16 @@ export default function SettingsScreen() {
             onPress={() => router.push('/settings/account')}
           />
         </SettingsSection>
+
+        {integrationsVisible ? (
+          <SettingsSection label="CONNECTED APPS">
+            <SettingsRow
+              label="Connected apps"
+              subtitle="Not connected"
+              onPress={() => router.push('/settings/connections')}
+            />
+          </SettingsSection>
+        ) : null}
 
         <SettingsSection label="PREFERENCES">
           <SettingsRow label="Preferences" onPress={() => router.push('/settings/preferences')} />

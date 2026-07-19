@@ -262,5 +262,7 @@ language sql security definer stable set search_path = '' as $$
          coalesce(sum(elevation_gain_m), 0)::numeric
   from public.run_tracks
   where user_id = p_user_id
-    and public.can_view_profile (p_user_id);
+  -- No row at all for unviewable profiles — a real zero must stay
+  -- distinguishable from hidden/blocked (P5 B4).
+  having public.can_view_profile (p_user_id);
 $$;
