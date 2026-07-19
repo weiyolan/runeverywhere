@@ -395,6 +395,36 @@ export type Database = {
           run: Database["public"]["Tables"]["runs"]["Row"]
         }[]
       }
+      set_home_location: {
+        Args: { p_city: string; p_lat: number; p_lng: number }
+        Returns: {
+          avatar_url: string | null
+          bio: string
+          created_at: string
+          display_name: string
+          distance_band: Database["public"]["Enums"]["distance_band"] | null
+          home_city: string | null
+          home_point: unknown
+          id: string
+          languages: string[]
+          level: number
+          onboarded_at: string | null
+          pace_band: Database["public"]["Enums"]["pace_band"] | null
+          points_total: number
+          rating_avg: number | null
+          rating_count: number
+          tos_accepted_at: string | null
+          units: Database["public"]["Enums"]["units_pref"]
+          updated_at: string
+          visibility: Database["public"]["Enums"]["profile_visibility"]
+        }
+        SetofOptions: {
+          from: "*"
+          to: "profiles"
+          isOneToOne: true
+          isSetofReturn: false
+        }
+      }
     }
     Enums: {
       distance_band: "short" | "mid" | "long" | "ultra"

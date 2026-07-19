@@ -1,7 +1,6 @@
-import { Redirect, Tabs, router } from 'expo-router';
+import { Tabs, router } from 'expo-router';
 
 import { TabBar, type TabId } from '@/components/ui/TabBar';
-import { useSession } from '@/stores/session';
 
 /** Maps router route names to the design's four tab ids. */
 const ROUTE_TO_TAB: Record<string, TabId> = {
@@ -11,16 +10,8 @@ const ROUTE_TO_TAB: Record<string, TabId> = {
   profile: 'profile',
 };
 
+/** Routing lives in the root AuthGate (P1 E3) — this layout only renders. */
 export default function TabsLayout() {
-  const status = useSession((s) => s.status);
-
-  if (status === 'loading') {
-    return null; // splash screen stays up until the session resolves
-  }
-  if (status === 'signedOut') {
-    return <Redirect href="/(auth)/welcome" />;
-  }
-
   return (
     <Tabs
       screenOptions={{ headerShown: false }}

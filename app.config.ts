@@ -12,6 +12,7 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
   ios: {
     bundleIdentifier: 'com.runeverywhere.app',
     supportsTablet: false,
+    usesAppleSignIn: true,
     config: {
       // Google Maps SDK for iOS (react-native-maps, PROVIDER_GOOGLE)
       googleMapsApiKey: process.env.GOOGLE_MAPS_API_KEY_IOS,
@@ -71,6 +72,23 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
       },
     ],
     'expo-notifications',
+    'expo-apple-authentication',
+    [
+      'expo-image-picker',
+      {
+        photosPermission: 'Run Everywhere uses your photos to set your profile picture.',
+      },
+    ],
+    // The google-signin plugin needs the reversed iOS client id; without env
+    // configured (G3) it would break prebuild, so it is gated on the var.
+    ...(process.env.GOOGLE_SIGNIN_IOS_URL_SCHEME
+      ? [
+          [
+            '@react-native-google-signin/google-signin',
+            { iosUrlScheme: process.env.GOOGLE_SIGNIN_IOS_URL_SCHEME },
+          ] satisfies [string, unknown],
+        ]
+      : []),
   ],
   experiments: {
     typedRoutes: true,

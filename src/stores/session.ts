@@ -17,11 +17,9 @@ interface SessionState {
   init: () => void;
   /** Refetch own profile (onboarding writes call this explicitly). */
   refreshProfile: () => Promise<void>;
-  /**
-   * Scaffold-only escape hatch so the app is navigable before Phase 1 wires
-   * real auth. Remove when sign-in screens talk to Supabase (P1.4).
-   */
-  devSignIn: () => void;
+  /** Password-recovery deep link in progress — AuthGate suspends redirects. */
+  recovering: boolean;
+  setRecovering: (recovering: boolean) => void;
   signOut: () => Promise<void>;
 }
 
@@ -56,7 +54,8 @@ export const useSession = create<SessionState>((set, get) => ({
     set({ profile: data, profileStatus: 'ready' });
   },
 
-  devSignIn: () => set({ status: 'signedIn' }),
+  recovering: false,
+  setRecovering: (recovering) => set({ recovering }),
 
   signOut: async () => {
     await supabase.auth.signOut();
