@@ -135,6 +135,7 @@ export default function RootLayout() {
               <Stack.Screen name="onboarding" options={{ gestureEnabled: false }} />
               <Stack.Screen name="(tabs)" />
               <Stack.Screen name="create" options={{ presentation: 'modal' }} />
+              <Stack.Screen name="paywall" options={{ presentation: 'modal' }} />
               <Stack.Screen name="explore/search" />
               <Stack.Screen name="explore/filters" options={{ presentation: 'modal' }} />
               <Stack.Screen name="run/[id]" />
