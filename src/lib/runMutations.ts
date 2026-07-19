@@ -64,6 +64,13 @@ export function useJoinRun(runId: string) {
       return { snapshot: await patchMyMembership(runId, optimistic) };
     },
     onError: (_e, _v, ctx) => rollbackRun(runId, ctx?.snapshot),
+    onSuccess: () => {
+      // Contextual push-permission moment (P3 E3a): the runner now wants to
+      // hear back from the host. Best-effort; never blocks the join.
+      void import('@/lib/notifications').then(({ registerForPush }) =>
+        registerForPush().catch(() => {}),
+      );
+    },
     onSettled: () =>
       invalidate(qk.run(runId), qk.runMembers(runId), qk.runsMine(), qk.runsNearbyAll(), qk.runsSearchAll()),
   });
@@ -141,6 +148,11 @@ export function useCreateRun() {
         });
       }
       invalidate(qk.runsNearbyAll(), qk.runsMine());
+      // Contextual push-permission moment (P3 E3b): a fresh host wants to
+      // hear about join requests. Best-effort; never blocks the publish.
+      void import('@/lib/notifications').then(({ registerForPush }) =>
+        registerForPush().catch(() => {}),
+      );
     },
   });
 }

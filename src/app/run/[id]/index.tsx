@@ -18,6 +18,7 @@ import { Button } from '@/components/ui/Button';
 import { IconButton } from '@/components/ui/IconButton';
 import { StatBlock } from '@/components/ui/StatBlock';
 import { TypeChip } from '@/components/ui/TypeChip';
+import { useOpenDm } from '@/hooks/useOpenDm';
 import { formatPace, spotsLeft as spotsLeftOf } from '@/lib/format';
 import { regionForRadius } from '@/lib/geo';
 import { useRefetchOnFocus } from '@/lib/queryFocus';
@@ -65,6 +66,7 @@ export default function RunDetailScreen() {
 
   const detail = query.data;
   const isHost = Boolean(detail && uid && detail.run.host_id === uid);
+  const { openDm, openingFor } = useOpenDm();
   const isApproved = detail?.myMembership?.status === 'approved';
 
   const membersQuery = useQuery({
@@ -278,6 +280,15 @@ export default function RunDetailScreen() {
                 ) : null}
               </View>
             </View>
+            {isApproved && !isHost ? (
+              <Button
+                label={openingFor ? 'OPENING…' : 'MESSAGE'}
+                size="sm"
+                variant="ghost"
+                disabled={openingFor != null}
+                onPress={() => void openDm(run.host_id)}
+              />
+            ) : null}
           </View>
 
           <View style={styles.capacityRow}>

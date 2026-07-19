@@ -139,3 +139,58 @@ values
     'pending', 'Visiting for the weekend — easy pace suits me.', null, null
   )
 on conflict (run_id, user_id) do nothing;
+
+-- ---------------------------------------------------------------------------
+-- P3 chat fixtures (A10). Maya approved into both of marco's runs: UPDATE her
+-- existing pending Old Town row (exercises the pending→approved trigger path)
+-- and INSERT a fresh approved Monsanto row (direct-join trigger path). Both
+-- fire the conversation-membership + system-message triggers.
+-- ---------------------------------------------------------------------------
+update public.run_members
+set status = 'approved', decided_at = now(), decided_by = '00000000-0000-4000-8000-000000000002'
+where run_id = '10000000-0000-4000-8000-000000000001'
+  and user_id = '00000000-0000-4000-8000-000000000001'
+  and status = 'pending';
+
+insert into public.run_members (run_id, user_id, status, intro_message, decided_at, decided_by)
+values (
+  '10000000-0000-4000-8000-000000000002', '00000000-0000-4000-8000-000000000001',
+  'approved', 'Hill repeats sound great.', now(), '00000000-0000-4000-8000-000000000002'
+)
+on conflict (run_id, user_id) do nothing;
+
+-- Meeting point + a short exchange in the Old Town Loop chat.
+insert into public.messages (conversation_id, sender_id, kind, body)
+select c.id, '00000000-0000-4000-8000-000000000002', 'meeting_point',
+       'Praça do Comércio · arch · 7:50'
+from public.conversations c
+where c.run_id = '10000000-0000-4000-8000-000000000001';
+
+insert into public.messages (conversation_id, sender_id, kind, body)
+select c.id, m.sender, 'user', m.body
+from public.conversations c,
+  (values
+    ('00000000-0000-4000-8000-000000000002'::uuid, 'Welcome Maya — easy pace, lots of views.'),
+    ('00000000-0000-4000-8000-000000000001'::uuid, 'Perfect, first time in Alfama!'),
+    ('00000000-0000-4000-8000-000000000002'::uuid, 'Bring water, the climbs sneak up on you.')
+  ) as m (sender, body)
+where c.run_id = '10000000-0000-4000-8000-000000000001';
+
+-- Leave the last message unread for maya (unread pill + notification demo).
+update public.conversation_members
+set last_read_at = now() - interval '1 hour'
+where user_id = '00000000-0000-4000-8000-000000000001'
+  and conversation_id = (
+    select id from public.conversations
+    where run_id = '10000000-0000-4000-8000-000000000001'
+  );
+
+-- Only Old Town Loop stays unread for maya (trigger-inserted system messages
+-- would otherwise leave stray unread counts on her other conversations).
+update public.conversation_members
+set last_read_at = now()
+where user_id = '00000000-0000-4000-8000-000000000001'
+  and conversation_id <> (
+    select id from public.conversations
+    where run_id = '10000000-0000-4000-8000-000000000001'
+  );

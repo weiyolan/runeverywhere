@@ -28,4 +28,9 @@ export const qk = {
   runMembers: (id: string) => ['run', id, 'members'] as const, // roster + inbox (host/member only)
   pointsPreview: (km: number, type: RunType) => ['points', 'preview', { km, type }] as const,
   profile: (id: string) => ['profile', id] as const, // reserved — P5 user/[id]
+  // P3
+  conversations: () => ['conversations'] as const,
+  conversationMessages: (id: string) => ['conversation', id, 'messages'] as const,
+  notifications: () => ['notifications'] as const,
+  notificationsUnread: () => ['notifications', 'unread-count'] as const,
 };

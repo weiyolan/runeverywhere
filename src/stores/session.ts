@@ -1,6 +1,7 @@
 import type { Session } from '@supabase/supabase-js';
 import { create } from 'zustand';
 
+import { syncRealtimeAuth } from '@/lib/realtime';
 import { supabase } from '@/lib/supabase';
 import type { Database } from '@/types/database.types';
 
@@ -37,6 +38,8 @@ export const useSession = create<SessionState>((set, get) => ({
     supabase.auth.onAuthStateChange((_event, session) => {
       const hadSession = get().session != null;
       set({ session, status: session ? 'signedIn' : 'signedOut' });
+      // Private Broadcast channels need the fresh token on the socket (P3 D3)
+      if (session) syncRealtimeAuth();
       if (session && !hadSession) void get().refreshProfile();
       if (!session) set({ profile: null, profileStatus: 'idle' });
     });
@@ -58,6 +61,9 @@ export const useSession = create<SessionState>((set, get) => ({
   setRecovering: (recovering) => set({ recovering }),
 
   signOut: async () => {
+    // Dynamic import dodges a require cycle (notifications → supabase → …).
+    const { unregisterPush } = await import('@/lib/notifications');
+    await unregisterPush();
     await supabase.auth.signOut();
     set({ session: null, status: 'signedOut', profile: null, profileStatus: 'idle' });
   },

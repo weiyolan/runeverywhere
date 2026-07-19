@@ -14,6 +14,74 @@ export type Database = {
   }
   public: {
     Tables: {
+      conversation_members: {
+        Row: {
+          conversation_id: string
+          joined_at: string
+          last_read_at: string
+          user_id: string
+        }
+        Insert: {
+          conversation_id: string
+          joined_at?: string
+          last_read_at?: string
+          user_id: string
+        }
+        Update: {
+          conversation_id?: string
+          joined_at?: string
+          last_read_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "conversation_members_conversation_id_fkey"
+            columns: ["conversation_id"]
+            isOneToOne: false
+            referencedRelation: "conversations"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "conversation_members_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      conversations: {
+        Row: {
+          created_at: string
+          dm_key: string | null
+          id: string
+          kind: Database["public"]["Enums"]["conversation_kind"]
+          run_id: string | null
+        }
+        Insert: {
+          created_at?: string
+          dm_key?: string | null
+          id?: string
+          kind: Database["public"]["Enums"]["conversation_kind"]
+          run_id?: string | null
+        }
+        Update: {
+          created_at?: string
+          dm_key?: string | null
+          id?: string
+          kind?: Database["public"]["Enums"]["conversation_kind"]
+          run_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "conversations_run_id_fkey"
+            columns: ["run_id"]
+            isOneToOne: true
+            referencedRelation: "runs"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       favorites: {
         Row: {
           created_at: string
@@ -40,6 +108,125 @@ export type Database = {
           },
           {
             foreignKeyName: "favorites_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      messages: {
+        Row: {
+          body: string
+          conversation_id: string
+          created_at: string
+          id: string
+          kind: Database["public"]["Enums"]["message_kind"]
+          sender_id: string | null
+        }
+        Insert: {
+          body: string
+          conversation_id: string
+          created_at?: string
+          id?: string
+          kind?: Database["public"]["Enums"]["message_kind"]
+          sender_id?: string | null
+        }
+        Update: {
+          body?: string
+          conversation_id?: string
+          created_at?: string
+          id?: string
+          kind?: Database["public"]["Enums"]["message_kind"]
+          sender_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "messages_conversation_id_fkey"
+            columns: ["conversation_id"]
+            isOneToOne: false
+            referencedRelation: "conversations"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "messages_sender_id_fkey"
+            columns: ["sender_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      notifications: {
+        Row: {
+          actor_id: string | null
+          body: string
+          conversation_id: string | null
+          created_at: string
+          id: string
+          kind: Database["public"]["Enums"]["notification_kind"]
+          push_checked_at: string | null
+          push_sent_at: string | null
+          push_tickets: Json | null
+          read_at: string | null
+          run_id: string | null
+          title: string
+          user_id: string
+        }
+        Insert: {
+          actor_id?: string | null
+          body?: string
+          conversation_id?: string | null
+          created_at?: string
+          id?: string
+          kind: Database["public"]["Enums"]["notification_kind"]
+          push_checked_at?: string | null
+          push_sent_at?: string | null
+          push_tickets?: Json | null
+          read_at?: string | null
+          run_id?: string | null
+          title: string
+          user_id: string
+        }
+        Update: {
+          actor_id?: string | null
+          body?: string
+          conversation_id?: string | null
+          created_at?: string
+          id?: string
+          kind?: Database["public"]["Enums"]["notification_kind"]
+          push_checked_at?: string | null
+          push_sent_at?: string | null
+          push_tickets?: Json | null
+          read_at?: string | null
+          run_id?: string | null
+          title?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "notifications_actor_id_fkey"
+            columns: ["actor_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "notifications_conversation_id_fkey"
+            columns: ["conversation_id"]
+            isOneToOne: false
+            referencedRelation: "conversations"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "notifications_run_id_fkey"
+            columns: ["run_id"]
+            isOneToOne: false
+            referencedRelation: "runs"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "notifications_user_id_fkey"
             columns: ["user_id"]
             isOneToOne: false
             referencedRelation: "profiles"
@@ -112,6 +299,35 @@ export type Database = {
           visibility?: Database["public"]["Enums"]["profile_visibility"]
         }
         Relationships: []
+      }
+      push_tokens: {
+        Row: {
+          platform: string
+          token: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          platform: string
+          token: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          platform?: string
+          token?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "push_tokens_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       run_members: {
         Row: {
@@ -272,6 +488,10 @@ export type Database = {
         }
         Returns: number
       }
+      get_or_create_dm: {
+        Args: { p_other_user: string }
+        Returns: string
+      }
       get_run_by_invite: {
         Args: { p_code: string }
         Returns: {
@@ -303,6 +523,10 @@ export type Database = {
           isSetofReturn: true
         }
       }
+      is_conversation_member: {
+        Args: { p_conversation_id: string; p_user_id: string }
+        Returns: boolean
+      }
       is_run_member: {
         Args: { p_run_id: string; p_user_id: string }
         Returns: boolean
@@ -324,6 +548,30 @@ export type Database = {
           isOneToOne: true
           isSetofReturn: false
         }
+      }
+      list_conversations: {
+        Args: Record<PropertyKey, never>
+        Returns: {
+          conversation_id: string
+          kind: Database["public"]["Enums"]["conversation_kind"]
+          last_at: string | null
+          last_body: string | null
+          last_kind: Database["public"]["Enums"]["message_kind"] | null
+          last_sender_id: string | null
+          member_count: number
+          peer_avatars: string[]
+          peer_ids: string[]
+          peer_names: string[]
+          run_id: string | null
+          run_type: Database["public"]["Enums"]["run_type"] | null
+          starts_at: string | null
+          title: string
+          unread_count: number
+        }[]
+      }
+      mark_conversation_read: {
+        Args: { p_conversation_id: string }
+        Returns: undefined
       }
       remove_member: {
         Args: { p_run_id: string; p_user_id: string }
@@ -425,11 +673,20 @@ export type Database = {
           isSetofReturn: false
         }
       }
+      uuid_or_null: {
+        Args: { p: string }
+        Returns: string
+      }
     }
     Enums: {
+      conversation_kind: "run" | "dm"
       distance_band: "short" | "mid" | "long" | "ultra"
       member_status:
         "pending" | "approved" | "declined" | "cancelled" | "removed"
+      message_kind: "user" | "system" | "meeting_point"
+      notification_kind:
+        "join_request" | "request_approved" | "request_declined" |
+        "member_joined" | "message" | "run_reminder"
       pace_band: "easy" | "steady" | "quick" | "fast"
       profile_visibility: "everyone" | "members" | "hidden"
       run_status: "published" | "cancelled" | "completed"
@@ -560,6 +817,7 @@ export type CompositeTypes<
 export const Constants = {
   public: {
     Enums: {
+      conversation_kind: ["run", "dm"],
       distance_band: ["short", "mid", "long", "ultra"],
       member_status: [
         "pending",
@@ -567,6 +825,15 @@ export const Constants = {
         "declined",
         "cancelled",
         "removed",
+      ],
+      message_kind: ["user", "system", "meeting_point"],
+      notification_kind: [
+        "join_request",
+        "request_approved",
+        "request_declined",
+        "member_joined",
+        "message",
+        "run_reminder",
       ],
       pace_band: ["easy", "steady", "quick", "fast"],
       profile_visibility: ["everyone", "members", "hidden"],

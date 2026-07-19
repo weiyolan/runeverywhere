@@ -6,9 +6,16 @@ import { StyleSheet, Text, View } from 'react-native';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 
+import * as Notifications from 'expo-notifications';
+
 import { Button } from '@/components/ui/Button';
+import {
+  ensureAndroidChannels,
+  installNotificationHandler,
+} from '@/lib/notifications';
 import { queryClient } from '@/lib/queryClient';
 import '@/lib/queryFocus'; // wire TanStack focus to RN app state (P2 D5)
+import { qk } from '@/lib/queryKeys';
 import { useSession } from '@/stores/session';
 import { semantic, sizing, spacing, textStyles } from '@/theme/theme';
 
@@ -78,6 +85,30 @@ export default function RootLayout() {
     init();
   }, [init]);
 
+  // Push plumbing (P3 E4): channels, foreground suppression, tap navigation.
+  useEffect(() => {
+    installNotificationHandler();
+    void ensureAndroidChannels();
+
+    const invalidate = () => {
+      void queryClient.invalidateQueries({ queryKey: qk.conversations() });
+      void queryClient.invalidateQueries({ queryKey: qk.notifications() });
+    };
+    const received = Notifications.addNotificationReceivedListener(invalidate);
+
+    const openFromResponse = (response: Notifications.NotificationResponse | null) => {
+      const url = response?.notification.request.content.data?.url;
+      if (typeof url === 'string') router.push(url as never);
+    };
+    const responded = Notifications.addNotificationResponseReceivedListener(openFromResponse);
+    void Notifications.getLastNotificationResponseAsync().then(openFromResponse); // cold start
+
+    return () => {
+      received.remove();
+      responded.remove();
+    };
+  }, []);
+
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
       <SafeAreaProvider>
@@ -97,6 +128,8 @@ export default function RootLayout() {
               <Stack.Screen name="explore/search" />
               <Stack.Screen name="explore/filters" options={{ presentation: 'modal' }} />
               <Stack.Screen name="run/[id]" />
+              <Stack.Screen name="chat/[conversationId]" />
+              <Stack.Screen name="notifications" />
               <Stack.Screen name="invite/[code]" />
               <Stack.Screen name="dev/components" options={{ headerShown: true, title: 'Components' }} />
             </Stack>

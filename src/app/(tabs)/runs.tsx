@@ -8,10 +8,14 @@ import { useState } from 'react';
 import { FlatList, RefreshControl, StyleSheet, Text, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
+import { Bell } from 'lucide-react-native';
+
 import { Badge } from '@/components/ui/Badge';
 import { Button } from '@/components/ui/Button';
+import { IconButton } from '@/components/ui/IconButton';
 import { RunCard } from '@/components/ui/RunCard';
 import { Tabs } from '@/components/ui/Tabs';
+import { useUnreadBadges } from '@/hooks/useUnreadBadges';
 import { formatKm, formatPace, formatWhen } from '@/lib/format';
 import { useRefetchOnFocus } from '@/lib/queryFocus';
 import { qk } from '@/lib/queryKeys';
@@ -35,6 +39,7 @@ export default function RunsScreen() {
 
   const query = useQuery({ queryKey: qk.runsMine(), queryFn: fetchMyRuns });
   useRefetchOnFocus([qk.runsMine()]);
+  const { notificationsUnread } = useUnreadBadges();
 
   const hosted: Item[] = (query.data?.hosted ?? []).map((r) => ({
     run: r,
@@ -67,7 +72,26 @@ export default function RunsScreen() {
   return (
     <View style={[styles.screen, { paddingTop: insets.top + spacing.sp4 }]}>
       <View style={styles.header}>
-        <Text style={textStyles.screenTitle}>Your runs</Text>
+        <View style={styles.titleRow}>
+          <Text style={[textStyles.screenTitle, styles.title]}>Your runs</Text>
+          <View>
+            <IconButton
+              variant="surface"
+              round
+              accessibilityLabel="Notifications"
+              onPress={() => router.push('/notifications')}
+            >
+              <Bell size={20} />
+            </IconButton>
+            {notificationsUnread > 0 ? (
+              <View style={styles.bellBadge}>
+                <Badge tone="danger" solid>
+                  {notificationsUnread > 99 ? '99+' : notificationsUnread}
+                </Badge>
+              </View>
+            ) : null}
+          </View>
+        </View>
         <Tabs
           items={[
             { id: 'all', label: 'All' },
@@ -139,6 +163,9 @@ export default function RunsScreen() {
 const styles = StyleSheet.create({
   screen: { flex: 1, backgroundColor: colors.paper2 },
   header: { paddingHorizontal: sizing.gutter, gap: spacing.sp3 },
+  titleRow: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' },
+  title: { flex: 1 },
+  bellBadge: { position: 'absolute', top: -6, right: -6 },
   list: { paddingHorizontal: sizing.gutter, paddingTop: spacing.sp3, gap: spacing.sp3 },
   empty: { alignItems: 'center', gap: spacing.sp3, paddingVertical: spacing.sp10 },
   cardWrap: { gap: spacing.sp1 },
