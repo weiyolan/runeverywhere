@@ -17,8 +17,10 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
       // Google Maps SDK for iOS (react-native-maps, PROVIDER_GOOGLE)
       googleMapsApiKey: process.env.GOOGLE_MAPS_API_KEY_IOS,
     },
-    // Phase 4 (live run recording) adds:
-    // infoPlist: { UIBackgroundModes: ['location'] } + location usage strings
+    infoPlist: {
+      // Live-run recording keeps counting with the screen locked (P4 A1)
+      UIBackgroundModes: ['location'],
+    },
   },
   android: {
     package: 'com.runeverywhere.app',
@@ -67,8 +69,12 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
       {
         locationWhenInUsePermission:
           'Run Everywhere shows runs near you and lets you drop a start point on the map.',
-        // Phase 4 enables background recording:
-        // locationAlwaysAndWhenInUsePermission, isAndroidForegroundServiceEnabled: true
+        locationAlwaysAndWhenInUsePermission:
+          'Run Everywhere records your route while you run, so distance and pace keep counting with the screen locked.',
+        isIosBackgroundLocationEnabled: true,
+        // Foreground service + when-in-use only — no ACCESS_BACKGROUND_LOCATION
+        // (Play-policy-friendly; P4 A1 decision)
+        isAndroidForegroundServiceEnabled: true,
       },
     ],
     'expo-notifications',

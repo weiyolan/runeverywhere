@@ -194,3 +194,68 @@ where user_id = '00000000-0000-4000-8000-000000000001'
     select id from public.conversations
     where run_id = '10000000-0000-4000-8000-000000000001'
   );
+
+-- ---------------------------------------------------------------------------
+-- P4 fixtures (D6): one completed past run with tracks, ledger rows and a
+-- review so History/recap demo locally without running outdoors.
+-- ---------------------------------------------------------------------------
+insert into public.runs (
+  id, host_id, type, visibility, status, title, goal, start_point, area_name,
+  city, country_code, distance_km, max_group, target_pace_s_per_km, starts_at,
+  closed_loop
+)
+values (
+  '10000000-0000-4000-8000-000000000005', '00000000-0000-4000-8000-000000000002',
+  'social', 'open', 'completed', 'River Loop',
+  'Flat riverside spin, coffee after.',
+  extensions.st_setsrid (extensions.st_makepoint (-9.2033, 38.6970), 4326)::extensions.geography,
+  'Belém', 'Lisbon', 'PT', 5.2, 10, 380, now() - interval '2 days', true
+)
+on conflict (id) do nothing;
+
+insert into public.run_members (run_id, user_id, status, intro_message, decided_at, decided_by)
+values (
+  '10000000-0000-4000-8000-000000000005', '00000000-0000-4000-8000-000000000001',
+  'approved', '', now() - interval '3 days', '00000000-0000-4000-8000-000000000002'
+)
+on conflict (run_id, user_id) do nothing;
+
+insert into public.run_tracks (
+  run_id, user_id, polyline, distance_m, duration_s, elevation_gain_m,
+  avg_pace_s_per_km, started_at, ended_at
+)
+values
+  (
+    '10000000-0000-4000-8000-000000000005', '00000000-0000-4000-8000-000000000001',
+    'g_ekFrodw@oFkMcGwLcGkM_DsNjCsNbGjMbG~MnF~Mf@~MSjM',
+    5200, 1908, 21, 367,
+    now() - interval '2 days', now() - interval '2 days' + interval '32 minutes'
+  ),
+  (
+    '10000000-0000-4000-8000-000000000005', '00000000-0000-4000-8000-000000000002',
+    'g_ekFrodw@oFkMcGwLcGkM_DsNjCsNbGjMbG~MnF~Mf@~MSjM',
+    5250, 1880, 22, 358,
+    now() - interval '2 days', now() - interval '2 days' + interval '32 minutes'
+  )
+on conflict (run_id, user_id) do nothing;
+
+-- Ledger rows (the trigger updates points_total/level caches).
+insert into public.points_ledger (user_id, run_id, reason, points)
+values
+  ('00000000-0000-4000-8000-000000000001', '10000000-0000-4000-8000-000000000005', 'finished', 54),
+  ('00000000-0000-4000-8000-000000000001', '10000000-0000-4000-8000-000000000005', 'distance_goal', 20),
+  ('00000000-0000-4000-8000-000000000001', '10000000-0000-4000-8000-000000000005', 'on_time', 10),
+  ('00000000-0000-4000-8000-000000000001', '10000000-0000-4000-8000-000000000005', 'rate_crew', 10),
+  ('00000000-0000-4000-8000-000000000002', '10000000-0000-4000-8000-000000000005', 'finished', 54),
+  ('00000000-0000-4000-8000-000000000002', '10000000-0000-4000-8000-000000000005', 'distance_goal', 20),
+  ('00000000-0000-4000-8000-000000000002', '10000000-0000-4000-8000-000000000005', 'on_time', 10)
+on conflict (user_id, run_id, reason) do nothing;
+
+-- One review maya → marco (the rating trigger fills marco's aggregates).
+insert into public.reviews (run_id, reviewer_id, reviewee_id, stars, tags, note)
+values (
+  '10000000-0000-4000-8000-000000000005',
+  '00000000-0000-4000-8000-000000000001', '00000000-0000-4000-8000-000000000002',
+  5, '{"Great pace","Good vibes"}', 'Lovely easy pace and great route picks.'
+)
+on conflict (run_id, reviewer_id, reviewee_id) do nothing;

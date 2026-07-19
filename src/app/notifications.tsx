@@ -44,11 +44,14 @@ const KIND_DOT: Record<Database['public']['Enums']['notification_kind'], string>
   member_joined: colors.go,
   message: colors.discover,
   run_reminder: colors.volt,
+  run_completed: colors.go,
+  review_received: colors.star,
 };
 
 function targetFor(n: NotificationRow): string | null {
   if (n.kind === 'message' && n.conversation_id) return `/chat/${n.conversation_id}`;
   if (n.kind === 'join_request' && n.run_id) return `/run/${n.run_id}/requests`;
+  if (n.kind === 'run_completed' && n.run_id) return `/review/${n.run_id}`;
   if (n.run_id) return `/run/${n.run_id}`;
   return null;
 }

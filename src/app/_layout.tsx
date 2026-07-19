@@ -16,6 +16,8 @@ import {
 import { queryClient } from '@/lib/queryClient';
 import '@/lib/queryFocus'; // wire TanStack focus to RN app state (P2 D5)
 import { qk } from '@/lib/queryKeys';
+import '@/lib/recording/locationTask'; // define the background task before any headless invocation (P4 E1)
+import { getRecoveryState } from '@/lib/recording/recorder';
 import { useSession } from '@/stores/session';
 import { semantic, sizing, spacing, textStyles } from '@/theme/theme';
 
@@ -85,6 +87,14 @@ export default function RootLayout() {
     init();
   }, [init]);
 
+  // Crash recovery (P4 E6): a live task resumes, a dead one offers salvage.
+  useEffect(() => {
+    void getRecoveryState().then((rec) => {
+      if (rec.kind === 'resume-live') router.replace(`/live/${rec.runId}`);
+      else if (rec.kind === 'salvage') router.replace(`/live/${rec.runId}?salvage=1`);
+    });
+  }, []);
+
   // Push plumbing (P3 E4): channels, foreground suppression, tap navigation.
   useEffect(() => {
     installNotificationHandler();
@@ -130,6 +140,9 @@ export default function RootLayout() {
               <Stack.Screen name="run/[id]" />
               <Stack.Screen name="chat/[conversationId]" />
               <Stack.Screen name="notifications" />
+              <Stack.Screen name="live/[runId]" options={{ gestureEnabled: false }} />
+              <Stack.Screen name="recap/[trackId]" options={{ gestureEnabled: false }} />
+              <Stack.Screen name="review/[runId]" />
               <Stack.Screen name="invite/[code]" />
               <Stack.Screen name="dev/components" options={{ headerShown: true, title: 'Components' }} />
             </Stack>

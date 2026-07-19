@@ -12,6 +12,8 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { AppMap, AppMarker } from '@/components/map/AppMap';
 import { RouteMarker } from '@/components/map/RouteMarker';
+import { CompletedRunDetail } from '@/components/run/CompletedRunDetail';
+import { useStartRun } from '@/components/run/StartRunGate';
 import { Avatar } from '@/components/ui/Avatar';
 import { Badge } from '@/components/ui/Badge';
 import { Button } from '@/components/ui/Button';
@@ -77,6 +79,7 @@ export default function RunDetailScreen() {
 
   const join = useJoinRun(id);
   const cancel = useCancelJoin(id);
+  const { startRun, explainer } = useStartRun();
 
   if (query.isError) {
     const notFound = query.error instanceof RunNotFoundError;
@@ -103,6 +106,11 @@ export default function RunDetailScreen() {
     );
   }
 
+  // Completed runs render the Reward Loop completedDetail state (P4 H4).
+  if (detail.run.status === 'completed') {
+    return <CompletedRunDetail detail={detail} />;
+  }
+
   const { run, host, approvedCount, myMembership } = detail;
   const t = runType[run.type];
   const starts = new Date(run.starts_at);
@@ -127,9 +135,18 @@ export default function RunDetailScreen() {
       { text: 'Cancel spot', style: 'destructive', onPress: () => cancel.mutate() },
     ]);
 
+  // P4 F4: for host + approved members of a published run, START RUN outranks
+  // the "already started" banner from 30 min before starts_at onward.
+  const inStartWindow =
+    run.status === 'published' && now >= starts.getTime() - 30 * 60 * 1000;
+
   const footer = (() => {
     if (run.status === 'cancelled')
       return <StatePanel tone="danger" title="This run was cancelled by the host." />;
+    if (inStartWindow && (isHost || isApproved))
+      return (
+        <Button label="START RUN" full onPress={() => void startRun(id)} />
+      );
     if (run.status === 'completed' || started)
       return <StatePanel tone="muted" title="This run has already started." />;
     if (isHost)
@@ -311,6 +328,7 @@ export default function RunDetailScreen() {
       </ScrollView>
 
       <View style={[styles.footer, { paddingBottom: insets.bottom + spacing.sp4 }]}>{footer}</View>
+      {explainer}
     </View>
   );
 }

@@ -115,6 +115,24 @@ export type Database = {
           },
         ]
       }
+      levels: {
+        Row: {
+          level: number
+          min_points: number
+          title: string
+        }
+        Insert: {
+          level: number
+          min_points: number
+          title?: string
+        }
+        Update: {
+          level?: number
+          min_points?: number
+          title?: string
+        }
+        Relationships: []
+      }
       messages: {
         Row: {
           body: string
@@ -234,6 +252,48 @@ export type Database = {
           },
         ]
       }
+      points_ledger: {
+        Row: {
+          created_at: string
+          id: number
+          points: number
+          reason: Database["public"]["Enums"]["points_reason"]
+          run_id: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: never
+          points: number
+          reason: Database["public"]["Enums"]["points_reason"]
+          run_id: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: never
+          points?: number
+          reason?: Database["public"]["Enums"]["points_reason"]
+          run_id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "points_ledger_run_id_fkey"
+            columns: ["run_id"]
+            isOneToOne: false
+            referencedRelation: "runs"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "points_ledger_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       profiles: {
         Row: {
           avatar_url: string | null
@@ -329,6 +389,61 @@ export type Database = {
           },
         ]
       }
+      reviews: {
+        Row: {
+          created_at: string
+          id: string
+          note: string
+          reviewee_id: string
+          reviewer_id: string
+          run_id: string
+          stars: number
+          tags: string[]
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          note?: string
+          reviewee_id: string
+          reviewer_id: string
+          run_id: string
+          stars: number
+          tags?: string[]
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          note?: string
+          reviewee_id?: string
+          reviewer_id?: string
+          run_id?: string
+          stars?: number
+          tags?: string[]
+        }
+        Relationships: [
+          {
+            foreignKeyName: "reviews_reviewee_id_fkey"
+            columns: ["reviewee_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "reviews_reviewer_id_fkey"
+            columns: ["reviewer_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "reviews_run_id_fkey"
+            columns: ["run_id"]
+            isOneToOne: false
+            referencedRelation: "runs"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       run_members: {
         Row: {
           decided_at: string | null
@@ -374,6 +489,69 @@ export type Database = {
           },
           {
             foreignKeyName: "run_members_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      run_tracks: {
+        Row: {
+          avg_pace_s_per_km: number
+          created_at: string
+          distance_m: number
+          duration_s: number
+          elevation_gain_m: number
+          ended_at: string
+          id: string
+          polyline: string
+          raw_path: string | null
+          run_id: string
+          sample_count: number | null
+          started_at: string
+          user_id: string
+        }
+        Insert: {
+          avg_pace_s_per_km: number
+          created_at?: string
+          distance_m: number
+          duration_s: number
+          elevation_gain_m?: number
+          ended_at: string
+          id?: string
+          polyline: string
+          raw_path?: string | null
+          run_id: string
+          sample_count?: number | null
+          started_at: string
+          user_id: string
+        }
+        Update: {
+          avg_pace_s_per_km?: number
+          created_at?: string
+          distance_m?: number
+          duration_s?: number
+          elevation_gain_m?: number
+          ended_at?: string
+          id?: string
+          polyline?: string
+          raw_path?: string | null
+          run_id?: string
+          sample_count?: number | null
+          started_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "run_tracks_run_id_fkey"
+            columns: ["run_id"]
+            isOneToOne: false
+            referencedRelation: "runs"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "run_tracks_user_id_fkey"
             columns: ["user_id"]
             isOneToOne: false
             referencedRelation: "profiles"
@@ -481,6 +659,19 @@ export type Database = {
           isSetofReturn: false
         }
       }
+      complete_run: {
+        Args: {
+          p_distance_m: number
+          p_duration_s: number
+          p_elevation_gain_m: number
+          p_ended_at: string
+          p_polyline: string
+          p_raw_path?: string | null
+          p_run_id: string
+          p_started_at: string
+        }
+        Returns: Json
+      }
       compute_points_reward: {
         Args: {
           p_distance_km: number
@@ -567,6 +758,27 @@ export type Database = {
           starts_at: string | null
           title: string
           unread_count: number
+        }[]
+      }
+      list_past_runs: {
+        Args: Record<PropertyKey, never>
+        Returns: {
+          area_name: string
+          city: string
+          distance_km: number
+          my_rating_given: number | null
+          peer_avatars: string[]
+          peer_names: string[]
+          points_earned: number
+          run_id: string
+          starts_at: string
+          title: string
+          track_avg_pace_s_per_km: number | null
+          track_distance_m: number | null
+          track_duration_s: number | null
+          track_elevation_gain_m: number | null
+          track_id: string | null
+          type: Database["public"]["Enums"]["run_type"]
         }[]
       }
       mark_conversation_read: {
@@ -673,6 +885,16 @@ export type Database = {
           isSetofReturn: false
         }
       }
+      submit_review: {
+        Args: {
+          p_note?: string
+          p_reviewee_id: string
+          p_run_id: string
+          p_stars: number
+          p_tags?: string[]
+        }
+        Returns: Json
+      }
       uuid_or_null: {
         Args: { p: string }
         Returns: string
@@ -686,8 +908,10 @@ export type Database = {
       message_kind: "user" | "system" | "meeting_point"
       notification_kind:
         "join_request" | "request_approved" | "request_declined" |
-        "member_joined" | "message" | "run_reminder"
+        "member_joined" | "message" | "run_reminder" | "run_completed" |
+        "review_received"
       pace_band: "easy" | "steady" | "quick" | "fast"
+      points_reason: "finished" | "distance_goal" | "on_time" | "rate_crew"
       profile_visibility: "everyone" | "members" | "hidden"
       run_status: "published" | "cancelled" | "completed"
       run_type: "discover" | "challenge" | "social"
@@ -834,8 +1058,11 @@ export const Constants = {
         "member_joined",
         "message",
         "run_reminder",
+        "run_completed",
+        "review_received",
       ],
       pace_band: ["easy", "steady", "quick", "fast"],
+      points_reason: ["finished", "distance_goal", "on_time", "rate_crew"],
       profile_visibility: ["everyone", "members", "hidden"],
       run_status: ["published", "cancelled", "completed"],
       run_type: ["discover", "challenge", "social"],
