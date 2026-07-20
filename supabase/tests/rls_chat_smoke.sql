@@ -332,6 +332,16 @@ begin
     raise exception 'SMOKE FAIL 11: get_secret callable by anon';
   exception when insufficient_privilege then null;
   end;
+  begin
+    perform public.enqueue_run_reminders ();
+    raise exception 'SMOKE FAIL 11: enqueue_run_reminders callable by anon';
+  exception when insufficient_privilege then null;
+  end;
+  begin
+    perform public.request_push_receipts ();
+    raise exception 'SMOKE FAIL 11: request_push_receipts callable by anon';
+  exception when insufficient_privilege then null;
+  end;
 end $$;
 rollback;
 
