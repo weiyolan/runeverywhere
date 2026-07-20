@@ -48,7 +48,7 @@ export async function deleteContact(id: string): Promise<void> {
 // --- Live share -------------------------------------------------------------
 
 export async function startLiveShare(runId?: string): Promise<LiveShareSession> {
-  const { data, error } = await supabase.rpc('start_live_share', { p_run_id: runId ?? null });
+  const { data, error } = await supabase.rpc('start_live_share', { p_run_id: runId });
   if (error) throw error;
   return data;
 }

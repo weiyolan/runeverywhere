@@ -14,10 +14,13 @@ grant update (notification_prefs, like_types) on public.profiles to authenticate
 alter type public.notification_kind add value if not exists 'leaderboard_weekly';
 
 -- Maps every kind to its settings toggle; null = deliberately ungated.
+-- Compares on text, not the enum: 'leaderboard_weekly' is added above in this
+-- same transaction, and SQL function bodies are parsed at creation — an enum
+-- CASE would fail with "unsafe use of new value" on db push.
 create function public.notification_pref_key (p_kind public.notification_kind)
 returns text
 language sql immutable set search_path = '' as $$
-  select case p_kind
+  select case p_kind::text
     when 'join_request' then 'requests'
     when 'member_joined' then 'requests'
     when 'request_approved' then 'accepts'

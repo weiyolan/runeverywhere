@@ -10,7 +10,7 @@ export type Database = {
   // Allows to automatically instantiate createClient with right options
   // instead of createClient<Database, { PostgrestVersion: 'XX' }>(URL, KEY)
   __InternalSupabase: {
-    PostgrestVersion: "14.14"
+    PostgrestVersion: "14.5"
   }
   public: {
     Tables: {
@@ -71,6 +71,56 @@ export type Database = {
           {
             foreignKeyName: "blocks_blocker_id_fkey"
             columns: ["blocker_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      connected_accounts: {
+        Row: {
+          access_token_secret_id: string | null
+          connected_at: string
+          id: string
+          last_sync_error: string | null
+          last_synced_at: string | null
+          provider: Database["public"]["Enums"]["integration_provider"]
+          provider_user_id: string | null
+          refresh_token_secret_id: string | null
+          scopes: string[]
+          token_expires_at: string | null
+          user_id: string
+        }
+        Insert: {
+          access_token_secret_id?: string | null
+          connected_at?: string
+          id?: string
+          last_sync_error?: string | null
+          last_synced_at?: string | null
+          provider: Database["public"]["Enums"]["integration_provider"]
+          provider_user_id?: string | null
+          refresh_token_secret_id?: string | null
+          scopes?: string[]
+          token_expires_at?: string | null
+          user_id: string
+        }
+        Update: {
+          access_token_secret_id?: string | null
+          connected_at?: string
+          id?: string
+          last_sync_error?: string | null
+          last_synced_at?: string | null
+          provider?: Database["public"]["Enums"]["integration_provider"]
+          provider_user_id?: string | null
+          refresh_token_secret_id?: string | null
+          scopes?: string[]
+          token_expires_at?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "connected_accounts_user_id_fkey"
+            columns: ["user_id"]
             isOneToOne: false
             referencedRelation: "profiles"
             referencedColumns: ["id"]
@@ -177,6 +227,27 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      feature_flags: {
+        Row: {
+          enabled: boolean
+          key: string
+          note: string
+          updated_at: string
+        }
+        Insert: {
+          enabled?: boolean
+          key: string
+          note?: string
+          updated_at?: string
+        }
+        Update: {
+          enabled?: boolean
+          key?: string
+          note?: string
+          updated_at?: string
+        }
+        Relationships: []
       }
       levels: {
         Row: {
@@ -447,6 +518,8 @@ export type Database = {
           created_at: string
           display_name: string
           distance_band: Database["public"]["Enums"]["distance_band"] | null
+          flair_accent: string | null
+          flair_ring: boolean
           home_city: string | null
           home_point: unknown
           id: string
@@ -458,6 +531,7 @@ export type Database = {
           onboarded_at: string | null
           pace_band: Database["public"]["Enums"]["pace_band"] | null
           points_total: number
+          pro_until: string | null
           rating_avg: number | null
           rating_count: number
           tos_accepted_at: string | null
@@ -471,6 +545,8 @@ export type Database = {
           created_at?: string
           display_name?: string
           distance_band?: Database["public"]["Enums"]["distance_band"] | null
+          flair_accent?: string | null
+          flair_ring?: boolean
           home_city?: string | null
           home_point?: unknown
           id: string
@@ -482,6 +558,7 @@ export type Database = {
           onboarded_at?: string | null
           pace_band?: Database["public"]["Enums"]["pace_band"] | null
           points_total?: number
+          pro_until?: string | null
           rating_avg?: number | null
           rating_count?: number
           tos_accepted_at?: string | null
@@ -495,6 +572,8 @@ export type Database = {
           created_at?: string
           display_name?: string
           distance_band?: Database["public"]["Enums"]["distance_band"] | null
+          flair_accent?: string | null
+          flair_ring?: boolean
           home_city?: string | null
           home_point?: unknown
           id?: string
@@ -506,6 +585,7 @@ export type Database = {
           onboarded_at?: string | null
           pace_band?: Database["public"]["Enums"]["pace_band"] | null
           points_total?: number
+          pro_until?: string | null
           rating_avg?: number | null
           rating_count?: number
           tos_accepted_at?: string | null
@@ -605,6 +685,33 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      revenuecat_events: {
+        Row: {
+          app_user_id: string | null
+          environment: string
+          id: string
+          payload: Json
+          received_at: string
+          type: string
+        }
+        Insert: {
+          app_user_id?: string | null
+          environment: string
+          id: string
+          payload: Json
+          received_at?: string
+          type: string
+        }
+        Update: {
+          app_user_id?: string | null
+          environment?: string
+          id?: string
+          payload?: Json
+          received_at?: string
+          type?: string
+        }
+        Relationships: []
       }
       reviews: {
         Row: {
@@ -721,12 +828,15 @@ export type Database = {
           duration_s: number
           elevation_gain_m: number
           ended_at: string
+          external_id: string | null
           id: string
           polyline: string
           raw_path: string | null
-          run_id: string
+          run_id: string | null
           sample_count: number | null
+          source: Database["public"]["Enums"]["track_source"]
           started_at: string
+          title: string | null
           user_id: string
         }
         Insert: {
@@ -736,12 +846,15 @@ export type Database = {
           duration_s: number
           elevation_gain_m?: number
           ended_at: string
+          external_id?: string | null
           id?: string
           polyline: string
           raw_path?: string | null
-          run_id: string
+          run_id?: string | null
           sample_count?: number | null
+          source?: Database["public"]["Enums"]["track_source"]
           started_at: string
+          title?: string | null
           user_id: string
         }
         Update: {
@@ -751,12 +864,15 @@ export type Database = {
           duration_s?: number
           elevation_gain_m?: number
           ended_at?: string
+          external_id?: string | null
           id?: string
           polyline?: string
           raw_path?: string | null
-          run_id?: string
+          run_id?: string | null
           sample_count?: number | null
+          source?: Database["public"]["Enums"]["track_source"]
           started_at?: string
+          title?: string | null
           user_id?: string
         }
         Relationships: [
@@ -960,6 +1076,11 @@ export type Database = {
       }
     }
     Functions: {
+      award_badges: {
+        Args: { p_run_id?: string; p_user_id: string }
+        Returns: string[]
+      }
+      can_view_profile: { Args: { p_profile_id: string }; Returns: boolean }
       cancel_join: {
         Args: { p_run_id: string }
         Returns: {
@@ -978,10 +1099,6 @@ export type Database = {
           isSetofReturn: false
         }
       }
-      can_view_profile: {
-        Args: { p_profile_id: string }
-        Returns: boolean
-      }
       complete_run: {
         Args: {
           p_distance_m: number
@@ -989,7 +1106,7 @@ export type Database = {
           p_elevation_gain_m: number
           p_ended_at: string
           p_polyline: string
-          p_raw_path?: string | null
+          p_raw_path?: string
           p_run_id: string
           p_started_at: string
         }
@@ -1002,14 +1119,46 @@ export type Database = {
         }
         Returns: number
       }
-      end_live_share: {
-        Args: Record<PropertyKey, never>
+      delete_external_track: {
+        Args: {
+          p_external_id: string
+          p_source: Database["public"]["Enums"]["track_source"]
+          p_user_id: string
+        }
         Returns: undefined
       }
-      get_leaderboard: {
-        Args: { p_city?: string | null; p_week_start?: string | null }
+      disconnect_account: {
+        Args: {
+          p_provider: Database["public"]["Enums"]["integration_provider"]
+        }
+        Returns: undefined
+      }
+      disconnect_account_admin: {
+        Args: {
+          p_provider: Database["public"]["Enums"]["integration_provider"]
+          p_user_id: string
+        }
+        Returns: undefined
+      }
+      end_live_share: { Args: never; Returns: undefined }
+      enqueue_run_reminders: { Args: never; Returns: undefined }
+      enqueue_weekly_leaderboard: { Args: never; Returns: undefined }
+      get_connected_tokens: {
+        Args: {
+          p_provider: Database["public"]["Enums"]["integration_provider"]
+          p_user_id: string
+        }
         Returns: {
-          avatar_url: string | null
+          access_token: string
+          expires_at: string
+          provider_user_id: string
+          refresh_token: string
+        }[]
+      }
+      get_leaderboard: {
+        Args: { p_city?: string; p_week_start?: string }
+        Returns: {
+          avatar_url: string
           display_name: string
           is_me: boolean
           level: number
@@ -1019,10 +1168,7 @@ export type Database = {
           user_id: string
         }[]
       }
-      get_or_create_dm: {
-        Args: { p_other_user: string }
-        Returns: string
-      }
+      get_or_create_dm: { Args: { p_other_user: string }; Returns: string }
       get_profile_stats: {
         Args: { p_user_id: string }
         Returns: {
@@ -1062,10 +1208,32 @@ export type Database = {
           isSetofReturn: true
         }
       }
+      get_secret: { Args: { p_name: string }; Returns: string }
+      has_blocked: {
+        Args: { p_blocked: string; p_blocker: string }
+        Returns: boolean
+      }
+      import_external_track: {
+        Args: {
+          p_distance_m: number
+          p_duration_s: number
+          p_elevation_gain_m: number
+          p_ended_at: string
+          p_external_id: string
+          p_polyline: string
+          p_source: Database["public"]["Enums"]["track_source"]
+          p_started_at: string
+          p_title: string
+          p_user_id: string
+        }
+        Returns: string
+      }
+      is_blocked_pair: { Args: { p_a: string; p_b: string }; Returns: boolean }
       is_conversation_member: {
         Args: { p_conversation_id: string; p_user_id: string }
         Returns: boolean
       }
+      is_pro: { Args: { p_user: string }; Returns: boolean }
       is_run_member: {
         Args: { p_run_id: string; p_user_id: string }
         Returns: boolean
@@ -1089,49 +1257,53 @@ export type Database = {
         }
       }
       list_conversations: {
-        Args: Record<PropertyKey, never>
+        Args: never
         Returns: {
           conversation_id: string
           kind: Database["public"]["Enums"]["conversation_kind"]
-          last_at: string | null
-          last_body: string | null
-          last_kind: Database["public"]["Enums"]["message_kind"] | null
-          last_sender_id: string | null
+          last_at: string
+          last_body: string
+          last_kind: Database["public"]["Enums"]["message_kind"]
+          last_sender_id: string
           member_count: number
           peer_avatars: string[]
           peer_ids: string[]
           peer_names: string[]
-          run_id: string | null
-          run_type: Database["public"]["Enums"]["run_type"] | null
-          starts_at: string | null
+          run_id: string
+          run_type: Database["public"]["Enums"]["run_type"]
+          starts_at: string
           title: string
           unread_count: number
         }[]
       }
       list_past_runs: {
-        Args: Record<PropertyKey, never>
+        Args: never
         Returns: {
           area_name: string
           city: string
           distance_km: number
-          my_rating_given: number | null
+          my_rating_given: number
           peer_avatars: string[]
           peer_names: string[]
           points_earned: number
           run_id: string
           starts_at: string
           title: string
-          track_avg_pace_s_per_km: number | null
-          track_distance_m: number | null
-          track_duration_s: number | null
-          track_elevation_gain_m: number | null
-          track_id: string | null
+          track_avg_pace_s_per_km: number
+          track_distance_m: number
+          track_duration_s: number
+          track_elevation_gain_m: number
+          track_id: string
           type: Database["public"]["Enums"]["run_type"]
         }[]
       }
       mark_conversation_read: {
         Args: { p_conversation_id: string }
         Returns: undefined
+      }
+      notification_pref_key: {
+        Args: { p_kind: Database["public"]["Enums"]["notification_kind"] }
+        Returns: string
       }
       remove_member: {
         Args: { p_run_id: string; p_user_id: string }
@@ -1151,6 +1323,7 @@ export type Database = {
           isSetofReturn: false
         }
       }
+      request_push_receipts: { Args: never; Returns: undefined }
       respond_to_join_request: {
         Args: { p_approve: boolean; p_run_id: string; p_user_id: string }
         Returns: {
@@ -1169,8 +1342,9 @@ export type Database = {
           isSetofReturn: false
         }
       }
-      run_approved_count: {
-        Args: { p_run_id: string }
+      run_approved_count: { Args: { p_run_id: string }; Returns: number }
+      run_local_hour: {
+        Args: { p_point: unknown; p_starts_at: string }
         Returns: number
       }
       runs_within_radius: {
@@ -1211,14 +1385,20 @@ export type Database = {
           created_at: string
           display_name: string
           distance_band: Database["public"]["Enums"]["distance_band"] | null
+          flair_accent: string | null
+          flair_ring: boolean
           home_city: string | null
           home_point: unknown
           id: string
           languages: string[]
           level: number
+          like_types: Database["public"]["Enums"]["run_type"][]
+          live_share_auto: boolean
+          notification_prefs: Json
           onboarded_at: string | null
           pace_band: Database["public"]["Enums"]["pace_band"] | null
           points_total: number
+          pro_until: string | null
           rating_avg: number | null
           rating_count: number
           tos_accepted_at: string | null
@@ -1233,8 +1413,9 @@ export type Database = {
           isSetofReturn: false
         }
       }
+      shares_run_with: { Args: { p_a: string; p_b: string }; Returns: boolean }
       start_live_share: {
-        Args: { p_run_id?: string | null }
+        Args: { p_run_id?: string }
         Returns: {
           ended_at: string | null
           expires_at: string
@@ -1251,6 +1432,18 @@ export type Database = {
           isSetofReturn: false
         }
       }
+      store_connected_account: {
+        Args: {
+          p_access_token: string
+          p_expires_at: string
+          p_provider: Database["public"]["Enums"]["integration_provider"]
+          p_provider_user_id: string
+          p_refresh_token: string
+          p_scopes: string[]
+          p_user_id: string
+        }
+        Returns: string
+      }
       submit_review: {
         Args: {
           p_note?: string
@@ -1261,30 +1454,44 @@ export type Database = {
         }
         Returns: Json
       }
-      uuid_or_null: {
-        Args: { p: string }
-        Returns: string
-      }
+      uuid_or_null: { Args: { p: string }; Returns: string }
     }
     Enums: {
       conversation_kind: "run" | "dm"
       distance_band: "short" | "mid" | "long" | "ultra"
+      integration_provider: "healthkit" | "strava" | "garmin"
       member_status:
-        "pending" | "approved" | "declined" | "cancelled" | "removed"
+        | "pending"
+        | "approved"
+        | "declined"
+        | "cancelled"
+        | "removed"
       message_kind: "user" | "system" | "meeting_point"
       notification_kind:
-        "join_request" | "request_approved" | "request_declined" |
-        "member_joined" | "message" | "run_reminder" | "run_completed" |
-        "review_received" | "badge_earned" | "leaderboard_weekly"
+        | "join_request"
+        | "request_approved"
+        | "request_declined"
+        | "member_joined"
+        | "message"
+        | "run_reminder"
+        | "run_completed"
+        | "review_received"
+        | "badge_earned"
+        | "leaderboard_weekly"
       pace_band: "easy" | "steady" | "quick" | "fast"
       points_reason: "finished" | "distance_goal" | "on_time" | "rate_crew"
       profile_visibility: "everyone" | "members" | "hidden"
       report_reason:
-        "inappropriate_behaviour" | "harassment" | "impersonation" |
-        "safety_concern" | "spam" | "other"
+        | "inappropriate_behaviour"
+        | "harassment"
+        | "impersonation"
+        | "safety_concern"
+        | "spam"
+        | "other"
       run_status: "published" | "cancelled" | "completed"
       run_type: "discover" | "challenge" | "social"
       run_visibility: "open" | "approval" | "invite"
+      track_source: "app" | "healthkit" | "strava" | "garmin"
       units_pref: "km" | "mi"
     }
     CompositeTypes: {
@@ -1301,12 +1508,12 @@ export type Tables<
   DefaultSchemaTableNameOrOptions extends
     | keyof (DefaultSchema["Tables"] & DefaultSchema["Views"])
     | { schema: keyof DatabaseWithoutInternals },
-  TableName extends (DefaultSchemaTableNameOrOptions extends {
+  TableName extends DefaultSchemaTableNameOrOptions extends {
     schema: keyof DatabaseWithoutInternals
   }
     ? keyof (DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"] &
         DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Views"])
-    : never) = never,
+    : never = never,
 > = DefaultSchemaTableNameOrOptions extends {
   schema: keyof DatabaseWithoutInternals
 }
@@ -1328,12 +1535,13 @@ export type Tables<
 
 export type TablesInsert<
   DefaultSchemaTableNameOrOptions extends
-    keyof DefaultSchema["Tables"] | { schema: keyof DatabaseWithoutInternals },
-  TableName extends (DefaultSchemaTableNameOrOptions extends {
+    | keyof DefaultSchema["Tables"]
+    | { schema: keyof DatabaseWithoutInternals },
+  TableName extends DefaultSchemaTableNameOrOptions extends {
     schema: keyof DatabaseWithoutInternals
   }
     ? keyof DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"]
-    : never) = never,
+    : never = never,
 > = DefaultSchemaTableNameOrOptions extends {
   schema: keyof DatabaseWithoutInternals
 }
@@ -1352,12 +1560,13 @@ export type TablesInsert<
 
 export type TablesUpdate<
   DefaultSchemaTableNameOrOptions extends
-    keyof DefaultSchema["Tables"] | { schema: keyof DatabaseWithoutInternals },
-  TableName extends (DefaultSchemaTableNameOrOptions extends {
+    | keyof DefaultSchema["Tables"]
+    | { schema: keyof DatabaseWithoutInternals },
+  TableName extends DefaultSchemaTableNameOrOptions extends {
     schema: keyof DatabaseWithoutInternals
   }
     ? keyof DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"]
-    : never) = never,
+    : never = never,
 > = DefaultSchemaTableNameOrOptions extends {
   schema: keyof DatabaseWithoutInternals
 }
@@ -1376,12 +1585,13 @@ export type TablesUpdate<
 
 export type Enums<
   DefaultSchemaEnumNameOrOptions extends
-    keyof DefaultSchema["Enums"] | { schema: keyof DatabaseWithoutInternals },
-  EnumName extends (DefaultSchemaEnumNameOrOptions extends {
+    | keyof DefaultSchema["Enums"]
+    | { schema: keyof DatabaseWithoutInternals },
+  EnumName extends DefaultSchemaEnumNameOrOptions extends {
     schema: keyof DatabaseWithoutInternals
   }
     ? keyof DatabaseWithoutInternals[DefaultSchemaEnumNameOrOptions["schema"]]["Enums"]
-    : never) = never,
+    : never = never,
 > = DefaultSchemaEnumNameOrOptions extends {
   schema: keyof DatabaseWithoutInternals
 }
@@ -1394,11 +1604,11 @@ export type CompositeTypes<
   PublicCompositeTypeNameOrOptions extends
     | keyof DefaultSchema["CompositeTypes"]
     | { schema: keyof DatabaseWithoutInternals },
-  CompositeTypeName extends (PublicCompositeTypeNameOrOptions extends {
+  CompositeTypeName extends PublicCompositeTypeNameOrOptions extends {
     schema: keyof DatabaseWithoutInternals
   }
     ? keyof DatabaseWithoutInternals[PublicCompositeTypeNameOrOptions["schema"]]["CompositeTypes"]
-    : never) = never,
+    : never = never,
 > = PublicCompositeTypeNameOrOptions extends {
   schema: keyof DatabaseWithoutInternals
 }
@@ -1412,6 +1622,7 @@ export const Constants = {
     Enums: {
       conversation_kind: ["run", "dm"],
       distance_band: ["short", "mid", "long", "ultra"],
+      integration_provider: ["healthkit", "strava", "garmin"],
       member_status: [
         "pending",
         "approved",
@@ -1446,6 +1657,7 @@ export const Constants = {
       run_status: ["published", "cancelled", "completed"],
       run_type: ["discover", "challenge", "social"],
       run_visibility: ["open", "approval", "invite"],
+      track_source: ["app", "healthkit", "strava", "garmin"],
       units_pref: ["km", "mi"],
     },
   },
