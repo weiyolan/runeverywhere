@@ -45,7 +45,7 @@ export async function completeRun(args: {
     p_elevation_gain_m: args.elevationGainM,
     p_started_at: args.startedAt,
     p_ended_at: args.endedAt,
-    p_raw_path: args.rawPath ?? null,
+    p_raw_path: args.rawPath ?? undefined,
   });
   if (error) throw error;
   return data as unknown as CompleteRunResult;

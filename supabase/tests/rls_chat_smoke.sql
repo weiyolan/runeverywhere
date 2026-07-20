@@ -4,8 +4,8 @@
 -- Same technique as rls_smoke.sql / core_loop_smoke.sql. Fixture uuids:
 -- maya …0001, marco …0002, nadia …0003; Old Town Loop run …0001 (maya +
 -- marco are chat members via seed), Sunset 5K …0003 (maya hosts).
--- Note: migration 32 (pg_net/pg_cron push pipeline) is not covered here —
--- its get_secret/enqueue denials get cases when that migration lands.
+-- Section 11 covers migration 32's function-privilege denials (get_secret
+-- would otherwise hand any client the send-push shared secret).
 
 -- 1. Non-member reads nothing; member reads conversation + messages ----------
 begin;
@@ -299,6 +299,39 @@ begin
   if v_count < 2 then
     raise exception 'SMOKE FAIL 10: cancel-then-re-request produced % join_request notifications (want 2)', v_count;
   end if;
+end $$;
+rollback;
+
+-- 11. Migration 32 internals are unreachable as client RPCs ------------------
+begin;
+set local role authenticated;
+select set_config('request.jwt.claims', '{"sub":"00000000-0000-4000-8000-000000000001","role":"authenticated"}', true);
+do $$
+begin
+  begin
+    perform public.get_secret ('send_push_secret');
+    raise exception 'SMOKE FAIL 11: get_secret callable by authenticated';
+  exception when insufficient_privilege then null;
+  end;
+  begin
+    perform public.enqueue_run_reminders ();
+    raise exception 'SMOKE FAIL 11: enqueue_run_reminders callable by authenticated';
+  exception when insufficient_privilege then null;
+  end;
+  begin
+    perform public.request_push_receipts ();
+    raise exception 'SMOKE FAIL 11: request_push_receipts callable by authenticated';
+  exception when insufficient_privilege then null;
+  end;
+end $$;
+set local role anon;
+do $$
+begin
+  begin
+    perform public.get_secret ('send_push_secret');
+    raise exception 'SMOKE FAIL 11: get_secret callable by anon';
+  exception when insufficient_privilege then null;
+  end;
 end $$;
 rollback;
 

@@ -360,3 +360,13 @@ values
     'Tomás P.', '+351 912 000 002', 'Partner', false
   )
 on conflict (id) do nothing;
+
+-- Push-pipeline config (migration 32). Kong's docker-network hostname is
+-- supabase_kong_<project_id>; host.docker.internal is macOS/Windows-only.
+-- Hosted values are set once in the SQL editor with the real project URL and
+-- a generated secret.
+select vault.create_secret ('http://supabase_kong_runeverywhere:8000', 'project_url');
+select vault.create_secret ('local-dev-push-secret', 'send_push_secret');
+
+-- Local dev always exercises the integration code paths (P6 A2).
+update public.feature_flags set enabled = true where key in ('healthkit', 'strava');
