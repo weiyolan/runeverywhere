@@ -14,6 +14,137 @@ export type Database = {
   }
   public: {
     Tables: {
+      badges: {
+        Row: {
+          active: boolean
+          code: string
+          color: string
+          description: string
+          icon: string
+          name: string
+          sort: number
+        }
+        Insert: {
+          active?: boolean
+          code: string
+          color: string
+          description: string
+          icon: string
+          name: string
+          sort: number
+        }
+        Update: {
+          active?: boolean
+          code?: string
+          color?: string
+          description?: string
+          icon?: string
+          name?: string
+          sort?: number
+        }
+        Relationships: []
+      }
+      blocks: {
+        Row: {
+          blocked_id: string
+          blocker_id: string
+          created_at: string
+        }
+        Insert: {
+          blocked_id: string
+          blocker_id: string
+          created_at?: string
+        }
+        Update: {
+          blocked_id?: string
+          blocker_id?: string
+          created_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "blocks_blocked_id_fkey"
+            columns: ["blocked_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "blocks_blocker_id_fkey"
+            columns: ["blocker_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      conversation_members: {
+        Row: {
+          conversation_id: string
+          joined_at: string
+          last_read_at: string
+          user_id: string
+        }
+        Insert: {
+          conversation_id: string
+          joined_at?: string
+          last_read_at?: string
+          user_id: string
+        }
+        Update: {
+          conversation_id?: string
+          joined_at?: string
+          last_read_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "conversation_members_conversation_id_fkey"
+            columns: ["conversation_id"]
+            isOneToOne: false
+            referencedRelation: "conversations"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "conversation_members_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      conversations: {
+        Row: {
+          created_at: string
+          dm_key: string | null
+          id: string
+          kind: Database["public"]["Enums"]["conversation_kind"]
+          run_id: string | null
+        }
+        Insert: {
+          created_at?: string
+          dm_key?: string | null
+          id?: string
+          kind: Database["public"]["Enums"]["conversation_kind"]
+          run_id?: string | null
+        }
+        Update: {
+          created_at?: string
+          dm_key?: string | null
+          id?: string
+          kind?: Database["public"]["Enums"]["conversation_kind"]
+          run_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "conversations_run_id_fkey"
+            columns: ["run_id"]
+            isOneToOne: true
+            referencedRelation: "runs"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       favorites: {
         Row: {
           created_at: string
@@ -47,6 +178,268 @@ export type Database = {
           },
         ]
       }
+      levels: {
+        Row: {
+          level: number
+          min_points: number
+          title: string
+        }
+        Insert: {
+          level: number
+          min_points: number
+          title?: string
+        }
+        Update: {
+          level?: number
+          min_points?: number
+          title?: string
+        }
+        Relationships: []
+      }
+      live_locations: {
+        Row: {
+          accuracy_m: number | null
+          distance_km: number | null
+          elapsed_s: number | null
+          lat: number
+          lng: number
+          recorded_at: string
+          session_id: string
+        }
+        Insert: {
+          accuracy_m?: number | null
+          distance_km?: number | null
+          elapsed_s?: number | null
+          lat: number
+          lng: number
+          recorded_at?: string
+          session_id: string
+        }
+        Update: {
+          accuracy_m?: number | null
+          distance_km?: number | null
+          elapsed_s?: number | null
+          lat?: number
+          lng?: number
+          recorded_at?: string
+          session_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "live_locations_session_id_fkey"
+            columns: ["session_id"]
+            isOneToOne: true
+            referencedRelation: "live_share_sessions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      live_share_sessions: {
+        Row: {
+          ended_at: string | null
+          expires_at: string
+          id: string
+          run_id: string | null
+          started_at: string
+          token: string
+          user_id: string
+        }
+        Insert: {
+          ended_at?: string | null
+          expires_at?: string
+          id?: string
+          run_id?: string | null
+          started_at?: string
+          token?: string
+          user_id: string
+        }
+        Update: {
+          ended_at?: string | null
+          expires_at?: string
+          id?: string
+          run_id?: string | null
+          started_at?: string
+          token?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "live_share_sessions_run_id_fkey"
+            columns: ["run_id"]
+            isOneToOne: false
+            referencedRelation: "runs"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "live_share_sessions_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      messages: {
+        Row: {
+          body: string
+          conversation_id: string
+          created_at: string
+          id: string
+          kind: Database["public"]["Enums"]["message_kind"]
+          sender_id: string | null
+        }
+        Insert: {
+          body: string
+          conversation_id: string
+          created_at?: string
+          id?: string
+          kind?: Database["public"]["Enums"]["message_kind"]
+          sender_id?: string | null
+        }
+        Update: {
+          body?: string
+          conversation_id?: string
+          created_at?: string
+          id?: string
+          kind?: Database["public"]["Enums"]["message_kind"]
+          sender_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "messages_conversation_id_fkey"
+            columns: ["conversation_id"]
+            isOneToOne: false
+            referencedRelation: "conversations"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "messages_sender_id_fkey"
+            columns: ["sender_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      notifications: {
+        Row: {
+          actor_id: string | null
+          body: string
+          conversation_id: string | null
+          created_at: string
+          id: string
+          kind: Database["public"]["Enums"]["notification_kind"]
+          push_checked_at: string | null
+          push_sent_at: string | null
+          push_tickets: Json | null
+          read_at: string | null
+          run_id: string | null
+          title: string
+          user_id: string
+        }
+        Insert: {
+          actor_id?: string | null
+          body?: string
+          conversation_id?: string | null
+          created_at?: string
+          id?: string
+          kind: Database["public"]["Enums"]["notification_kind"]
+          push_checked_at?: string | null
+          push_sent_at?: string | null
+          push_tickets?: Json | null
+          read_at?: string | null
+          run_id?: string | null
+          title: string
+          user_id: string
+        }
+        Update: {
+          actor_id?: string | null
+          body?: string
+          conversation_id?: string | null
+          created_at?: string
+          id?: string
+          kind?: Database["public"]["Enums"]["notification_kind"]
+          push_checked_at?: string | null
+          push_sent_at?: string | null
+          push_tickets?: Json | null
+          read_at?: string | null
+          run_id?: string | null
+          title?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "notifications_actor_id_fkey"
+            columns: ["actor_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "notifications_conversation_id_fkey"
+            columns: ["conversation_id"]
+            isOneToOne: false
+            referencedRelation: "conversations"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "notifications_run_id_fkey"
+            columns: ["run_id"]
+            isOneToOne: false
+            referencedRelation: "runs"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "notifications_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      points_ledger: {
+        Row: {
+          created_at: string
+          id: number
+          points: number
+          reason: Database["public"]["Enums"]["points_reason"]
+          run_id: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: never
+          points: number
+          reason: Database["public"]["Enums"]["points_reason"]
+          run_id: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: never
+          points?: number
+          reason?: Database["public"]["Enums"]["points_reason"]
+          run_id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "points_ledger_run_id_fkey"
+            columns: ["run_id"]
+            isOneToOne: false
+            referencedRelation: "runs"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "points_ledger_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       profiles: {
         Row: {
           avatar_url: string | null
@@ -59,6 +452,9 @@ export type Database = {
           id: string
           languages: string[]
           level: number
+          like_types: Database["public"]["Enums"]["run_type"][]
+          live_share_auto: boolean
+          notification_prefs: Json
           onboarded_at: string | null
           pace_band: Database["public"]["Enums"]["pace_band"] | null
           points_total: number
@@ -80,6 +476,9 @@ export type Database = {
           id: string
           languages?: string[]
           level?: number
+          like_types?: Database["public"]["Enums"]["run_type"][]
+          live_share_auto?: boolean
+          notification_prefs?: Json
           onboarded_at?: string | null
           pace_band?: Database["public"]["Enums"]["pace_band"] | null
           points_total?: number
@@ -101,6 +500,9 @@ export type Database = {
           id?: string
           languages?: string[]
           level?: number
+          like_types?: Database["public"]["Enums"]["run_type"][]
+          live_share_auto?: boolean
+          notification_prefs?: Json
           onboarded_at?: string | null
           pace_band?: Database["public"]["Enums"]["pace_band"] | null
           points_total?: number
@@ -112,6 +514,152 @@ export type Database = {
           visibility?: Database["public"]["Enums"]["profile_visibility"]
         }
         Relationships: []
+      }
+      push_tokens: {
+        Row: {
+          platform: string
+          token: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          platform: string
+          token: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          platform?: string
+          token?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "push_tokens_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      reports: {
+        Row: {
+          created_at: string
+          id: string
+          message_id: string | null
+          note: string
+          reason: Database["public"]["Enums"]["report_reason"]
+          reporter_id: string | null
+          run_id: string | null
+          subject_user_id: string | null
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          message_id?: string | null
+          note?: string
+          reason: Database["public"]["Enums"]["report_reason"]
+          reporter_id?: string | null
+          run_id?: string | null
+          subject_user_id?: string | null
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          message_id?: string | null
+          note?: string
+          reason?: Database["public"]["Enums"]["report_reason"]
+          reporter_id?: string | null
+          run_id?: string | null
+          subject_user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "reports_message_id_fkey"
+            columns: ["message_id"]
+            isOneToOne: false
+            referencedRelation: "messages"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "reports_reporter_id_fkey"
+            columns: ["reporter_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "reports_run_id_fkey"
+            columns: ["run_id"]
+            isOneToOne: false
+            referencedRelation: "runs"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "reports_subject_user_id_fkey"
+            columns: ["subject_user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      reviews: {
+        Row: {
+          created_at: string
+          id: string
+          note: string
+          reviewee_id: string
+          reviewer_id: string
+          run_id: string
+          stars: number
+          tags: string[]
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          note?: string
+          reviewee_id: string
+          reviewer_id: string
+          run_id: string
+          stars: number
+          tags?: string[]
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          note?: string
+          reviewee_id?: string
+          reviewer_id?: string
+          run_id?: string
+          stars?: number
+          tags?: string[]
+        }
+        Relationships: [
+          {
+            foreignKeyName: "reviews_reviewee_id_fkey"
+            columns: ["reviewee_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "reviews_reviewer_id_fkey"
+            columns: ["reviewer_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "reviews_run_id_fkey"
+            columns: ["run_id"]
+            isOneToOne: false
+            referencedRelation: "runs"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       run_members: {
         Row: {
@@ -158,6 +706,69 @@ export type Database = {
           },
           {
             foreignKeyName: "run_members_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      run_tracks: {
+        Row: {
+          avg_pace_s_per_km: number
+          created_at: string
+          distance_m: number
+          duration_s: number
+          elevation_gain_m: number
+          ended_at: string
+          id: string
+          polyline: string
+          raw_path: string | null
+          run_id: string
+          sample_count: number | null
+          started_at: string
+          user_id: string
+        }
+        Insert: {
+          avg_pace_s_per_km: number
+          created_at?: string
+          distance_m: number
+          duration_s: number
+          elevation_gain_m?: number
+          ended_at: string
+          id?: string
+          polyline: string
+          raw_path?: string | null
+          run_id: string
+          sample_count?: number | null
+          started_at: string
+          user_id: string
+        }
+        Update: {
+          avg_pace_s_per_km?: number
+          created_at?: string
+          distance_m?: number
+          duration_s?: number
+          elevation_gain_m?: number
+          ended_at?: string
+          id?: string
+          polyline?: string
+          raw_path?: string | null
+          run_id?: string
+          sample_count?: number | null
+          started_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "run_tracks_run_id_fkey"
+            columns: ["run_id"]
+            isOneToOne: false
+            referencedRelation: "runs"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "run_tracks_user_id_fkey"
             columns: ["user_id"]
             isOneToOne: false
             referencedRelation: "profiles"
@@ -242,9 +853,111 @@ export type Database = {
           },
         ]
       }
+      safety_contacts: {
+        Row: {
+          created_at: string
+          id: string
+          is_emergency: boolean
+          label: string
+          name: string
+          phone: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          is_emergency?: boolean
+          label?: string
+          name: string
+          phone: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          is_emergency?: boolean
+          label?: string
+          name?: string
+          phone?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "safety_contacts_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      user_badges: {
+        Row: {
+          badge_code: string
+          earned_at: string
+          run_id: string | null
+          user_id: string
+        }
+        Insert: {
+          badge_code: string
+          earned_at?: string
+          run_id?: string | null
+          user_id: string
+        }
+        Update: {
+          badge_code?: string
+          earned_at?: string
+          run_id?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "user_badges_badge_code_fkey"
+            columns: ["badge_code"]
+            isOneToOne: false
+            referencedRelation: "badges"
+            referencedColumns: ["code"]
+          },
+          {
+            foreignKeyName: "user_badges_run_id_fkey"
+            columns: ["run_id"]
+            isOneToOne: false
+            referencedRelation: "runs"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "user_badges_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Views: {
-      [_ in never]: never
+      leaderboard_weekly: {
+        Row: {
+          avatar_url: string | null
+          city: string | null
+          display_name: string | null
+          iso_week: string | null
+          level: number | null
+          points: number | null
+          runs_count: number | null
+          user_id: string | null
+          week_start: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "points_ledger_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Functions: {
       cancel_join: {
@@ -265,12 +978,58 @@ export type Database = {
           isSetofReturn: false
         }
       }
+      can_view_profile: {
+        Args: { p_profile_id: string }
+        Returns: boolean
+      }
+      complete_run: {
+        Args: {
+          p_distance_m: number
+          p_duration_s: number
+          p_elevation_gain_m: number
+          p_ended_at: string
+          p_polyline: string
+          p_raw_path?: string | null
+          p_run_id: string
+          p_started_at: string
+        }
+        Returns: Json
+      }
       compute_points_reward: {
         Args: {
           p_distance_km: number
           p_type: Database["public"]["Enums"]["run_type"]
         }
         Returns: number
+      }
+      end_live_share: {
+        Args: Record<PropertyKey, never>
+        Returns: undefined
+      }
+      get_leaderboard: {
+        Args: { p_city?: string | null; p_week_start?: string | null }
+        Returns: {
+          avatar_url: string | null
+          display_name: string
+          is_me: boolean
+          level: number
+          points: number
+          rank: number
+          runs_count: number
+          user_id: string
+        }[]
+      }
+      get_or_create_dm: {
+        Args: { p_other_user: string }
+        Returns: string
+      }
+      get_profile_stats: {
+        Args: { p_user_id: string }
+        Returns: {
+          runs_count: number
+          total_dplus: number
+          total_km: number
+        }[]
       }
       get_run_by_invite: {
         Args: { p_code: string }
@@ -303,6 +1062,10 @@ export type Database = {
           isSetofReturn: true
         }
       }
+      is_conversation_member: {
+        Args: { p_conversation_id: string; p_user_id: string }
+        Returns: boolean
+      }
       is_run_member: {
         Args: { p_run_id: string; p_user_id: string }
         Returns: boolean
@@ -324,6 +1087,51 @@ export type Database = {
           isOneToOne: true
           isSetofReturn: false
         }
+      }
+      list_conversations: {
+        Args: Record<PropertyKey, never>
+        Returns: {
+          conversation_id: string
+          kind: Database["public"]["Enums"]["conversation_kind"]
+          last_at: string | null
+          last_body: string | null
+          last_kind: Database["public"]["Enums"]["message_kind"] | null
+          last_sender_id: string | null
+          member_count: number
+          peer_avatars: string[]
+          peer_ids: string[]
+          peer_names: string[]
+          run_id: string | null
+          run_type: Database["public"]["Enums"]["run_type"] | null
+          starts_at: string | null
+          title: string
+          unread_count: number
+        }[]
+      }
+      list_past_runs: {
+        Args: Record<PropertyKey, never>
+        Returns: {
+          area_name: string
+          city: string
+          distance_km: number
+          my_rating_given: number | null
+          peer_avatars: string[]
+          peer_names: string[]
+          points_earned: number
+          run_id: string
+          starts_at: string
+          title: string
+          track_avg_pace_s_per_km: number | null
+          track_distance_m: number | null
+          track_duration_s: number | null
+          track_elevation_gain_m: number | null
+          track_id: string | null
+          type: Database["public"]["Enums"]["run_type"]
+        }[]
+      }
+      mark_conversation_read: {
+        Args: { p_conversation_id: string }
+        Returns: undefined
       }
       remove_member: {
         Args: { p_run_id: string; p_user_id: string }
@@ -395,13 +1203,85 @@ export type Database = {
           run: Database["public"]["Tables"]["runs"]["Row"]
         }[]
       }
+      set_home_location: {
+        Args: { p_city: string; p_lat: number; p_lng: number }
+        Returns: {
+          avatar_url: string | null
+          bio: string
+          created_at: string
+          display_name: string
+          distance_band: Database["public"]["Enums"]["distance_band"] | null
+          home_city: string | null
+          home_point: unknown
+          id: string
+          languages: string[]
+          level: number
+          onboarded_at: string | null
+          pace_band: Database["public"]["Enums"]["pace_band"] | null
+          points_total: number
+          rating_avg: number | null
+          rating_count: number
+          tos_accepted_at: string | null
+          units: Database["public"]["Enums"]["units_pref"]
+          updated_at: string
+          visibility: Database["public"]["Enums"]["profile_visibility"]
+        }
+        SetofOptions: {
+          from: "*"
+          to: "profiles"
+          isOneToOne: true
+          isSetofReturn: false
+        }
+      }
+      start_live_share: {
+        Args: { p_run_id?: string | null }
+        Returns: {
+          ended_at: string | null
+          expires_at: string
+          id: string
+          run_id: string | null
+          started_at: string
+          token: string
+          user_id: string
+        }
+        SetofOptions: {
+          from: "*"
+          to: "live_share_sessions"
+          isOneToOne: true
+          isSetofReturn: false
+        }
+      }
+      submit_review: {
+        Args: {
+          p_note?: string
+          p_reviewee_id: string
+          p_run_id: string
+          p_stars: number
+          p_tags?: string[]
+        }
+        Returns: Json
+      }
+      uuid_or_null: {
+        Args: { p: string }
+        Returns: string
+      }
     }
     Enums: {
+      conversation_kind: "run" | "dm"
       distance_band: "short" | "mid" | "long" | "ultra"
       member_status:
         "pending" | "approved" | "declined" | "cancelled" | "removed"
+      message_kind: "user" | "system" | "meeting_point"
+      notification_kind:
+        "join_request" | "request_approved" | "request_declined" |
+        "member_joined" | "message" | "run_reminder" | "run_completed" |
+        "review_received" | "badge_earned" | "leaderboard_weekly"
       pace_band: "easy" | "steady" | "quick" | "fast"
+      points_reason: "finished" | "distance_goal" | "on_time" | "rate_crew"
       profile_visibility: "everyone" | "members" | "hidden"
+      report_reason:
+        "inappropriate_behaviour" | "harassment" | "impersonation" |
+        "safety_concern" | "spam" | "other"
       run_status: "published" | "cancelled" | "completed"
       run_type: "discover" | "challenge" | "social"
       run_visibility: "open" | "approval" | "invite"
@@ -530,6 +1410,7 @@ export type CompositeTypes<
 export const Constants = {
   public: {
     Enums: {
+      conversation_kind: ["run", "dm"],
       distance_band: ["short", "mid", "long", "ultra"],
       member_status: [
         "pending",
@@ -538,8 +1419,30 @@ export const Constants = {
         "cancelled",
         "removed",
       ],
+      message_kind: ["user", "system", "meeting_point"],
+      notification_kind: [
+        "join_request",
+        "request_approved",
+        "request_declined",
+        "member_joined",
+        "message",
+        "run_reminder",
+        "run_completed",
+        "review_received",
+        "badge_earned",
+        "leaderboard_weekly",
+      ],
       pace_band: ["easy", "steady", "quick", "fast"],
+      points_reason: ["finished", "distance_goal", "on_time", "rate_crew"],
       profile_visibility: ["everyone", "members", "hidden"],
+      report_reason: [
+        "inappropriate_behaviour",
+        "harassment",
+        "impersonation",
+        "safety_concern",
+        "spam",
+        "other",
+      ],
       run_status: ["published", "cancelled", "completed"],
       run_type: ["discover", "challenge", "social"],
       run_visibility: ["open", "approval", "invite"],

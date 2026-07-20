@@ -1,7 +1,7 @@
-import { Redirect, Tabs, router } from 'expo-router';
+import { Tabs, router } from 'expo-router';
 
 import { TabBar, type TabId } from '@/components/ui/TabBar';
-import { useSession } from '@/stores/session';
+import { useUnreadBadges } from '@/hooks/useUnreadBadges';
 
 /** Maps router route names to the design's four tab ids. */
 const ROUTE_TO_TAB: Record<string, TabId> = {
@@ -11,15 +11,9 @@ const ROUTE_TO_TAB: Record<string, TabId> = {
   profile: 'profile',
 };
 
+/** Routing lives in the root AuthGate (P1 E3) — this layout only renders. */
 export default function TabsLayout() {
-  const status = useSession((s) => s.status);
-
-  if (status === 'loading') {
-    return null; // splash screen stays up until the session resolves
-  }
-  if (status === 'signedOut') {
-    return <Redirect href="/(auth)/welcome" />;
-  }
+  const { messagesUnread } = useUnreadBadges();
 
   return (
     <Tabs
@@ -28,6 +22,7 @@ export default function TabsLayout() {
         const routeName = state.routes[state.index]?.name ?? 'index';
         return (
           <TabBar
+            messagesBadge={messagesUnread}
             value={ROUTE_TO_TAB[routeName] ?? 'explore'}
             onChange={(tab) => {
               const target = Object.entries(ROUTE_TO_TAB).find(([, id]) => id === tab)?.[0];

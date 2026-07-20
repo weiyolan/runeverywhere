@@ -5,19 +5,23 @@
 import { useQuery } from '@tanstack/react-query';
 import { format } from 'date-fns';
 import { router, useLocalSearchParams } from 'expo-router';
-import { ArrowLeft, Repeat, Share2, Star } from 'lucide-react-native';
+import { ArrowLeft, MoreHorizontal, Repeat, Share2, Star } from 'lucide-react-native';
 import { useState } from 'react';
 import { Alert, Pressable, RefreshControl, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { AppMap, AppMarker } from '@/components/map/AppMap';
 import { RouteMarker } from '@/components/map/RouteMarker';
+import { ReportSheet } from '@/components/ReportSheet';
+import { CompletedRunDetail } from '@/components/run/CompletedRunDetail';
+import { useStartRun } from '@/components/run/StartRunGate';
 import { Avatar } from '@/components/ui/Avatar';
 import { Badge } from '@/components/ui/Badge';
 import { Button } from '@/components/ui/Button';
 import { IconButton } from '@/components/ui/IconButton';
 import { StatBlock } from '@/components/ui/StatBlock';
 import { TypeChip } from '@/components/ui/TypeChip';
+import { useOpenDm } from '@/hooks/useOpenDm';
 import { formatPace, spotsLeft as spotsLeftOf } from '@/lib/format';
 import { regionForRadius } from '@/lib/geo';
 import { useRefetchOnFocus } from '@/lib/queryFocus';
@@ -55,6 +59,7 @@ export default function RunDetailScreen() {
   const { id, code } = useLocalSearchParams<{ id: string; code?: string }>();
   const uid = useSession((s) => s.session?.user.id);
   const [now] = useState(() => Date.now());
+  const [reportOpen, setReportOpen] = useState(false);
 
   const query = useQuery({
     queryKey: qk.run(id),
@@ -65,6 +70,7 @@ export default function RunDetailScreen() {
 
   const detail = query.data;
   const isHost = Boolean(detail && uid && detail.run.host_id === uid);
+  const { openDm, openingFor } = useOpenDm();
   const isApproved = detail?.myMembership?.status === 'approved';
 
   const membersQuery = useQuery({
@@ -75,6 +81,7 @@ export default function RunDetailScreen() {
 
   const join = useJoinRun(id);
   const cancel = useCancelJoin(id);
+  const { startRun, explainer } = useStartRun();
 
   if (query.isError) {
     const notFound = query.error instanceof RunNotFoundError;
@@ -101,6 +108,11 @@ export default function RunDetailScreen() {
     );
   }
 
+  // Completed runs render the Reward Loop completedDetail state (P4 H4).
+  if (detail.run.status === 'completed') {
+    return <CompletedRunDetail detail={detail} />;
+  }
+
   const { run, host, approvedCount, myMembership } = detail;
   const t = runType[run.type];
   const starts = new Date(run.starts_at);
@@ -125,9 +137,18 @@ export default function RunDetailScreen() {
       { text: 'Cancel spot', style: 'destructive', onPress: () => cancel.mutate() },
     ]);
 
+  // P4 F4: for host + approved members of a published run, START RUN outranks
+  // the "already started" banner from 30 min before starts_at onward.
+  const inStartWindow =
+    run.status === 'published' && now >= starts.getTime() - 30 * 60 * 1000;
+
   const footer = (() => {
     if (run.status === 'cancelled')
       return <StatePanel tone="danger" title="This run was cancelled by the host." />;
+    if (inStartWindow && (isHost || isApproved))
+      return (
+        <Button label="START RUN" full onPress={() => void startRun(id)} />
+      );
     if (run.status === 'completed' || started)
       return <StatePanel tone="muted" title="This run has already started." />;
     if (isHost)
@@ -221,11 +242,21 @@ export default function RunDetailScreen() {
             <IconButton accessibilityLabel="Back" onPress={() => router.back()}>
               <ArrowLeft size={20} />
             </IconButton>
-            {canShare ? (
-              <IconButton accessibilityLabel="Share invite link" onPress={share}>
-                <Share2 size={20} />
-              </IconButton>
-            ) : null}
+            <View style={styles.mapButtonsRight}>
+              {canShare ? (
+                <IconButton accessibilityLabel="Share invite link" onPress={share}>
+                  <Share2 size={20} />
+                </IconButton>
+              ) : null}
+              {!isHost ? (
+                <IconButton
+                  accessibilityLabel="Report or block the host"
+                  onPress={() => setReportOpen(true)}
+                >
+                  <MoreHorizontal size={20} />
+                </IconButton>
+              ) : null}
+            </View>
           </View>
         </View>
 
@@ -278,6 +309,15 @@ export default function RunDetailScreen() {
                 ) : null}
               </View>
             </View>
+            {isApproved && !isHost ? (
+              <Button
+                label={openingFor ? 'OPENING…' : 'MESSAGE'}
+                size="sm"
+                variant="ghost"
+                disabled={openingFor != null}
+                onPress={() => void openDm(run.host_id)}
+              />
+            ) : null}
           </View>
 
           <View style={styles.capacityRow}>
@@ -300,6 +340,15 @@ export default function RunDetailScreen() {
       </ScrollView>
 
       <View style={[styles.footer, { paddingBottom: insets.bottom + spacing.sp4 }]}>{footer}</View>
+      {explainer}
+      <ReportSheet
+        visible={reportOpen}
+        onClose={() => setReportOpen(false)}
+        subjectUserId={run.host_id}
+        subjectName={host?.display_name ?? 'the host'}
+        runId={id}
+        onBlocked={() => router.back()}
+      />
     </View>
   );
 }
@@ -323,6 +372,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
   },
+  mapButtonsRight: { flexDirection: 'row', gap: spacing.sp2 },
   body: { paddingHorizontal: sizing.gutter, paddingTop: spacing.sp4, gap: spacing.sp3 },
   badgeRow: { flexDirection: 'row', alignItems: 'center', gap: spacing.sp2 },
   title: {

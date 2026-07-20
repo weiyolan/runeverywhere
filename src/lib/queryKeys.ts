@@ -28,4 +28,28 @@ export const qk = {
   runMembers: (id: string) => ['run', id, 'members'] as const, // roster + inbox (host/member only)
   pointsPreview: (km: number, type: RunType) => ['points', 'preview', { km, type }] as const,
   profile: (id: string) => ['profile', id] as const, // reserved — P5 user/[id]
+  // P3
+  conversations: () => ['conversations'] as const,
+  conversationMessages: (id: string) => ['conversation', id, 'messages'] as const,
+  notifications: () => ['notifications'] as const,
+  notificationsUnread: () => ['notifications', 'unread-count'] as const,
+  // P4
+  runCrew: (runId: string) => ['run', runId, 'crew'] as const,
+  runAwards: (runId: string) => ['run', runId, 'awards'] as const,
+  runMyTrack: (runId: string) => ['run', runId, 'my-track'] as const,
+  runHost: (runId: string) => ['run', runId, 'host'] as const,
+  track: (id: string) => ['track', id] as const,
+  runsPast: () => ['runs', 'past'] as const,
+  meetingPoint: (conversationId: string) =>
+    ['conversation', conversationId, 'meeting-point'] as const,
+  // P5
+  profileStats: (id: string) => ['profile', id, 'stats'] as const,
+  profileCanView: (id: string) => ['profile', id, 'can-view'] as const,
+  blockedList: () => ['blocks', 'list'] as const,
+  badges: (userId: string) => ['badges', userId] as const,
+  reviews: (revieweeId: string) => ['reviews', revieweeId] as const,
+  leaderboard: (isoWeek: string, city: string) => ['leaderboard', isoWeek, city] as const,
+  blocks: () => ['blocks'] as const,
+  safetyContacts: () => ['safety-contacts'] as const,
+  levels: () => ['levels'] as const,
 };

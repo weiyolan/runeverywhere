@@ -7,6 +7,7 @@ import { forwardRef, useImperativeHandle, useRef } from 'react';
 import type { StyleProp, ViewStyle } from 'react-native';
 import MapView, {
   Marker,
+  Polyline,
   PROVIDER_GOOGLE,
   type LatLng,
   type MapPressEvent,
@@ -16,8 +17,9 @@ import MapView, {
 import { mapStyle } from './mapStyle';
 
 export type { LatLng, Region };
-/** Marker re-export so screens never touch react-native-maps directly. */
+/** Marker/Polyline re-exports so screens never touch react-native-maps directly. */
 export const AppMarker = Marker;
+export const AppPolyline = Polyline;
 
 export interface AppMapHandle {
   animateToRegion: (region: Region, durationMs?: number) => void;

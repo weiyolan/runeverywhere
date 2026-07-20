@@ -25,6 +25,7 @@ export const colors = {
   volt: '#CCFF00',
   voltBright: '#DBFF3D',
   voltPress: '#B2E000',
+  voltSoft: '#F4FBCB', // tinted row/card background (leaderboard "you" row)
   voltInk: '#0B0B0C',
 
   // Run-type system (category coding only — never decoration)

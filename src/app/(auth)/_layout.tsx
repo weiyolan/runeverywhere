@@ -1,13 +1,6 @@
-import { Redirect, Stack } from 'expo-router';
+import { Stack } from 'expo-router';
 
-import { useSession } from '@/stores/session';
-
+/** Routing lives in the root AuthGate (P1 E3) — this layout only renders. */
 export default function AuthLayout() {
-  const status = useSession((s) => s.status);
-
-  if (status === 'signedIn') {
-    return <Redirect href="/(tabs)" />;
-  }
-
   return <Stack screenOptions={{ headerShown: false }} />;
 }

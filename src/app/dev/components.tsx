@@ -2,6 +2,7 @@ import { Search, Share2, SlidersHorizontal, X } from 'lucide-react-native';
 import { useState } from 'react';
 import { ScrollView, StyleSheet, Text, View } from 'react-native';
 
+import { BadgeTile } from '@/components/BadgeTile';
 import { MapPin } from '@/components/map/MapPin';
 import { RouteMarker } from '@/components/map/RouteMarker';
 import { Avatar } from '@/components/ui/Avatar';
@@ -9,6 +10,7 @@ import { Badge } from '@/components/ui/Badge';
 import { Button } from '@/components/ui/Button';
 import { IconButton } from '@/components/ui/IconButton';
 import { Input } from '@/components/ui/Input';
+import { RatingStars } from '@/components/ui/RatingStars';
 import { RunCard } from '@/components/ui/RunCard';
 import { StatBlock } from '@/components/ui/StatBlock';
 import { TabBar } from '@/components/ui/TabBar';
@@ -33,6 +35,7 @@ export default function ComponentGallery() {
   const [pill, setPill] = useState('map');
   const [inputValue, setInputValue] = useState('');
   const [goal, setGoal] = useState('');
+  const [galleryStars, setGalleryStars] = useState(3);
 
   return (
     <ScrollView style={styles.screen} contentContainerStyle={styles.content}>
@@ -106,6 +109,24 @@ export default function ComponentGallery() {
         <Badge tone="warn" solid>Pending</Badge>
         <Badge tone="danger" solid>Full</Badge>
         <Badge tone="volt" solid>+220 PTS</Badge>
+      </View>
+
+      <Text style={textStyles.sectionHeader}>Badge tiles</Text>
+      <View style={[styles.group, styles.row]}>
+        <BadgeTile
+          badge={{ code: 'first_run', name: 'FIRST STEPS', description: 'Finish your first run', icon: 'footprints', color: 'go', sort: 1, active: true, earned_at: new Date().toISOString() }}
+        />
+        <BadgeTile
+          badge={{ code: 'hundred_k', name: '100K CLUB', description: 'Log 100 km total', icon: 'trophy', color: 'go', sort: 7, active: true, earned_at: null }}
+        />
+      </View>
+
+      <Text style={textStyles.sectionHeader}>Rating stars</Text>
+      <View style={styles.group}>
+        <RatingStars value={4.6} showValue count={12} />
+        <RatingStars value={2.5} size={22} />
+        <RatingStars value={5} size={13} count={1} />
+        <RatingStars value={galleryStars} size={32} onRate={setGalleryStars} />
       </View>
 
       <Text style={textStyles.sectionHeader}>Avatars</Text>

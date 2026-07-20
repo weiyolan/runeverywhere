@@ -40,3 +40,4 @@ yarn-error.*
 # Supabase local dev
 supabase/.temp/
 supabase/.branches/
+.env.hosted

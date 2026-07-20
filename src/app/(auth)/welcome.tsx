@@ -4,12 +4,10 @@ import { StyleSheet, Text, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { Button } from '@/components/ui/Button';
-import { useSession } from '@/stores/session';
 import { colors, fonts, letterSpacing, sizing, spacing, textStyles, tracking, typeScale } from '@/theme/theme';
 
 export default function WelcomeScreen() {
   const insets = useSafeAreaInsets();
-  const devSignIn = useSession((s) => s.devSignIn);
 
   return (
     <View style={[styles.screen, { paddingTop: insets.top + spacing.sp12, paddingBottom: insets.bottom + spacing.sp6 }]}>
@@ -26,17 +24,6 @@ export default function WelcomeScreen() {
       <View style={styles.actions}>
         <Button label="Get started" full onPress={() => router.push('/(auth)/sign-up')} />
         <Button label="Log in" variant="volt-outline" full onPress={() => router.push('/(auth)/sign-in')} />
-        {/* Scaffold-only: skip auth until Phase 1 wires Supabase */}
-        <Button
-          label="Enter app (dev)"
-          variant="ghost"
-          size="sm"
-          full
-          onPress={() => {
-            devSignIn();
-            router.replace('/(tabs)');
-          }}
-        />
       </View>
     </View>
   );

@@ -4,13 +4,14 @@
  */
 import { useQuery } from '@tanstack/react-query';
 import { router, useLocalSearchParams } from 'expo-router';
-import { ArrowLeft, Star } from 'lucide-react-native';
+import { ArrowLeft, MessageCircle, Star } from 'lucide-react-native';
 import { Alert, FlatList, Pressable, StyleSheet, Text, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { Avatar } from '@/components/ui/Avatar';
 import { Button } from '@/components/ui/Button';
 import { IconButton } from '@/components/ui/IconButton';
+import { useOpenDm } from '@/hooks/useOpenDm';
 import { qk } from '@/lib/queryKeys';
 import { useRemoveMember } from '@/lib/runMutations';
 import { fetchRunDetail, fetchRunMembers } from '@/lib/runs';
@@ -37,7 +38,9 @@ export default function RosterScreen() {
   const remove = useRemoveMember(id);
 
   const isHost = Boolean(detail && uid && detail.run.host_id === uid);
+  const { openDm, openingFor } = useOpenDm();
   const approved = (membersQuery.data ?? []).filter((m) => m.status === 'approved');
+  const amApproved = approved.some((m) => m.user_id === uid);
   const pendingCount = (membersQuery.data ?? []).filter((m) => m.status === 'pending').length;
 
   const confirmRemove = (userId: string, name: string) =>
@@ -64,7 +67,21 @@ export default function RosterScreen() {
             <Text style={textStyles.eyebrow}>HOST</Text>
             <View style={styles.row}>
               <Avatar src={detail?.host?.avatar_url} name={detail?.host?.display_name} size="md" />
-              <Text style={styles.name}>{detail?.host?.display_name || 'Host'}</Text>
+              <Text style={[styles.name, styles.hostName]}>
+                {detail?.host?.display_name || 'Host'}
+              </Text>
+              {amApproved && detail?.run.host_id ? (
+                <IconButton
+                  variant="surface"
+                  size="sm"
+                  round
+                  accessibilityLabel="Message the host"
+                  disabled={openingFor != null}
+                  onPress={() => void openDm(detail.run.host_id)}
+                >
+                  <MessageCircle size={16} />
+                </IconButton>
+              ) : null}
             </View>
             <Text style={[textStyles.eyebrow, styles.goingHeader]}>GOING · {approved.length + 1}</Text>
           </View>
@@ -95,12 +112,24 @@ export default function RosterScreen() {
               ) : null}
             </View>
             {isHost ? (
-              <Button
-                label="Remove"
-                size="sm"
-                variant="danger"
-                onPress={() => confirmRemove(item.user_id, item.profile?.display_name || 'this runner')}
-              />
+              <>
+                <IconButton
+                  variant="surface"
+                  size="sm"
+                  round
+                  accessibilityLabel={`Message ${item.profile?.display_name || 'runner'}`}
+                  disabled={openingFor != null}
+                  onPress={() => void openDm(item.user_id)}
+                >
+                  <MessageCircle size={16} />
+                </IconButton>
+                <Button
+                  label="Remove"
+                  size="sm"
+                  variant="danger"
+                  onPress={() => confirmRemove(item.user_id, item.profile?.display_name || 'this runner')}
+                />
+              </>
             ) : null}
           </View>
         )}
@@ -138,6 +167,7 @@ const styles = StyleSheet.create({
     fontSize: typeScale.tMd,
     color: semantic.textPrimary,
   },
+  hostName: { flex: 1 },
   rating: { flexDirection: 'row', alignItems: 'center', gap: 3 },
   ratingValue: {
     fontFamily: fonts.displaySemiBold,

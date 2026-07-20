@@ -91,6 +91,12 @@ rollback;
 
 -- 6. Host approves, removes; removed cannot rejoin -----------------------------
 begin;
+-- The P3 seed approves maya into Old Town Loop; this case needs her pending
+-- again, so it creates its own pending state (rolled back with the block).
+update public.run_members
+set status = 'pending', decided_at = null, decided_by = null
+where run_id = '10000000-0000-4000-8000-000000000001'
+  and user_id = '00000000-0000-4000-8000-000000000001';
 set local role authenticated;
 select set_config('request.jwt.claims', '{"sub":"00000000-0000-4000-8000-000000000002","role":"authenticated"}', true);
 do $$
