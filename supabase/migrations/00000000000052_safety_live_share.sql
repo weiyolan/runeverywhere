@@ -50,7 +50,7 @@ create table public.live_share_sessions (
   id uuid primary key default gen_random_uuid (),
   user_id uuid not null references public.profiles (id) on delete cascade,
   run_id uuid references public.runs (id) on delete cascade,
-  token text not null unique default encode(gen_random_bytes(16), 'hex'),
+  token text not null unique default encode(extensions.gen_random_bytes(16), 'hex'),
   started_at timestamptz not null default now(),
   expires_at timestamptz not null default now() + interval '12 hours',
   ended_at timestamptz
