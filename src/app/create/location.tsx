@@ -2,7 +2,6 @@
  * Create step 2/4 (P2 G4) — drop the start point: fixed center pin over a
  * draggable map, debounced on-device reverse geocode, manual area fallback.
  */
-import * as Location from 'expo-location';
 import { router } from 'expo-router';
 import { useRef, useState } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
@@ -15,6 +14,7 @@ import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/Input';
 import { useExploreCenter, useUserLocation } from '@/hooks/useUserLocation';
 import { regionForRadius, type Region } from '@/lib/geo';
+import { reverseGeocode } from '@/lib/geocode';
 import { locationStepSchema } from '@/lib/validation/run';
 import { useCreateRunDraft } from '@/stores/createRun';
 import { colors, radius, semantic, sizing, spacing, textStyles } from '@/theme/theme';
@@ -39,15 +39,12 @@ export default function CreateLocationScreen() {
     if (geocodeTimer.current) clearTimeout(geocodeTimer.current);
     geocodeTimer.current = setTimeout(async () => {
       try {
-        const [place] = await Location.reverseGeocodeAsync({
-          latitude: point.lat,
-          longitude: point.lng,
-        });
+        const place = await reverseGeocode(point.lat, point.lng);
         const area = place?.district ?? place?.subregion ?? place?.city ?? '';
         draft.set({
           area_name: area,
           city: place?.city ?? place?.region ?? '',
-          country_code: place?.isoCountryCode ?? '',
+          country_code: place?.countryCode ?? '',
         });
         setGeocodeState(area ? 'idle' : 'empty');
       } catch {

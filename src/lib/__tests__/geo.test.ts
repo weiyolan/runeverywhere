@@ -1,6 +1,12 @@
 import { describe, expect, it } from 'vitest';
 
-import { distanceMeters, parsePoint, regionForRadius } from '@/lib/geo';
+import {
+  boundsToRegion,
+  distanceMeters,
+  parsePoint,
+  regionForRadius,
+  regionToBounds,
+} from '@/lib/geo';
 
 // Real PostgREST encoding of the seed home_point (lisbon), pulled from psql:
 // select encode(st_asewkb(home_point::geometry),'hex') …
@@ -59,5 +65,26 @@ describe('regionForRadius', () => {
     expect(r.latitude).toBe(38.7223);
     // longitude delta widens with latitude (1/cos φ)
     expect(r.longitudeDelta).toBeGreaterThan(r.latitudeDelta);
+  });
+});
+
+describe('regionToBounds / boundsToRegion', () => {
+  it('round-trips a region', () => {
+    const r = regionForRadius({ lat: 38.7223, lng: -9.1393 }, 5_000);
+    const back = boundsToRegion(regionToBounds(r));
+    expect(back.latitude).toBeCloseTo(r.latitude, 9);
+    expect(back.longitude).toBeCloseTo(r.longitude, 9);
+    expect(back.latitudeDelta).toBeCloseTo(r.latitudeDelta, 9);
+    expect(back.longitudeDelta).toBeCloseTo(r.longitudeDelta, 9);
+  });
+
+  it('orders bounds west/south then east/north', () => {
+    const [[w, s], [e, n]] = regionToBounds({
+      latitude: 38.7,
+      longitude: -9.1,
+      latitudeDelta: 0.2,
+      longitudeDelta: 0.4,
+    });
+    expect([w, s, e, n].map((v) => +v.toFixed(6))).toEqual([-9.3, 38.6, -8.9, 38.8]);
   });
 });

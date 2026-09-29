@@ -14,7 +14,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Avatar } from '@/components/ui/Avatar';
 import { Button } from '@/components/ui/Button';
 import { IconButton } from '@/components/ui/IconButton';
-import { registerForPush } from '@/lib/notifications';
+import { pushSupported, registerForPush } from '@/lib/notifications';
 import { qk } from '@/lib/queryKeys';
 import { supabase } from '@/lib/supabase';
 import {
@@ -79,6 +79,7 @@ export default function NotificationsScreen() {
   // Opt-in card when push permission was never asked — or previously denied,
   // in which case TURN ON deep-links to OS settings (P3 E3 prompt timing).
   useEffect(() => {
+    if (!pushSupported) return;
     void Notifications.getPermissionsAsync().then((perm) =>
       setPermissionCard(perm.status === 'undetermined' || perm.status === 'denied'),
     );

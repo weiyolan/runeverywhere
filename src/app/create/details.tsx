@@ -3,7 +3,7 @@
  * visibility cards live here (Decisions #9). Every bound mirrors the DB
  * checks via detailsStepSchema.
  */
-import DateTimePicker from '@react-native-community/datetimepicker';
+import DateTimePicker from '@/components/ui/DateTimePicker';
 import { format } from 'date-fns';
 import { router } from 'expo-router';
 import { useMemo, useState } from 'react';

@@ -12,6 +12,7 @@ import {
   Alert,
   Linking,
   Modal,
+  Platform,
   Pressable,
   StyleSheet,
   Text,
@@ -172,6 +173,13 @@ export default function LiveRunScreen() {
   // Start on mount when nothing is running (F4 guard).
   useEffect(() => {
     if (!runId || salvageMode) return;
+    // Browsers stop GPS when the screen locks or the tab backgrounds — recording is native-only.
+    if (Platform.OS === 'web') {
+      Alert.alert('Record in the app', 'Recording a run needs the Run Everywhere mobile app.', [
+        { text: 'OK', onPress: () => router.back() },
+      ]);
+      return;
+    }
     const state = useLiveRun.getState();
     if (state.status === 'idle') {
       startRecording(runId).catch(() =>

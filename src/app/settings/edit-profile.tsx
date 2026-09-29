@@ -13,6 +13,7 @@ import { SelectChip } from '@/components/onboarding/SelectChip';
 import { Button } from '@/components/ui/Button';
 import { IconButton } from '@/components/ui/IconButton';
 import { Input } from '@/components/ui/Input';
+import { reverseGeocode } from '@/lib/geocode';
 import { setHomeLocation, updateProfile, uploadAvatar } from '@/lib/profile';
 import { qk } from '@/lib/queryKeys';
 import { useSession } from '@/stores/session';
@@ -86,11 +87,7 @@ export default function EditProfileScreen() {
       const perm = await Location.requestForegroundPermissionsAsync();
       if (!perm.granted) return;
       const pos = await Location.getCurrentPositionAsync({ accuracy: Location.Accuracy.Balanced });
-      const places = await Location.reverseGeocodeAsync({
-        latitude: pos.coords.latitude,
-        longitude: pos.coords.longitude,
-      });
-      const p = places[0];
+      const p = await reverseGeocode(pos.coords.latitude, pos.coords.longitude);
       const nameFromGeo = p?.city || p?.subregion || p?.region;
       if (nameFromGeo) setCity(nameFromGeo);
       setCoords({ lat: pos.coords.latitude, lng: pos.coords.longitude });

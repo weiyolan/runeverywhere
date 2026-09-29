@@ -51,9 +51,15 @@ export function installNotificationHandler() {
   });
 }
 
+/**
+ * Expo push reaches iOS/Android devices only — not browsers (no web-push setup),
+ * and simulators can't receive it. The in-app notification center works everywhere.
+ */
+export const pushSupported = Platform.OS !== 'web' && Device.isDevice;
+
 /** Register this device for push; returns false when unavailable/denied. */
 export async function registerForPush(): Promise<boolean> {
-  if (!Device.isDevice) return false;
+  if (!pushSupported) return false;
   let perm = await Notifications.getPermissionsAsync();
   if (perm.status === 'undetermined') {
     perm = await Notifications.requestPermissionsAsync();
@@ -81,7 +87,7 @@ export async function registerForPush(): Promise<boolean> {
 
 /** Delete this device's token row — wired into sign-out. */
 export async function unregisterPush() {
-  if (!Device.isDevice) return;
+  if (!pushSupported) return;
   try {
     const projectId = Constants.expoConfig?.extra?.eas?.projectId as string | undefined;
     if (!projectId) return;

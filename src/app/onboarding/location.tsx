@@ -7,6 +7,7 @@ import { StyleSheet, Text, View } from 'react-native';
 import { StepShell } from '@/components/onboarding/StepShell';
 import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/Input';
+import { reverseGeocode } from '@/lib/geocode';
 import { setHomeLocation, updateProfile } from '@/lib/profile';
 import { useSession } from '@/stores/session';
 import { colors, fonts, radius, spacing, textStyles, typeScale } from '@/theme/theme';
@@ -35,11 +36,7 @@ export default function OnboardingLocationScreen() {
       const pos = await Location.getCurrentPositionAsync({
         accuracy: Location.Accuracy.Balanced,
       });
-      const places = await Location.reverseGeocodeAsync({
-        latitude: pos.coords.latitude,
-        longitude: pos.coords.longitude,
-      });
-      const place = places[0];
+      const place = await reverseGeocode(pos.coords.latitude, pos.coords.longitude);
       const name = place?.city || place?.subregion || place?.region || '';
       if (name) setCity(name);
       setCoords({ lat: pos.coords.latitude, lng: pos.coords.longitude });

@@ -2,7 +2,7 @@
  * Manage run (P2 I2) — host tools: requests/roster/share/cancel + inline edit.
  * type and start point stay immutable post-publish (Decisions #13).
  */
-import DateTimePicker from '@react-native-community/datetimepicker';
+import DateTimePicker from '@/components/ui/DateTimePicker';
 import { useQuery } from '@tanstack/react-query';
 import { router, useLocalSearchParams } from 'expo-router';
 import { ArrowLeft, ChevronRight } from 'lucide-react-native';

@@ -77,3 +77,22 @@ export function regionForRadius(center: LatLng, radiusM: number): Region {
     longitudeDelta: latitudeDelta / Math.cos(rad(center.lat)),
   };
 }
+
+/** [[west, south], [east, north]] — MapLibre's bounds shape (web AppMap). */
+export type Bounds = [[number, number], [number, number]];
+
+export function regionToBounds(r: Region): Bounds {
+  return [
+    [r.longitude - r.longitudeDelta / 2, r.latitude - r.latitudeDelta / 2],
+    [r.longitude + r.longitudeDelta / 2, r.latitude + r.latitudeDelta / 2],
+  ];
+}
+
+export function boundsToRegion([[w, s], [e, n]]: Bounds): Region {
+  return {
+    latitude: (s + n) / 2,
+    longitude: (w + e) / 2,
+    latitudeDelta: n - s,
+    longitudeDelta: e - w,
+  };
+}

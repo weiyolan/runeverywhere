@@ -4,7 +4,7 @@
  * cluster count bubble. Pure view (react-native-svg) — no map dependency, so
  * it renders inside AppMarker and the gallery alike.
  */
-import { StyleSheet, Text, View } from 'react-native';
+import { Platform, StyleSheet, Text, View, type ViewStyle } from 'react-native';
 import Svg, { Circle, Path } from 'react-native-svg';
 
 import { colors, fonts, radius, runType, shadows, type RunType } from '@/theme/theme';
@@ -35,7 +35,7 @@ export function MapPin({ type = 'discover', label = '', selected = false, cluste
   const height = size * 1.2;
 
   return (
-    <View style={[{ width: size, height }, shadows.pin]}>
+    <View style={[{ width: size, height }, teardropShadow]}>
       <Svg width={size} height={height} viewBox="0 0 40 48">
         <Path
           d={TEARDROP}
@@ -52,6 +52,13 @@ export function MapPin({ type = 'discover', label = '', selected = false, cluste
     </View>
   );
 }
+
+// Web box-shadow is always a rectangle on this transparent wrapper; drop-shadow
+// follows the SVG alpha like the iOS layer shadow does. Values mirror shadows.pin.
+const teardropShadow: ViewStyle =
+  Platform.OS === 'web'
+    ? { filter: 'drop-shadow(0px 4px 5px rgba(11, 11, 12, 0.28))' }
+    : shadows.pin;
 
 const styles = StyleSheet.create({
   cluster: {

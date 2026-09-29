@@ -3,7 +3,7 @@
  * blocked-by-me banner, limited (members without shared run), full.
  */
 import { useQuery, useQueryClient } from '@tanstack/react-query';
-import { router, useLocalSearchParams } from 'expo-router';
+import { Redirect, router, useLocalSearchParams } from 'expo-router';
 import { ArrowLeft, MoreHorizontal } from 'lucide-react-native';
 import { useState } from 'react';
 import { ScrollView, StyleSheet, Text, View } from 'react-native';
@@ -78,10 +78,7 @@ export default function UserProfileScreen() {
 
   const blockedByMe = id != null && isBlocked(id);
 
-  if (id === me) {
-    router.replace('/(tabs)/profile');
-    return null;
-  }
+  if (id === me) return <Redirect href="/(tabs)/profile" />;
 
   const header = (
     <View style={styles.topBar}>

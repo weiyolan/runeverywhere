@@ -19,6 +19,7 @@ import '@/lib/queryFocus'; // wire TanStack focus to RN app state (P2 D5)
 import { qk } from '@/lib/queryKeys';
 import '@/lib/recording/locationTask'; // define the background task before any headless invocation (P4 E1)
 import { getRecoveryState } from '@/lib/recording/recorder';
+import { installWebShims } from '@/lib/webShims';
 import { useSession } from '@/stores/session';
 import { fonts, semantic, sizing, spacing, textStyles } from '@/theme/theme';
 
@@ -80,6 +81,8 @@ const gateStyles = StyleSheet.create({
     backgroundColor: semantic.bgApp,
   },
 });
+
+installWebShims();
 
 // Native builds embed these via the expo-font config plugin; web must load them at runtime.
 const webFonts: Record<string, FontSource> =
