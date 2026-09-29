@@ -1,8 +1,9 @@
 import { QueryClientProvider } from '@tanstack/react-query';
+import { useFonts, type FontSource } from 'expo-font';
 import { Stack, router, useSegments } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import { useEffect } from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import { Platform, StyleSheet, Text, View } from 'react-native';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 
@@ -19,7 +20,7 @@ import { qk } from '@/lib/queryKeys';
 import '@/lib/recording/locationTask'; // define the background task before any headless invocation (P4 E1)
 import { getRecoveryState } from '@/lib/recording/recorder';
 import { useSession } from '@/stores/session';
-import { semantic, sizing, spacing, textStyles } from '@/theme/theme';
+import { fonts, semantic, sizing, spacing, textStyles } from '@/theme/theme';
 
 /**
  * Centralized auth-state routing (P1 E3). Rules are exhaustive and mutually
@@ -80,8 +81,25 @@ const gateStyles = StyleSheet.create({
   },
 });
 
+// Native builds embed these via the expo-font config plugin; web must load them at runtime.
+const webFonts: Record<string, FontSource> =
+  Platform.OS === 'web'
+    ? {
+        [fonts.body]: require('../../assets/fonts/Saira-Regular.ttf'),
+        [fonts.bodyMedium]: require('../../assets/fonts/Saira-Medium.ttf'),
+        [fonts.bodySemiBold]: require('../../assets/fonts/Saira-SemiBold.ttf'),
+        [fonts.bodyBold]: require('../../assets/fonts/Saira-Bold.ttf'),
+        [fonts.displayMedium]: require('../../assets/fonts/SairaCondensed-Medium.ttf'),
+        [fonts.displaySemiBold]: require('../../assets/fonts/SairaCondensed-SemiBold.ttf'),
+        [fonts.display]: require('../../assets/fonts/SairaCondensed-Bold.ttf'),
+        [fonts.displayExtra]: require('../../assets/fonts/SairaCondensed-ExtraBold.ttf'),
+        [fonts.displayBlack]: require('../../assets/fonts/SairaCondensed-Black.ttf'),
+      }
+    : {};
+
 export default function RootLayout() {
   const init = useSession((s) => s.init);
+  const [fontsLoaded] = useFonts(webFonts);
 
   useEffect(() => {
     init();
@@ -111,13 +129,17 @@ export default function RootLayout() {
       if (typeof url === 'string') router.push(url as never);
     };
     const responded = Notifications.addNotificationResponseReceivedListener(openFromResponse);
-    void Notifications.getLastNotificationResponseAsync().then(openFromResponse); // cold start
+    if (Platform.OS !== 'web') {
+      void Notifications.getLastNotificationResponseAsync().then(openFromResponse); // cold start
+    }
 
     return () => {
       received.remove();
       responded.remove();
     };
   }, []);
+
+  if (!fontsLoaded) return null;
 
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>

@@ -4,6 +4,7 @@
  */
 import { decode } from 'base64-arraybuffer';
 import { File } from 'expo-file-system';
+import { Platform } from 'react-native';
 
 import { supabase } from '@/lib/supabase';
 import type { Database } from '@/types/database.types';
@@ -33,11 +34,15 @@ export async function updateProfile(patch: ProfileUpdate) {
  */
 export async function uploadAvatar(localUri: string): Promise<string> {
   const userId = await uid();
-  const base64 = await new File(localUri).base64();
+  // expo-file-system is native-only; on web the picker returns a blob:/data: URI.
+  const body =
+    Platform.OS === 'web'
+      ? await (await fetch(localUri)).arrayBuffer()
+      : decode(await new File(localUri).base64());
   const path = `${userId}/avatar.jpg`;
   const { error } = await supabase.storage
     .from('avatars')
-    .upload(path, decode(base64), { contentType: 'image/jpeg', upsert: true });
+    .upload(path, body, { contentType: 'image/jpeg', upsert: true });
   if (error) throw error;
   const { data } = supabase.storage.from('avatars').getPublicUrl(path);
   return `${data.publicUrl}?v=${Date.now()}`;
