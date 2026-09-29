@@ -43,6 +43,10 @@ enabled = true
 enabled = true
 file_size_limit = "10MiB"
 
+# Vector buckets are paid-tier; the CLI default (on) makes `config push` 402.
+[storage.vector]
+enabled = false
+
 [edge_runtime]
 enabled = true
 
