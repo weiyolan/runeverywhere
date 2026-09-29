@@ -4,7 +4,7 @@ project_id = "runeverywhere"
 [api]
 enabled = true
 port = 54321
-schemas = ["public", "storage", "graphql_public"]
+schemas = ["public", "graphql_public"]
 extra_search_path = ["public", "extensions"]
 max_rows = 1000
 
@@ -22,10 +22,19 @@ site_url = "runeverywhere://"
 additional_redirect_urls = ["runeverywhere://**"]
 jwt_expiry = 3600
 enable_refresh_token_rotation = true
+minimum_password_length = 8
+password_requirements = "letters_digits"
 
 [auth.email]
 enable_signup = true
 enable_confirmations = false # enable in hosted project for production
+# Pinned to hosted values so `supabase config push` doesn't weaken them.
+max_frequency = "1m0s"
+otp_length = 8
+
+[auth.mfa.totp]
+enroll_enabled = true
+verify_enabled = true
 
 [realtime]
 enabled = true
