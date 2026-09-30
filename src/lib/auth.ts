@@ -12,6 +12,7 @@ import * as AppleAuthentication from 'expo-apple-authentication';
 import * as Crypto from 'expo-crypto';
 import { Platform } from 'react-native';
 
+import { webUrl } from '@/lib/links';
 import { supabase } from '@/lib/supabase';
 
 export async function signUpWithEmail(args: {
@@ -40,7 +41,8 @@ export async function signInWithEmail(args: { email: string; password: string })
 
 export async function requestPasswordReset(email: string) {
   const { error } = await supabase.auth.resetPasswordForEmail(email, {
-    redirectTo: 'runeverywhere://forgot-password',
+    // Native keeps the scheme: PKCE needs the same app, and it works before App Links exist.
+    redirectTo: Platform.OS === 'web' ? webUrl('/forgot-password') : 'runeverywhere://forgot-password',
   });
   if (error) throw error;
 }

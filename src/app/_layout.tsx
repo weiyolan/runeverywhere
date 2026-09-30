@@ -1,6 +1,6 @@
 import { QueryClientProvider } from '@tanstack/react-query';
 import { useFonts, type FontSource } from 'expo-font';
-import { Stack, router, useSegments } from 'expo-router';
+import { Stack, router, usePathname, useSegments } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import { useEffect } from 'react';
 import { Platform, StyleSheet, Text, View } from 'react-native';
@@ -14,6 +14,7 @@ import {
   ensureAndroidChannels,
   installNotificationHandler,
 } from '@/lib/notifications';
+import { consumePendingLink, savePendingLink } from '@/lib/pendingLink';
 import { queryClient } from '@/lib/queryClient';
 import '@/lib/queryFocus'; // wire TanStack focus to RN app state (P2 D5)
 import { qk } from '@/lib/queryKeys';
@@ -37,6 +38,7 @@ function AuthGate({ children }: { children: React.ReactNode }) {
   const refreshProfile = useSession((s) => s.refreshProfile);
   const segments = useSegments();
   const segment = segments[0];
+  const pathname = usePathname();
 
   const waiting =
     status === 'loading' ||
@@ -45,6 +47,8 @@ function AuthGate({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     if (waiting || profileStatus === 'error' || recovering) return;
     if (status === 'signedOut' && segment !== '(auth)') {
+      // Keep the deep link (invite, run…) to replay after sign-in.
+      if (pathname !== '/') void savePendingLink(pathname);
       router.replace('/(auth)/welcome');
     } else if (status === 'signedIn' && !profile?.onboarded_at && segment !== 'onboarding') {
       router.replace('/onboarding/profile');
@@ -53,8 +57,10 @@ function AuthGate({ children }: { children: React.ReactNode }) {
       profile?.onboarded_at &&
       (segment === '(auth)' || segment === 'onboarding')
     ) {
-      router.replace('/(tabs)');
+      void consumePendingLink().then((link) => router.replace((link ?? '/(tabs)') as never));
     }
+    // pathname is only read at the moment of the signed-out redirect.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [waiting, profileStatus, recovering, status, profile?.onboarded_at, segment]);
 
   if (waiting) return null;

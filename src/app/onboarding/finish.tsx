@@ -63,7 +63,7 @@ function SuccessView({ homeCity }: { homeCity: string | null }) {
         accessibilityRole="button"
         style={styles.exploreButton}
         onPress={() => {
-          void refreshProfile().then(() => router.replace('/(tabs)'));
+          void refreshProfile(); // AuthGate routes on (tabs or a pending link)
         }}
       >
         <Text style={styles.exploreLabel}>START EXPLORING</Text>

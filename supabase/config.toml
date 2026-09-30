@@ -19,7 +19,7 @@ port = 54323
 [auth]
 enabled = true
 site_url = "runeverywhere://"
-additional_redirect_urls = ["runeverywhere://**"]
+additional_redirect_urls = ["runeverywhere://**", "https://runeverywhere.expo.app/**", "http://localhost:8082/**"]
 jwt_expiry = 3600
 enable_refresh_token_rotation = true
 minimum_password_length = 8

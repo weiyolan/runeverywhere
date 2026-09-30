@@ -12,7 +12,8 @@
     "typecheck": "tsc --noEmit",
     "db:types": "supabase gen types typescript --local --schema public > src/types/database.types.ts",
     "db:types:check": "supabase gen types typescript --local --schema public | diff - src/types/database.types.ts",
-    "test": "vitest run"
+    "test": "vitest run",
+    "deploy:web": "expo export -p web && eas deploy --prod"
   },
   "dependencies": {
     "@gorhom/bottom-sheet": "^5.2.14",
